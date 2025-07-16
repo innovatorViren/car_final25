@@ -1,0 +1,116 @@
+<?php
+
+namespace App\DataTables;
+
+use App\Models\{{modelName}};
+use Yajra\Datatables\Services\DataTable;
+use Sentinel;
+
+
+class DummyClass extends DataTable
+{
+    // protected $printPreview  = 'path.to.print.preview.view';
+
+    /**
+     * Display ajax response.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ajax()
+    {
+
+        return $this->datatables
+                    ->eloquent($this->query())
+                    ->addColumn('action', function ($row) {
+                        return $this->checkrights($row);
+                    })
+                    ->make(true);
+    }
+
+    public function checkrights($row)
+    {
+
+        $user = Sentinel::getUser();
+
+        $menu = '';
+
+        $token = csrf_token();
+
+        $editurl = route('{{routename}}.edit', ['id' => $row->id]);
+        $deleteurl = route('{{routename}}.destroy', ['id' => $row->id]);
+
+        if ($user->hasAnyAccess(['{{routename}}.update', '{{routename}}.delete','users.superadmin'])) {
+            $menu .= '<td class="text-center">
+                    <ul class="icons-list">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="icon-menu9"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">';
+        }
+
+        if ($user->hasAnyAccess(['{{routename}}.update','users.superadmin'])) {
+            $menu .= '<li><a href="' . $editurl . '" title="Edit"><i class="icon-pencil7"></i> ' . trans('comman.edit') . '</a></li>';
+        }
+
+        if ($user->hasAnyAccess(['{{routename}}.delete','users.superadmin'])) {
+            $menu .= '<li><a href="' . $deleteurl . '" data-method="delete" data-modal-text=" <b>' . $row->name . '</b> ' . '{{routename}}' . '?" data-original-title="Delete {{routename}}" class="action_confirm text-danger-600" title="Delete"><i class="icon-trash"></i> ' . trans('comman.delete') . '</a></li>';
+        }
+        $menu .= '</ul></li></ul></td>';
+
+        return $menu;
+    }
+
+    /**
+     * Get the query object to be processed by datatables.
+     *
+     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     */
+    public function query()
+    {
+        $models = {{modelName}}::select();
+//        if (request()->get('name', false)) {
+//            $models->where('name', 'like', '%' . request()->get('name') . '%');
+//        }
+//        if (request()->get('order', false)) {
+//            $models->where('order', request()->get('order'));
+//        }
+        $models->orderBy('id', 'DESC');
+        return $this->applyScopes($models);
+    }
+
+    /**
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\Datatables\Html\Builder
+     */
+    public function html()
+    {
+        return $this->builder()
+                        ->parameters(['searching' => false])
+                        ->columns($this->getColumns())
+                        ->ajax('');
+    }
+
+    /**
+     * Get columns.
+     *
+     * @return array
+     */
+    private function getColumns()
+    {
+        return [
+            {{schemacolumns}}
+        ];
+    }
+
+    /**
+     * Get filename for export.
+     *
+     * @return string
+     */
+    protected function filename()
+    {
+        return '{{modelName}}';
+    }
+}

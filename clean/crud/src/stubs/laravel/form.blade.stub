@@ -1,0 +1,7 @@
+%%formFieldsHtml%%
+
+<div class="col-lg-6 margin_bottom">
+    <div class="col-sm-offset-3 col-sm-8">
+        @include('comman.created_updated_by',isset($%%crudNameSingular%%)? ['status' => 'edit','data' => $%%crudNameSingular%%] : [])
+    </div>
+</div>

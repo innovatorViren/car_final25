@@ -1,0 +1,40 @@
+<?php
+
+namespace DummyNamespace;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Sentinel;
+
+class DummyClass extends MyModel
+{
+
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = '{{table}}';
+
+    /**
+     * Attributes that should be mass-assignable.
+     *
+     * @var array
+     */
+    protected $fillable = {{fillable}};
+    
+    protected $dependency = array(
+        //'State' => array('field' => 'country_id', 'model' => State::class),        
+    );
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('{{table}}.deleted', function(Builder $builder) {
+            $builder->where('{{table}}.deleted', '=', 0);
+        });
+
+    }    
+
+}

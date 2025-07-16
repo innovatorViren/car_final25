@@ -1,0 +1,27 @@
+<!-- Create -->
+<template id="create">
+<div class="inner-box">
+    <h1>Create New {{ $title }}</h1>
+    <hr/>
+
+    <form  method="post" action="/%%routeGroup%%%%crudName%%" v-ajax form-data="formData" success-callback="success" error-callback="error" class="form-horizontal">
+      <partial name="form"></partial>
+
+       <div class="form-group">
+       	<div class="col-sm-offset-3 col-sm-3">
+	      <button type="submit" class="md-btn md-raised m-b btn-fw blue-grey-600 waves-effect p-n-r no-radius p-sm waves-effect waves-effect">Create</button>
+	      <a href="#"  class="md-btn md-raised m-b btn-fw teal-300 waves-effect p-n-r f-w no-radius p-sm cancel" v-link="{ path: '/' }">Cancel</a>
+	    </div>
+      </div>
+    </form>
+</div>
+</template>
+
+@push('scripts')
+<script type="text/javascript">
+Vue.component('create',{
+    template:'#create',
+    mixins: [CommonVarMixin,CommonResponseMixin]
+});
+</script>
+@endpush

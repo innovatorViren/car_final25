@@ -1,0 +1,22 @@
+<?php
+return [
+  'total_customer' => 'Total Customers',
+  'total_supplier' => 'Total Suppliers',
+  'total_employee' => 'Total Employee',
+  'lead' => 'Leads',
+  'shop' => 'Shops',
+  'average_order_qty' => 'Average Order QTY',
+  'average_order_amount' => 'Average Order Amount',
+  'sales' => 'Sales',
+  'top_sales_person' => 'Top 5 Sales Person',
+  'top_shops' => 'Top 5 Shops',
+  'top_products' => 'Top 5 Products',
+  'top_cities' => 'Top 5 Cities',
+  'top_customer' => 'Top 5 Customers',
+  'category_wise_sales' => 'Category Wise Sales',
+  'today_ouverview' => 'Today\'s Overview',
+  'purchase_order' => 'Purchase Order',
+  'outward' => 'Outward',
+  'sales_order' => 'Sales Order',
+  'shop_order' => 'Shop Order',
+]; 

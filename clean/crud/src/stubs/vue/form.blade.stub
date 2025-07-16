@@ -1,0 +1,9 @@
+<template id="form">
+{{csrf_field()}}
+%%formFieldsHtml%%
+</template>
+@push('scripts')
+<script>
+  Vue.partial('form', '#form');
+</script>
+@endpush

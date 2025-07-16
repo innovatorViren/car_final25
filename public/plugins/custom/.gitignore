@@ -1,0 +1,14 @@
+/ckeditor
+/cropper
+/draggable
+/flot
+/fullcalendar
+/gmaps
+/jqvmap
+/jstree
+/kanban
+/leaflet
+/prismjs
+/tinymce
+/uppy
+!.gitignore

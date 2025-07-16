@@ -1,0 +1,176 @@
+<?php
+
+namespace DummyNamespace;
+
+use DummyRootNamespaceHttp\Requests;
+use DummyRootNamespaceHttp\Controllers\Controller;
+use App\DataTables\{{datatableName}};
+
+use DummyRootNamespaceModels\{{modelName}};
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Session;
+use Flash;
+
+class DummyClass extends Controller
+{
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('sentinel.auth');
+        $this->middleware('checkpermission.access:{{crudName}}.create', ['only' => ['create', 'store']]);
+        $this->middleware('checkpermission.access:{{crudName}}.view', ['only' => ['index', 'show']]);
+        $this->middleware('checkpermission.access:{{crudName}}.update', ['only' => ['edit', 'update']]);
+        $this->middleware('checkpermission.access:{{crudName}}.delete', ['only' => ['destroy']]);
+        $this->title = '{{modelName}}';
+        view()->share('title', $this->title);
+        $this->ajax = new AjaxController();
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index({{datatableName}} $dataTable)
+    {
+        $action_nav = array(
+            "add_new" => array("title" => '<b><i class="icon-diff-added"></i></b> Add {{crudName}}', "url" => route('{{crudName}}.create'), "attributes" => array("class" => "btn bg-success btn-labeled heading-btn btn-add", 'title' => 'Add New')),
+        );
+        if (!$this->user->hasAnyAccess(['{{crudName}}.create','users.superadmin'])) {
+            unset($action_nav['add_new']);
+        }
+        view()->share('module_action',$action_nav);
+        return $dataTable->render('{{viewPath}}{{crudName}}.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        view()->share('module_action', [
+            'back' => ['title' => '<b><i class="icon-arrow-left52"></i></b> Go Back', 'url' => route('{{crudName}}.index'),
+                'attributes' => ['class' => 'btn btn-xs bg-blue btn-labeled heading-btn btn-back', 'title' => 'Back']],
+        ]);
+        return view('{{viewPath}}{{crudName}}.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function store(Request $request)
+    {
+        {{validationRules}}
+
+        $input = $request->all();
+        $input['created_by'] = $this->user->id;
+
+        $model = {{modelName}}::create($input);
+
+        session()->flash('success', 'New {{crudName}} Added Successfully');
+
+        //Event::fire(new Account{{modelName}}Add($model));
+
+        if ($request->get('save_exit')) {
+            return redirect('{{crudName}}');
+        }
+        return redirect('{{crudName}}/create');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        exit;
+        ${{crudNameSingular}} = {{modelName}}::findOrFail($id);
+
+        return view('{{viewPath}}{{crudName}}.show', compact('{{crudNameSingular}}'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function edit($id)
+    {
+        view()->share('module_title', 'Edit {{crudName}}');
+        view()->share('module_action', [
+            'back' => ['title' => '<b><i class="icon-arrow-left52"></i></b> Go Back', 'url' => route('{{crudName}}.index'),
+                'attributes' => ['class' => 'btn btn-xs bg-blue btn-labeled heading-btn btn-back', 'title' => 'Back']],
+        ]);
+        ${{crudNameSingular}} = {{modelName}}::findOrFail($id);
+
+        return view('{{viewPath}}{{crudName}}.edit', compact('{{crudNameSingular}}'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function update($id, Request $request)
+    {
+        {{validationRules}}
+        ${{crudNameSingular}} = {{modelName}}::findOrFail($id);
+
+        //Event::fire(new Account{{modelName}}Update( ${{crudNameSingular}} ));
+
+        $input = $request->all();
+        $input['updated_by'] = $this->user->id;
+
+        ${{crudNameSingular}}->update($input);
+
+        session()->flash('success', $this->title . ' Updated Successfully');
+
+        if ($request->get('save_exit')) {
+            return redirect('{{crudName}}');
+        }
+
+        return redirect()->route('{{crudName}}.edit', $id);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $model = {{modelName}}::find($id);
+
+        //Event::fire(new Account{{modelName}}Delete($model));
+        if($model){
+            $dependency = $model->deleteValidate($id);
+            if (!$dependency) {
+                $model->deleted = 1;
+                $model->save();
+                session()->flash('success', $this->title . ' Deleted Successfully');
+             }else{
+                Flash::error('This {{crudName}} is used in '.$dependency);
+            }
+        }else{
+            Flash::error($this->title. ' Not deleted as you don\'t have permission!');
+        }
+
+        return redirect('{{routeGroup}}{{crudName}}');
+    }
+
+}

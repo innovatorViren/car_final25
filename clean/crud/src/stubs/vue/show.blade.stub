@@ -1,0 +1,53 @@
+<!-- Show-->
+<template id="show">
+<div class="inner-box">
+
+  <div class="table-responsive">
+      <table class="table table-bordered">
+      <thead>
+                <tr>
+                    %%formHeadingHtml%%
+                </tr>
+            </thead>
+        <tbody>
+                <tr>
+                    %%formBodyHtml%%
+                </tr>
+            </tbody>
+      </table>
+  </div>
+  </div>
+</template>
+
+@push('scripts')
+
+<script>
+Vue.component('show',{
+  template:'#show',
+  mixins: [CommonVarMixin],
+  created:function()
+  {
+      var id = this.$route.params.id;
+      if(Store.show)
+      {
+          this.setData(Store.show);
+      }
+      else
+      {
+         this.$http.get("%%routeGroup%%%%crudName%%/"+id).then(function(response){
+            this.setData(response.data);
+         }).catch(function(response){
+            console.log(response);
+
+         });
+      }
+  },
+  methods:{
+    setData:function(data)
+    {
+        %%set_data%%
+    }
+  }
+})
+</script>
+@endpush

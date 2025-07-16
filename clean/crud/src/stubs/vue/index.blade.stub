@@ -1,0 +1,21 @@
+@extends('layout')
+
+@section('title', $title)
+
+@section('content')
+<div class="inner-box">
+    <div class="custome-container">
+	 	<router-view></router-view>
+	</div>
+</div>
+@endsection
+
+@push('scripts')
+@include('%%include%%.mixin')
+@include('%%include%%.listing')
+@include('%%include%%.form')
+@include('%%include%%.create')
+@include('%%include%%.edit')
+@include('%%include%%.show')
+@include('%%include%%.routes')
+@endpush

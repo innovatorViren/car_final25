@@ -1,0 +1,177 @@
+<?php
+/*
+php artisan crud:generate Jobchart --fields="designation_id:integer(10),report_to:integer(10),education:string(500),experience:string(500),skills:string(500),trainings:string(500),responsibilities:string(1000),authorities:string(1000)," --route=yes --pk=id --view-path="Jobchart" --namespace=Jobchart --stubtype=laravel
+
+
+Run Seeder:
+
+php artisan db:seed --class=SentinelDatabaseSeeder
+
+   'email' => 'admin@onzup.com',
+    'password' => 'password',
+
+Full blown example:
+
+php artisan crud:generate ClientInvoices --fields="client_id:integer:hide,account_id:integer:hide,user_id:integer:hide,onzup_tax_master_id:integer:hide,invoicenumber:string,invoicedate:date,invoiceduedate:date,billingaddress:text:hide,total:double,expensetotal:double,taxtotal:double,discount:double:hide,remark:text:hide,internalremark:text:hide" --route=yes --pk=id --view-path="Accounts" --namespace=Accounts --stubtype=laravel
+
+
+php artisan crud:generate Accounts --fields="title:string:required, body:text:required" --route=yes --pk=id --view-path="Accounts" --namespace=Accounts --stubtype=laravel
+
+
+For controller generator:
+
+php artisan crud:datatable AccountDataTable --crud-name=posts --model-name=Accounts
+
+php artisan crud:datatable UserDatatable
+
+For model generator:
+
+php artisan crud:model Post --fillable="['title', 'body']" --stubtype=laravel
+For migration generator:
+
+php artisan crud:migration posts --schema="title:string, body:text" --stubtype=laravel
+For view generator:
+
+php artisan crud:view posts --fields="title:string, body:text" --view-path="directory" --route-group=admin
+php artisan onzup:view posts --fields="title:string, body:text" --view-path="directory" --route-group=admin
+
+
+Supported Field Types
+
+These fields are supported for migration and view form:
+
+string
+char
+varchar
+password
+email
+date
+datetime
+time
+dateTime
+text
+mediumtext
+longtext
+json
+jsonb
+binary
+number
+integer
+bigint
+mediumint
+tinyint
+smallint
+boolean
+decimal
+double
+float
+
+php artisan crud:generate Countries --fields="lang:string(10),country:string(40)" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate States --fields="lang:string(10),country_id:integer:hide,state:string(40)" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate Agent --fields="company_name:string(150),short_name:string(20)" --route=yes --pk=id --view-path="Agent" --namespace=Agent --stubtype=laravel
+
+php artisan crud:generate Districts --fields="lang:string(10),country_id:integer:hide,state_id:integer:hide,district:string(40)" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate Taluka --fields="lang:string(10),country_id:integer:hide,state_id:integer:hide,district_id:integer:hide,taluka:string(40)" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate City --fields="lang:string(10),country_id:integer:hide,state_id:integer:hide,district_id:integer:hide,taluka_id:integer:hide,city:string(40)" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate Departments --fields="lang:string(30),name:string(100)" --route=yes --pk=id --view-path="Department" --namespace=Department --stubtype=laravel
+php artisan crud:generate Proff_Masters --fields="lang:string(30),proff:string(100)" --route=yes --pk=id --view-path="Proff_Masters" --namespace=Proff_Masters --stubtype=laravel
+php artisan crud:generate BankMaster --fields="name:string(50),account_no:string(20),account_name:string(50),branch_name:string(50),ifsc_code:string(11),bsr_code:string(6),address_line_one:string(50),address_line_two:string(50),address_line_three:string(50),rm_name:string(50),rm_phone_no:string(10),branch_phone_no:string(10)" --route=yes --pk=id --view-path="BankMaster" --namespace=BankMaster --stubtype=laravel
+php artisan crud:generate Transaction --fields="user_id:integer:hide,bank_id:integer:hide,payment_type:string(20),transaction_number:string(255),payment_date:date,amount:float,user_bank:string(255),user_bank_ac:string(255),scan_copy:string(255),full_name_as_per_bank:string(255)" --route=yes --pk=id --view-path="Transaction" --namespace=Transaction --stubtype=laravel
+
+php artisan crud:generate TransferMoneyToBank --fields="user_id:integer,wallet_id:integer,status:string(20),account_holder_name:string(100),account_no:string(50),ifsc_code:string(50),amounts:float,remarks:string(255)" --route=yes --pk=id --view-path="TransferMoneyToBank" --namespace=TransferMoneyToBank --stubtype=laravel
+
+php artisan crud:generate Process --fields="name:string(255):required,order:integer:required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate Brand --fields="name:string(255):required,short_name:string(20):required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate OrderType --fields="name:string(255):required,short_name:string(20):required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate ItemCategory --fields="name:string(255):required,short_name:string(20):required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate Diamond --fields="shape:string(255):required,size_name:float:required,color:string(255):required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+php artisan crud:generate Items --fields="brand_id:integer:required,itemcategory_id:integer:required,name:string(255):required,short_name:string(20):required,item_type:string(20):required,item_status:string(20):required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+
+php artisan crud:generate Diamonds --fields="date:date:required,account_id:integer:required,process_id:integer:required,type:integer:required,narration:text,total_weight:integer:required,total_pcs:integer:required,total_amount:integer:required" --route=yes --pk=id --view-path="Transection" --namespace=Transection --stubtype=laravel
+php artisan crud:generate Consumable --fields="type:string(20):required,date:date:required,account_id:integer:required,process_id:integer:required,narration:text,total_qty:integer:required,total_amount:integer:required" --route=yes --pk=id --view-path="Transection" --namespace=Transection --stubtype=laravel
+
+php artisan crud:generate Transection --fields="type:string(20):required,date:date:required,bag_no:string(255):required,order_id:integer:required,tounch_id:integer:required,tounch_per:integer:required,account_id:integer:required,process_id:integer:required,total_pcs:integer:required,narration:text,gross_weight:integer:required,fine_weight:integer:required,total_gross_weight:integer:required" --route=yes --pk=id --view-path="Transection" --namespace=Transection --stubtype=laravel
+
+php artisan crud:generate ItemsDesing --fields="brand_id:integer:required,itemcategory_id:integer:required,item_id:integer:required,desing_no:string(255):required,gross_weight:decimal(13):required,picture_path:text:required,narration:text:required,status:string(20):required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+
+php artisan crud:generate AccountMaster --fields="name:string(255):required,short_name:string(30):required,type:string(30):required,mobile:string(12):required,phone_no:string(12):required,city:string(12):required,address:text:required,narration:text:required,status:string(20):required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+
+php artisan crud:generate Tounch --fields="tounch:float:required,tounch_per:decimal(13):required,short_name:string(30):required,color:string(30):required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+
+php artisan crud:generate OutwardChallan --fields="date:date:required,bag_no:string(50):required,account_id:integer:required,tounch_id:integer:required,tounch_per:integer:required,order_id:integer:required,gross_weight:integer:required,net_weight:integer:required,fine_weight:integer:required,narration:text" --route=yes --pk=id --view-path="Transection" --namespace=Transection --stubtype=laravel
+
+php artisan crud:generate AccountHead --fields="name:string(255):required,under_groups:string(100):required" --route=yes --pk=id --view-path="Account" --namespace=Account --stubtype=laravel
+
+php artisan crud:generate Payment --fields="type:string(255):required,account_from_id:integer:required,date:date:required,account_id:integer:required,narration:text,cheque_no:string:required,name_on_cheque:string:required" --route=yes --pk=id --view-path="Account" --namespace=Account --stubtype=laravel
+
+php artisan crud:generate AccountMaster --fields="name:string(255):required,account_head_id:integer:required,opening:float:required,opening_type:string:required" --route=yes --pk=id --view-path="Account" --namespace=Account --stubtype=laravel
+
+php artisan crud:generate Journal --fields="type:string(255):required,date:date:required,trans_type:string(25):required,account_from_id:integer:required,amount:string(255):required,account_id:integer:required,narration:text" --route=yes --pk=id --view-path="Account" --namespace=Account --stubtype=laravel
+
+php artisan crud:generate ExpenceVoucher --fields="date:date:required,type:string(255):required,account_id:integer:required,invoice:string(255):required,document_no:string(255):required,document_date:date:required,narration:text,total_amont:double,adjust:float,grand_total:double" --route=yes --pk=id --view-path="Account" --namespace=Account --stubtype=laravel
+
+php artisan crud:generate QuotationRawMaterial --fields="type:string(255):required,name:string(255):required,base_rate:float:required,density:float:required" --route=yes --pk=id --view-path="Quotation" --namespace=Quotation --stubtype=laravel
+
+php artisan crud:generate Quotation --fields="date:date:required,customer_name:string:required,mobile:string(255):required,email:string,company_name:string:required,product_name:string:required,total_gsm:float:required,total_amount:float:requried,wastage:float:required,conversation:float:required,total_without_tax:float,total_with_tax:float,narration:text" --route=yes --pk=id --view-path="Quotation" --namespace=Quotation --stubtype=laravel
+
+php artisan crud:generate PouchSeal --fields="name:string(255):required,unit:string(255):required,rate:float:required" --route=yes --pk=id --view-path="Quotation" --namespace=Quotation --stubtype=laravel
+
+php artisan crud:generate HealthQuestion --fields="name:string(255):required,date:date:required,company:string(255):required" --route=yes --pk=id --view-path="" --namespace= --stubtype=laravel
+
+php7.3 artisan crud:generate Penalty --fields="name:string(255):required,amount:float:required,reason:string(255):required,is_late:integer,late_time:time:required" --route=yes --pk=id --view-path="HRM" --namespace="HRM" --stubtype=laravel
+
+
+php7.3 artisan crud:generate ApplyPenalty --fields="employee_id:integer:required,date:date:required,penalty_id:integer:required,amount:float:required,comment:string(255):required" --route=yes --pk=id --view-path="HRM" --namespace="HRM" --stubtype=laravel
+
+php7.3 artisan crud:generate Loan --fields="employee_id:integer:required,loan_date:date:required,start_date:date:required,amount:float:required,is_deduct:integer:required,installment:integer:required,installment_amount:float:required,is_interest_rate:integer:required,interest_rate:float:required" --route=yes --pk=id --view-path="HRM" --namespace="HRM" --stubtype=laravel
+
+
+php artisan crud:migration employee_salary_report --schema="salary_generated:integer" --stubtype=laravel
+
+
+php7.3 artisan crud:generate CylinderPurchaseOrder --fields="po_no:string(255):required,date:date:required,customer_id:integer:required,product_id:integer:required,batch_no:string(255):required,art_work_detail:text:required,delivery_date:date:required,destination:string(255):required,transporter:string(255):required,colour_scheme:text:required,roller_details:text:required,cylinder_printing:text:required,roller_circum:string(255):required,roller_length:string(255):required,cylinder_material:string(255):required,roller_diagram:string(255):required,rpt_circum:string(255):required,colour_sequence:string(255):required,step_width:string(255):required,material_width:string(255):required,total_engraving_with_marks:string(255):required,design_width:string(255):required,flash_each_side:string(255):required,special_instruction:string(255):required,marks_overlapping:string(255):required,colour_overlapping:string(255):required,marks_slitting:string(255):required,colour_slitting:string(255):required,marks_tracker_line:string(255):required,colour_tracker_line:string(255):required,marks_thickness:string(255):required,colour_thickness:string(255):required,marks_away:string(255):required,colour_away:string(255):required,marks_auto_register:string(255):required,colour_auto_register:string(255):required,marks_electronic_eye:string(255):required,colour_electronic_eye:string(255):required,monogram:string(255):required,web_direction:string(255):required,price:string(255):required,packaging:string(255):required,cylinder_received_date:string(255):required,result_inspection:string(255):required,status:string(255):required,overall_remarks_on_first_trial:string(255):required,prepared_by:integer:required,production_incharge:integer:required,approved_by:integer:required,qc_head:integer:required" --route=yes --pk=id --view-path="Cylinder" --namespace="Cylinder" --stubtype=laravel
+
+php7.3 artisan crud:generate AgeRange --fields="from_day:integer:required,to_day:integer:required,total_days:integer" --route=yes --pk=id --view-path="Account" --namespace="Account" --stubtype=laravel
+php7.3 artisan crud:generate PurchaseIndent --fields="account_id:integer:required,date:date:required,department:string(255):required,date:date:required,indent_no:string(255):required,prepared_by:integer:required,approval_by:integer:required,received_by:integer:required,approval_purchase_by:integer:required" --route=yes --pk=id --view-path="" --namespace="" --stubtype=laravel
+
+php artisan crud:generate Location --fields="name:string(255):required,address:string(255):required" --route=yes --pk=id --view-path="" --namespace= --stubtype=laravel
+
+php artisan crud:generate QualityCheck --fields="name:string(255):required,slug:string(255):required" --route=yes --pk=id --view-path="QC" --namespace="QC" --stubtype=laravel
+
+php artisan crud:generate GSTAdjustment --fields="date:date:required:required,narration:text" --route=yes --pk=id --view-path="Account" --namespace=Account --stubtype=laravel
+
+php artisan crud:generate ItemMaster --fields="name:string(255):required,unit:integer:required" --route=yes --pk=id --view-path="Store" --namespace=Store --stubtype=laravel
+
+php artisan crud:generate StoreMaster --fields="date:date:required,location_id:integer:required,item_id:integer:required,qty:integer:required,expiry_date:date,party_challan_no:string(255):required" --route=yes --pk=id --view-path="Store" --namespace=Store --stubtype=laravel
+
+php artisan crud:generate ReturnItem --fields="date:date:required,item_id:integer:required,return_qty:integer:required,employee_id:integer:required,department:string(255):required,remark:text" --route=yes --pk=id --view-path="Store" --namespace=Store --stubtype=laravel
+php artisan crud:generate Wastage --fields="date:date:required,item_id:integer:required,barcode:string(255):required,gross_weight:double(13):required,
+core_weight:double(13):required,net_weight:double(13):required"  --route=yes --pk=id --view-path="" --namespace=  --stubtype=laravel
+
+php artisan crud:generate GSTAdjustment --fields="date:date:required:required,narration:text" --route=yes --pk=id --view-path="Account" --namespace=Account --stubtype=laravel
+
+php artisan crud:generate SubCategory --fields="name:string(255):required,base_rate:float:required,density:float:required" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+
+php artisan crud:generate CategorySegment --fields="name:string(255)" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+
+Product Structure
+Use 'Add More' functionality
+Below are fields,
+1) Slug
+2) Layer No.
+3) Micron
+4) Name
+5) Total GSM (Which is not include in add more functionality and decimal value should be allow only one digit)
+
+Example:
+Slug: 12+12+15 (Plain PET + MET PET + Natural White)
+Layer No ----------- Micron ----------- Name
+1                  12                Plain PET
+2                  12                MET PET
+3                  15                Natural White
+Note: Duplicate structure should not allow to save
+
+Then after dropdown display in Product (design). So add structure dropdown in product(design).
+php artisan crud:generate ProductStructure --fields="slug:string(255),name:string(255),layer_no:integer" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel
+
+php artisan crud:generate MachineInstallation --fields="name:string(255)" --route=yes --pk=id --view-path="Masters" --namespace=Masters --stubtype=laravel

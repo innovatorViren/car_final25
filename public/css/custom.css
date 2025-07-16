@@ -1,0 +1,87 @@
+.switch input:empty~span:before {
+  /*EEE5FF*/
+    background-color: #DECCFF;
+}
+.form-control {
+  border: 1px solid #D9D9D9;
+}
+.border-right-1 {
+    border-right: 1px solid gainsboro;
+}
+
+/* sticky footer */
+div.card-footer {
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+
+}
+/* Hide Input Number Arrows */
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.text-dark-50 {
+  color: #646676!important;
+}
+
+/* Tree view css */
+.k-checkbox.k-state-indeterminate, .k-checkbox:indeterminate {
+    color: #3c3b90 !important;
+}
+.k-checkbox {
+    color: #3c3b90 !important;
+}
+.k-checkbox:checked {
+    color: #3c3b90 !important;
+}
+.k-checkbox:hover {
+    color: #3c3b90 !important;
+}
+.k-checkbox:checked:focus {
+    box-shadow: 0 0 3px 0 #3c3b90 !important;
+    border-color: #3c3b90 !important;
+}
+.k-checkbox:focus {
+    box-shadow: 0 0 3px 0 #3c3b90 !important;
+    border-color: #3c3b90 !important;
+}
+.k-treeview-leaf.k-selected.k-hover, .k-treeview-leaf.k-selected:hover {
+    background-color: #3c3b90 !important;
+}
+.k-treeview-leaf.k-selected {
+    background-color: #3c3b90 !important;
+}
+/* ------------- */
+
+/* Css class for Filter Info */
+.filterInfo {
+    text-align: center; 
+    padding-bottom: 20px;
+    font-size: 16px;
+}
+/* ------------- */
+
+/*css class for remove filter data*/
+.remove-filter:hover{
+    text-decoration: line-through !important;
+}
+
+.text-black{
+    color: #000000;
+}
+.captcha-center{
+    margin: auto !important;
+    width: 75% !important;
+}
+/*end remove filter*/

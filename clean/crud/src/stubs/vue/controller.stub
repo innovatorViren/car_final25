@@ -1,0 +1,178 @@
+<?php
+
+namespace DummyNamespace;
+
+use DummyRootNamespaceHttp\Requests;
+use DummyRootNamespaceHttp\Controllers\Controller;
+use DummyRootNamespaceModels\{{modelName}};
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Session;
+
+
+class DummyClass extends Controller
+{
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('sentinel.auth');
+        $this->middleware('checkpermission.access:{{crudName}}.create', ['only' => ['create', 'store']]);
+        $this->middleware('checkpermission.access:{{crudName}}.view', ['only' => ['index', 'show']]);
+        $this->middleware('checkpermission.access:{{crudName}}.update', ['only' => ['edit', 'update']]);
+        $this->middleware('checkpermission.access:{{crudName}}.destroy', ['only' => ['destroy']]);
+        $this->title = '{{modelName}}';
+        view()->share('title', $this->title);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index(Request $request)
+    {
+
+        if($request->ajax())
+        {
+            $sort = $request->get('sort');
+            $perPage = $request->get('per_page');
+            $filters = $request->get('filters');
+            $filter = $request->get('filter');
+
+            $model=app({{modelName}}::class);
+            if($sort){
+                $arr = explode('|', $sort);
+                $column = $arr[0];
+                $type = $arr[1];
+                $model = $model->orderBy($column,$type);
+            }
+
+            if($filter){
+                    {{global_search}}
+            }
+            else if (!empty($filters) && is_array($filters)) {
+                foreach ($filters as $column => $row) {
+                    if (!empty($column) && !empty($row['value']) && is_array($row)) {
+                        $operator = $row['type'];
+                        if ($operator == "like") {
+                            $model->where($column, $operator, "%" . $row['value'] . "%");
+                        } else {
+                            $model->where($column, $operator,  $row['value']);
+                        }
+                    }
+                }
+            }
+
+            $paginator = $model->paginate($perPage?$perPage:10);
+            return $paginator;
+        }
+
+        return view('{{viewPath}}{{crudName}}.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        return view('{{viewPath}}{{crudName}}.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function store(Request $request)
+    {
+        {{validationRules}}
+
+        $input = $request->all();
+        $model = {{modelName}}::create($input);
+        if(\Request::ajax())
+        {
+            return ['message'=>'Record Added Successfully!','model'=>$model];
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        ${{crudNameSingular}} = {{modelName}}::findOrFail($id);
+
+        return ${{crudNameSingular}};
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function edit($id)
+    {
+        ${{crudNameSingular}} = {{modelName}}::findOrFail($id);
+
+        return view('{{viewPath}}{{crudName}}.edit', compact('{{crudNameSingular}}'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function update($id, Request $request)
+    {
+        {{validationRules}}
+        ${{crudNameSingular}} = {{modelName}}::findOrFail($id);
+
+        //Event::fire(new Account{{modelName}}Update( ${{crudNameSingular}} ));
+
+        $input = $request->all();
+
+        ${{crudNameSingular}}->update($input);
+
+        if(\Request::ajax())
+        {
+            return ['message'=>'Record Updated Successfully','model'=>${{crudNameSingular}}];
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function destroy($id)
+    {
+
+        $model = {{modelName}}::find($id);
+
+
+        //Event::fire(new Account{{modelName}}Delete($model));
+        if($model){
+            $model->deleted = 1;
+            $model->save();
+            if(\Request::ajax())
+            {
+                return ['message'=>'Record Deleted Successfully','model'=>$model];
+            }
+        }
+
+    }
+
+}

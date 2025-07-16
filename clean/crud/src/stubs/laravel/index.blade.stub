@@ -1,0 +1,30 @@
+@extends($theme)
+@section('title', $title)
+@section('content')
+<div class="content-wrapper">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            @if(!empty($title))
+            <h5 class="panel-title">{{ $title }}</h5>
+            @endif
+            <div class="heading-elements">
+                {{--
+                @if(!empty($module_action))
+                @foreach($module_action as $key=>$action)
+                {!! Html::decode(Html::link($action['url'],$action['title'],$action['attributes'])) !!}
+                @endforeach
+                @endif
+                --}}
+            </div>
+        </div>
+        <div class="panel-body no-padding">
+
+         {!! $dataTable->table(['class' => 'table color-table footable default']) !!}
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+{!! $dataTable->scripts() !!}
+@endpush

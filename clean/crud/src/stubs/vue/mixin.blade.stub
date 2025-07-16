@@ -1,0 +1,47 @@
+@push('scripts')
+
+<script>
+var Store={}; //store pattern
+var CommonVarMixin = {
+  data:function()
+    {
+      return {
+        %%variables%%
+      };
+    },
+};
+
+var CommonResponseMixin = {
+    data:function(){
+      return {
+        errors:
+          {
+            %%variables%%
+          },
+      }
+    },
+    computed:{
+      formData:function()
+      {
+        return {
+          %%variables_init%%
+        };
+      }
+    },
+  methods:
+  {
+    error:function(response)
+    {
+      for(var prop in response.data)
+      {
+        this.errors[prop] = response.data[prop][0];
+      }
+    },
+    success:function(response)
+    {
+      router.go('/');
+    },
+  }
+} 
+</script>
+@endpush
