@@ -7,7 +7,8 @@ return [
     'table' => [
         'car_brand'       => 'Car Brand',
     ],
-    'name' => ' Name',
+    'name' => 'Name',
+    'logo' => 'Logo',
 
     'update_success' => 'Car Brand updated successfully',
     'create_success' => 'Car Brand added successfully',

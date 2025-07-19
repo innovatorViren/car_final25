@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('car_brands', function (Blueprint $table) {
+        Schema::create('car_models', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('car_brand_id')->unsigned();
+            $table->foreign('car_brand_id')->references('id')->on('car_brands');
             $table->string('name');
-            $table->string('brand_logo')->nullable();
-            $table->string('brand_logo_path')->nullable();
+            $table->string('model_photo')->nullable();
+            $table->string('model_photo_path')->nullable();
             $table->enum('is_active', ['Yes', 'No'])->default('Yes');
             $table->string('ip')->nullable();
             $table->string('update_from_ip')->nullable();
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('car_brands');
+        Schema::dropIfExists('car_models');
     }
 };

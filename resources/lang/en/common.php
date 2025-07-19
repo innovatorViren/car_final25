@@ -33,6 +33,7 @@ return [
     'search' => 'Search',
 
     'country' => 'Country',
+    'car_brand' => 'Car Brand',
     'state' => 'State',
     'city' => 'City',
     'year' => 'Year',

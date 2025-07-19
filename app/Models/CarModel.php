@@ -5,17 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CarBrand extends MyModel
+class CarModel extends MyModel
 {
     use HasFactory;
-    protected $table = 'car_brands';
+    protected $table = 'car_models';
     protected $revisionCleanup = true;
     protected $historyLimit = 500;
     protected $guarded = [];
 
-    public function carModel ()
-    {
-        return $this->hasMany(CarModel::class, 'car_brand_id');
-    }
     
 }

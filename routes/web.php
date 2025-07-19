@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\{
     CountryController,
+    CarBrandController,
+    CarModelController,
     BannerController,
     CommonController,
     ReportController,
@@ -111,6 +113,10 @@ Route::post('/change-default/{id}', [CommonController::class, 'changeDefault'])-
 Route::post('/change-display/{id}', [YearController::class, 'changeDisplay'])->name('common.change-displayed');
 Route::match(['get', 'post'], 'years/changeYear/{id}', [YearController::class, 'changeYear'])->name('years.changeYear');
 
+//Car Brand
+Route::resource('car-brand', CarBrandController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
+//Car Model
+Route::resource('car-model', CarModelController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
 //Supplier module
 Route::resource('supplier', SupplierController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 Route::get('check-supplier-duplicate-name/{id?}', [SupplierController::class, 'checkUniqueName'])->name('supplier.checkUniqueName');
