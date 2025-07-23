@@ -71,11 +71,6 @@ class EmployeeRequest extends FormRequest
             'birth_date' => 'required',
             'age' => 'required',
             'marital_status' => 'required',
-            'total_experience' => 'required',
-            'join_date' => 'required',
-            'department_id' => 'required',
-            'designation_id' => 'required',
-
             'permanent_address' => 'required',
             'present_address' => 'required',
             'permanent_state' => 'required',

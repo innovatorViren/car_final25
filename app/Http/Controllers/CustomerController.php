@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\CustomerDataTable;
 use App\Http\Requests\CustomerRequest;
-use App\Http\Requests\updateManagedRequest;
-use App\Models\{Customer, CustomerPriceListLog, Lead, PriceListItem, Routes, Shop, CustomerAddress,CustomerBankDetails, Employee, Role, RoleUser, User};
+use App\Models\{Customer, CustomerAddress,CustomerBankDetails, Employee, Role, RoleUser, User};
 use Carbon\Carbon;
 use Centaur\AuthManager;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
@@ -61,8 +60,6 @@ class CustomerController extends Controller
         $this->data['states'] =  [];
         $this->data['cities'] =  [];
         $this->data['employees'] =  $this->common->getEmployee();
-        $this->data['priceList'] = $this->common->getPriceList();
-        $this->data['branchList'] = $this->common->getBranchList();
         $this->data['gst_type'] = Config('project.gst_type');
         $this->data['currencies'] =  Config('srtpl.currencies');
         return view('customers.create', $this->data);

@@ -18,9 +18,9 @@ class EmployeeDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            // ->addColumn('action', function ($row) {
-            //     return $this->checkrights($row);
-            // })
+            ->addColumn('action', function ($row) {
+                return $this->checkrights($row);
+            })
             ->editColumn('is_active', function ($row) {
                 return getEmployeeStatusHtml($row, 'employee.edit');
             })
@@ -51,14 +51,9 @@ class EmployeeDataTable extends DataTable
         $menu = '';
         $editurl = route('employee.edit', [$row->id]);
         $deleteurl = route('employee.destroy', [$row->id]);
-        $rejoinurl = route('employeeRejoin', [$row->id]);
 
         if ($user->hasAnyAccess(['users.info', 'employee.edit', 'employee.delete', 'users.superadmin'])) {
             $menu .= '<td class="text-center"><div class="dropdown dropdown-inline text-center" title="" data-placement="left" data-original-title="Quick actions"><a href="#" class="btn btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ki ki-bold-more-hor"></i></a><div class="dropdown-menu m-0 dropdown-menu-right" style=""><ul class="navi navi-hover">';
-        }
-
-        if ((isset($row->left_date) && $row->left_date != '00-00-0000' && $row->recruit_again == 'Yes' && ($row->rejoin_date == '0000-00-00' || $row->rejoin_date == null))) {
-            $menu .= '<li class="navi-item"><a href="' . $rejoinurl . '"  class="navi-link"><span class="navi-icon"><i class="fas fa-edit"></i></span><span class="navi-text">' . __('employee.rejoin') . '</span></a></li>';
         }
 
         if ($user->hasAnyAccess(['employee.edit', 'users.superadmin']) && ($row->left_date == '00-00-0000' || $row->left_date == null)) {
@@ -86,10 +81,10 @@ class EmployeeDataTable extends DataTable
     {
         $model = Employee::leftJoin('employee_addresses', 'employees.id', '=', 'employee_addresses.employee_id')
             ->leftJoin('employee_documents', 'employees.id', '=', 'employee_documents.employee_id')
-            ->leftjoin('departments', 'departments.id', '=', 'employees.department_id')
-            ->leftjoin('designations', 'designations.id', '=', 'employees.designation_id')
             ->select([
-                'employees.id as id', 'employees.first_name as first_name', 'employees.last_name as last_name', 'departments.name as department_id', 'designations.name as designation_id', 'employees.rejoin_date as rejoin_date', 'employees.recruit_again',
+                'employees.id as id', 
+                'employees.first_name as first_name', 
+                'employees.last_name as last_name',
                 DB::raw("DATE_FORMAT(employees.birth_date, '%d-%m-%Y') as birth_date"),
                 DB::raw("DATE_FORMAT(employees.join_date, '%d-%m-%Y') as join_date"),
                 DB::raw("DATE_FORMAT(employees.left_date, '%d-%m-%Y') as left_date"),
@@ -112,13 +107,6 @@ class EmployeeDataTable extends DataTable
         if (request()->get('personNameFilter') != '') {
             $model->where('employees.id', request()->get('personNameFilter'));
         }
-        if (request()->get('departmentFilter') != '') {
-            $model->where('employees.department_id', [request()->get('departmentFilter')]);
-        }
-        if (request()->get('designationFilter') != '') {
-            $model->where('employees.designation_id', [request()->get('designationFilter')]);
-        }
-
         if (request()->get('statusFilter') != '') {
             $model->where('employees.is_active', [request()->get('statusFilter')]);
         }
@@ -131,20 +119,8 @@ class EmployeeDataTable extends DataTable
         if (request()->get('mobile1', false)) {
             $model->where('mobile', 'like', "%" . request()->get("mobile1") . "%");
         }
-        if (request()->get('department_id', false)) {
-            $model->where('departments.name', 'like', "%" . request()->get("department_id") . "%");
-        }
-        if (request()->get('designation_id', false)) {
-            $model->where('designations.name', 'like', "%" . request()->get("designation_id") . "%");
-        }
         if (request()->get('birth_date', false)) {
             $model->where(DB::raw("DATE_FORMAT(birth_date,'%d-%m-%Y')"), 'like', '%' . request()->get('birth_date') . '%');
-        }
-        if (request()->get('join_date', false)) {
-            $model->where(DB::raw("DATE_FORMAT(join_date,'%d-%m-%Y')"), 'like', '%' . request()->get('join_date') . '%');
-        }
-        if (request()->get('left_date', false)) {
-            $model->where(DB::raw("DATE_FORMAT(left_date,'%d-%m-%Y')"), 'like', '%' . request()->get('left_date') . '%');
         }
         return $this->applyScopes($model);
     }

@@ -16,10 +16,5 @@ class Customer extends MyModel
 
     protected $historyLimit = 500;
 
-    protected $guarded = [];
-
-    public function customerAddress()
-    {
-        return $this->hasOne(CustomerAddress::class)->with('city', 'state', 'country');
-    }   
+    protected $guarded = [];  
 }

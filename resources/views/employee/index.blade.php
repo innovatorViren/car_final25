@@ -40,21 +40,7 @@
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_mobile1', Request::get('filter_mobile1', null), ['class' => 'form-control']) !!}</div>
                             </th>
                             <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_department_id', Request::get('filter_department_id', null), ['class' => 'form-control']) !!}</div>
-                            </th>
-                            <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_designation_id', Request::get('filter_designation_id', null), [
-                                    'class' => 'form-control',
-                                ]) !!}</div>
-                            </th>
-                            <th>
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_birth_date', Request::get('filter_birth_date', null), ['class' => 'form-control']) !!}</div>
-                            </th>
-                            <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_join_date', Request::get('filter_join_date', null), ['class' => 'form-control']) !!}</div>
-                            </th>
-                            <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_left_date', Request::get('filter_left_date', null), ['class' => 'form-control']) !!}</div>
                             </th>
 
                             <th></th>
@@ -65,11 +51,7 @@
                             <th class="noVis">{{ __('employee.emp_code') }}</th>
                             <th width="20%">{{ __('employee.person_name') }}</th>
                             <th>{{ __('employee.mobile') }}</th>
-                            <th>{{ __('employee.department') }}</th>
-                            <th>{{ __('employee.designation') }}</th>
                             <th>{{ __('employee.birth_date') }}</th>
-                            <th>{{ __('employee.join_date') }}</th>
-                            <th>{{ __('employee.left_date') }}</th>
                             <th>{{ __('common.status') }}</th>
                         </tr>
                     </thead>
@@ -96,11 +78,7 @@
     var employee_code = "{{ __('employee.emp_code') }}";
     var person_name = "{{ __('employee.person_name') }}";
     var mobile1 = "{{ __('employee.mobile') }}";
-    var department_id = "{{ __('employee.department') }}";
-    var designation_id = "{{ __('employee.designation') }}";
     var birth_date = "{{ __('employee.birth_date') }}";
-    var join_date = "{{ __('employee.join_date') }}";
-    var left_date = "{{ __('employee.left_date') }}";
     var action = "{{ __('common.action') }}";
     var is_active = "{{ __('common.status') }}";
     var type = "{{ $type }}";
@@ -129,19 +107,11 @@
                     d.person_name = jQuery(".datatable-form-filter input[name='filter_person_name']")
                         .val();
                     d.mobile1 = jQuery(".datatable-form-filter input[name='filter_mobile1']").val();
-                    d.department_id = jQuery(
-                        ".datatable-form-filter input[name='filter_department_id']").val();
-                    d.designation_id = jQuery(
-                        ".datatable-form-filter input[name='filter_designation_id']").val();
                     d.birth_date = jQuery(".datatable-form-filter input[name='filter_birth_date']")
                         .val();
-                    d.join_date = jQuery(".datatable-form-filter input[name='filter_join_date']").val();
-                    d.left_date = jQuery(".datatable-form-filter input[name='filter_left_date']").val();
 
                     d.filterjoinDate = jQuery("input[name='filterjoinDate']").val();
                     d.personNameFilter = jQuery("select[name='personNameFilter']").val();
-                    d.departmentFilter = jQuery("select[name='departmentFilter']").val();
-                    d.designationFilter = jQuery("select[name='designationFilter']").val();
                     d.statusFilter = jQuery("select[name='statusFilter']").val();
 
 
@@ -183,36 +153,11 @@
                     "orderable": true,
                     "searchable": false
                 }, {
-                    "name": "department_id",
-                    "data": "department_id",
-                    "title": department_id,
-                    "orderable": true,
-                    "searchable": false
-                }, {
-                    "name": "designation_id",
-                    "data": "designation_id",
-                    "title": designation_id,
-                    "orderable": true,
-                    "searchable": false
-                }, {
                     "name": "birth_date",
                     "data": "birth_date",
                     "title": birth_date,
                     "orderable": true,
                     "searchable": false
-                }, {
-                    "name": "join_date",
-                    "data": "join_date",
-                    "title": join_date,
-                    "orderable": true,
-                    "searchable": false
-                }, {
-                    "name": "left_date",
-                    "data": "left_date",
-                    "title": left_date,
-                    "orderable": true,
-                    "visible": false,
-                    "searchable": false,
                 }, {
                     "name": "is_active",
                     "data": "is_active",
@@ -233,14 +178,10 @@
             stateSaveParams: function(settings, data) {
                 data.personNameFilter = $('#personNameFilter').val();
                 data.filterjoinDate = $('#filterjoinDate').val();
-                data.department_id = $('#department_id').val();
-                data.designation_id = $('#designation_id').val();
             },
             stateLoadParams: function(settings, data) {
                 $('#personNameFilter').val(data.personNameFilter);
                 $('#filterjoinDate').val(data.filterjoinDate);
-                $('#department_id').val(data.department_id);
-                $('#designation_id').val(data.designation_id);
             },
             "initComplete": function(settings, json) {
                 $('.jsBtnSearch').click();
@@ -279,8 +220,6 @@
         var fieldList = [
             'jsPersonNameFilter',
             'jsDilterJoinDate',
-            'jsDepartmentFilter',
-            'jsDesignationFilter',
             'jsStatusFilter',
         ];
         setFilterData(fieldList);
@@ -294,43 +233,7 @@
         window.location.reload();
     });
 
-    $(document).on('change', '#department_id', function(e) {
-
-        e.preventDefault();
-
-        var department_id = $("#department_id option:selected").val();
-
-        var ajaxUrl = $(this).attr('data-ajaxurl');
-        $.ajax({
-            type: "GET",
-            url: ajaxUrl,
-            data: {
-                'department_id': department_id
-            },
-        }).always(function() {
-
-        }).done(function(response) {
-
-            var options = '';
-
-            $.each(response, function(index, catval) {
-
-                if (typeof $('#designationid').val() !== "undefined" && $('#designationid')
-                    .val() == catval.id) {
-                    var selected = 'selected';
-                } else {
-                    var selected = '';
-                }
-
-                options += '<option ' + selected + ' value = ' + catval.id + '>' + catval.name +
-                    '</option>';
-            });
-
-            $('#designation_id').html("<option value = ''>Select Designation</option>").append(options);
-        });
-    });
-
-    $('.departmentFilter,.designationFilter,.personNameFilter').select2({
+    $('.personNameFilter').select2({
         allowClear: true
     });
 

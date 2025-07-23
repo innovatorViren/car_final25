@@ -63,46 +63,6 @@
                             <div class="tab-pane fade show active first slide active-slide" id="basic_detail-5"
                                 role="tabpanel" aria-labelledby="basic_detail-tab-5">
                                 <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            {!! Form::label('pan_no', trans('common.pan_no')) !!}
-                                            {!! Form::text('pan_no', null, [
-                                                'class' => 'form-control pan_no jsOptionRequired',
-                                                'data-rule-remote' => route('checkCustomerDuplicatePanNo', [$customers->id ?? '']),
-                                                'data-msg-remote' => 'PAN No. already exists',
-                                                'title' => 'PAN No. should be in the format ABxxxxxx4F',
-                                                'pattern' => '(^([a-zA-Z]{5})([0-9]{4})([a-zA-Z]{1})$)',
-                                                'placeholder' => 'ABCDE1234F',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            {!! Form::label('gst_type', trans('customers.gst_type')) !!}<i class="text-danger">*</i>
-                                            {!! Form::select('gst_type', ['' => 'select'] + $gst_type, null, [
-                                                'class' => 'form-control required',
-                                                'id' => 'gst_type',
-                                                'style' => 'width: 100%;',
-                                                'data-placeholder' => 'Select GST Type',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group gstData">
-                                            {!! Form::label('gst_no', trans('common.gst_no')) !!}<i class="text-danger">*</i>
-                                            {!! Form::text('gst_no', null, [
-                                                'class' => 'form-control gst_no jsOptionRequired required',
-                                                'data-rule-remote' => route('checkCustomerDuplicateGstNo', [$customers->id ?? '']),
-                                                'data-msg-remote' => 'GST No. already exists',
-                                                'pattern' => '(^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$)',
-                                                'placeholder' => '24EWHTQ3432S7Z6',
-                                                'id' => 'gst_no',
-                                                'title' => 'GST No. should be in the format 24xxxxxxxxxxxZ6',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             {!! Form::label('company_name', trans('customers.company_name')) !!} <i class="text-danger">*</i>
@@ -152,26 +112,6 @@
                                                 'placeholder' => 'Email',
                                                 'id' => 'email',
                                             ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            {!! Form::label('price_list_id', trans('price.price_list')) !!} <i class="text-danger">*</i>
-                                            {{ Form::select('price_list_id', ['' => 'Select Price List'] + $priceList, null, [
-                                                'class' => 'form-control required',
-                                                'id' => 'price_list_id',
-                                                'data-placeholder' => 'Select Price List',
-                                            ]) }}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            {!! Form::label('branch_id', trans('Branch')) !!} <i class="text-danger">*</i>
-                                            {{ Form::select('branch_id', ['' => 'Select Branch'] + $branchList, null, [
-                                                'class' => 'form-control required',
-                                                'id' => 'branch_list_id',
-                                                'data-placeholder' => 'Select Branch',
-                                            ]) }}
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
@@ -250,20 +190,6 @@
                                                 'min' => 0,
                                                 'max' => 10000000,
                                                 'title' => 'Credit Limit should be in the range of 0 to 10000000',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-4 fssai_no">
-                                        <div class="form-group">
-                                            {!! Form::label('fssai_no', trans('FSSAI No.')) !!}
-                                            {!! Form::text('fssai_no', null, [
-                                                'class' => 'form-control fssai_no ',
-                                                'data-rule-remote' => route('checkCustomerDuplicateFssaiNo', [$customers->id ?? '']),
-                                                'data-msg-remote' => 'FSSAI No. already exists',
-                                                'id' => 'fssai_no',
-                                                'placeholder' => 'ex 208xxxxxxxxx11  (Optional)',
-                                                'title' => 'FSSAI No. should be 14 characters long and should be in the format 208xxxxxxxxx11',
-                                                'pattern' => '(^[0-9]{14}$)',
                                             ]) !!}
                                         </div>
                                     </div>

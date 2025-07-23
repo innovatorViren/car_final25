@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EmployeeCustomers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DataTables\EmployeeDataTable;
@@ -18,13 +17,10 @@ use App\Models\{
     Customer,
     Role,
     RoleUser,
-    Setting,
-    AsmEmployee,
+    Setting
 };
 use App\Models\User;
 use Carbon\Carbon;
-use App\Exports\EmployeeExport;
-use App\Exports\EmployeeAllDetailExport;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
@@ -54,15 +50,14 @@ class EmployeeController extends Controller
         $this->middleware('permission:employee.delete', ['only' => ['destroy']]);
         // $deviceType = env('ATT_DEVICE_TYPE', 'BioMax');
         // $srtpl = config('srtpl');
-        $this->depart_id = DB::table('departments')->where('slug','sales')->whereNull('deleted_at')->first()->id ?? '';
+        // $this->depart_id = DB::table('departments')->where('slug','sales')->whereNull('deleted_at')->first()->id ?? '';
     }
 
     public function index(Request $request, EmployeeDataTable $dataTable)
     {
-        $this->data['department'] =  $this->common->getDepartment();
-        $this->data['designation'] =  $this->common->getDesignation();
+        // $this->data['department'] =  $this->common->getDepartment();
+        // $this->data['designation'] =  $this->common->getDesignation();
         $this->data['employeesData'] =  $this->common->getEmployeeWithEmpCode();
-        $this->data['branchList'] = $this->common->getBranchList();
         $this->data['type'] = ($request->has('type') && in_array($request->type, ['Yes', 'No'])) ? $request->type : '';
         return $dataTable->render('employee.index', $this->data);
     }
@@ -77,53 +72,20 @@ class EmployeeController extends Controller
         $this->data['permanent_state_id'] =  (!empty($countryData)) ? $this->common->getStates($countryData->id) : $this->common->getStates();
         $this->data['present_city'] =  [];
         $this->data['permanent_city'] =  [];
-        $this->data['department'] =  $this->common->getDepartment();
-        $this->data['designation'] =  $this->common->getDesignation();
-
-        $this->data['appointedBy'] =  $this->common->getEmployee();
 
         $this->data['maritalstatus'] = Config('project.marital_status');
         $this->data['bloodgroup'] = Config('project.bloodgroup');
-        $this->data['customers'] = $this->common->getCustomer();
-        $this->data['branchList'] = $this->common->getBranchList();
 
         return view('employee.create', $this->data);
     }
 
 
-    public function getAppointee(Request $request)
-    {
-        $departmentId = Employee::where('id', $request->appointedID)->first()->department_id;
-        $departmentName = Department::where('id', $departmentId)->first()->name;
-        return  $departmentName;
-    }
-
-    public function getDesignation(Request $request)
-    {
-        $department_id = $request->department_id;
-        $department = Designation::where('department_id', $department_id)->get();
-        return  $department;
-    }
-
-
     public function store(EmployeeRequest $request)
     {
-        $check_entry = Employee::latest()->first();
-        $finishTime = Carbon::now();
-        $totalDuration = 10;
-        if (!empty($check_entry)) {
-            $totalDuration = $finishTime->diffInSeconds($check_entry->created_at);
-        }
-        if (!empty($check_entry) && (Sentinel::getUser()->id == $check_entry->created_by && $totalDuration <= 5 && $check_entry->first_name == $request['first_name'])) {
-            return redirect()->route('employee.create')->with('success', 'Please Check into list entry added succesfully you submit form multiple time!!');
-        }
-        //--------------------------------------------------------
-
         DB::beginTransaction();
         try {
             list($employeeData, $employeeAddress, $employeeDocument, $emp_customers) = $this->getInput($request->all());
-            $employeeData['old_employee_id'] =  $request->parentId ?? null;
-            $employeeData['parent_employee_id'] =  $request->parentId ?? null;
+
             $employee = Employee::create($employeeData);
             $userPassword = $request->get('password', false);
             $employee_id = $employee->id;
@@ -307,27 +269,6 @@ class EmployeeController extends Controller
         }
     }
 
-    public function uploadPassport($request, $unlink = null, $img_path = null, $employee_id = null)
-    {
-        if ($request->hasFile('passport_img')) {
-
-            $storepath = '/uploads/Employee/' . $img_path . '/Document/';
-
-            $file['passport_img'] = $this->getUniqueFilename($request->file('passport_img'), $this->getImagePath($storepath));
-
-            $request->file('passport_img')->move($this->getImagePath($storepath), $file['passport_img']);
-
-            $employeesDocuments['passport_img'] = $file['passport_img'];
-            $employeesDocuments['passport_img_path'] = $storepath . $file['passport_img'];
-
-            if (File::exists($unlink)) {
-                unlink(base_path('public' . $storepath . $unlink));
-            }
-
-            $employeedocument = EmployeeDocument::findOrFail($employee_id);
-            $employeedocument->update($employeesDocuments);
-        }
-    }
 
     public function show($id)
     {
@@ -365,65 +306,12 @@ class EmployeeController extends Controller
         $employee['driving_licence_no'] = $employeeDocument->driving_licence_no;
         $employee['pan_card_no'] = $employeeDocument->pan_card_no;
         $employee['passport_no'] = $employeeDocument->passport_no;
-        // $this->data['customers'] = $employee->customers;
-
-        // $this->data['present_state_id'] = State::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-        // $this->data['permanent_state_id'] = State::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-        // $this->data['maritalstatus'] = Config('project.marital_status');
-        // $this->data['department'] = Department::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-        // $this->data['designation'] = Designation::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-        // $this->data['bloodgroup'] = Config('project.bloodgroup');
-
-        $this->data['child_employee_id'] = Employee::where('parent_employee_id', $employee->id)->first();
-
-        // $this->data['appointedBy'] = Employee::where('is_active', 'Yes')->pluck('person_name', 'id')->toArray();
 
         $this->data['employee'] = $employee;
-        $this->data['department'] = Department::where('id', $employee->department_id)->first();
-        $this->data['designation'] = Designation::where('id', $employee->designation_id)->first();
         $table_name =  $employee->getTable();
         $this->data['table_name'] = $table_name;
-        $this->data['branchList'] = $this->common->getBranchList();
         // dd($this->data);
         return view('employee.show', $this->data);
-    }
-
-    public function graphView(Request $request)
-    {
-
-        $emp = Employee::leftJoin('departments AS dept', 'employees.department_id', '=', 'dept.id')
-            ->leftJoin('designations AS desig', 'employees.designation_id', '=', 'desig.id')
-            ->select(
-                'employees.department_id',
-                'employees.designation_id',
-                'dept.name as department_name',
-                'desig.name as designation_name',
-                'desig.grade as grade',
-                DB::raw('(CONCAT(employees.first_name," ",employees.last_name," - ",DATE_FORMAT(employees.join_date, "%d-%m-%Y"))) as employee_name')
-            )
-            ->where('employees.is_active', 'Yes')
-            ->where('employees.department_id', '!=', 0)
-            ->orderBy('grade', 'asc')
-            ->get();
-
-        $this->data['employeeData'] = $emp->groupBy(['department_name', 'process_name', 'designation_name'])->toArray();
-        //dd($this->data['employeeData']);
-
-        // $empData = Employee::leftJoin('departments AS dept', 'employees.department_id', '=', 'dept.id')
-        //     ->leftJoin('designations AS desig', 'employees.designation_id', '=', 'desig.id')
-        //     ->select(
-        //         'employees.id as empId',
-        //         'dept.name as department_name',
-        //         'desig.name as designation_name',
-        //         DB::raw('GROUP_CONCAT(CONCAT(employees.first_name," ",employees.last_name," (",DATE_FORMAT(employees.join_date, "%d-%m-%Y"),")")) as employee_name'),
-        //         DB::raw('COUNT(employees.id) as totalemps')
-        //     )
-        //     ->where('employees.department_id', '!=', 0)
-        //     ->where('employees.is_active', 'Yes')
-        //     ->groupBy('designation_id')
-        //     ->get();
-        // $this->data['emp'] = $empData->groupBy('department_name')->toArray();
-        return view('employee.employee_graph', $this->data);
     }
 
     public function edit($id)
@@ -657,22 +545,6 @@ class EmployeeController extends Controller
 
     public function getInput($request, $employee_id = null)
     {
-        $is_salesman = "No";
-        $emp_customers = [];
-        $department = DB::table('departments')
-            ->join('designations', 'departments.id', '=', 'designations.department_id')
-            ->where('departments.id', $request['department_id'])
-            ->where('designations.id', $request['designation_id'])
-            ->where('departments.name', 'Sales')
-            ->where('designations.name', 'Salesman')
-            ->whereNull('departments.deleted_at')
-            ->whereNull('designations.deleted_at')
-            ->count();
-
-        if ($department > 0) {
-            $is_salesman = "Yes";
-            $emp_customers = $request['emp_customers'] ?? [];
-        }
 
         $employeeData = [
             'first_name' => $request['first_name'],
@@ -688,27 +560,14 @@ class EmployeeController extends Controller
             'hobbies' => $request['hobbies'],
             'reference' => $request['reference'],
             'reference_tel_no' => $request['reference_tel_no'],
-            'is_salesman' => $is_salesman,
-
             'strengths' => $request['strengths'],
             'weakness' => $request['weakness'],
             'blood_group' => $request['blood_group'],
-
             'beneficiary_name' => $request['beneficiary_name'],
             'bank_name' => $request['bank_name'],
             'ifsc_code' => $request['ifsc_code'],
             'account_no' => $request['account_no'],
             'branch_name' => $request['branch_name'],
-
-            'experience' => $request['experience'],
-            'total_experience' => $request['total_experience'],
-            'join_date' => $request['join_date'],
-            'department_id' => $request['department_id'],
-            'designation_id' => $request['designation_id'],
-            'designation_of_appointee' => $request['designation_of_appointee'],
-            'appointed_by' => $request['appointed_by'],
-            'branch_id' => $request['branch_id'] ?? 0,
-
         ];
 
         $employeeAddress = [
@@ -722,16 +581,12 @@ class EmployeeController extends Controller
             'present_pincode' => $request['present_pincode'],
             'same_as_present' => !empty($request['same_as_present']) ? $request['same_as_present'] : '0',
             'mobile1' => $request['mobile1'],
-            'branch_id' => $request['branch_id'] ?? 0,
         ];
 
         $employeeDocument = [
-            'uan_no' => $request['uan_no'],
             'aadhar_card_no' => $request['aadhar_card_no'],
             'driving_licence_no' => $request['driving_licence_no'],
             'pan_card_no' => $request['pan_card_no'],
-            'passport_no' => $request['passport_no'],
-            'branch_id' => $request['branch_id'] ?? 0,
         ];
 
 
@@ -740,156 +595,8 @@ class EmployeeController extends Controller
             $employeeData['employee_code'] = $generateCode;
         }
 
-        return [$employeeData, $employeeAddress, $employeeDocument, $emp_customers];
+        return [$employeeData, $employeeAddress, $employeeDocument];
     }
-
-    public function employeeLeft(Request $request)
-    {
-        // dd($request->all());
-        $empId = $request->empId;
-        $left_date = $request->left_date;
-        $left_reason = $request->left_reason;
-        $recruit_again = $request->recruit_again;
-        $sales_emp_id = $request->sales_emp_id;
-        if ($empId > 0 && isset($left_date)) {
-            $employeeData = Employee::findOrFail($empId);
-            $empInput['left_date'] = $left_date;
-            $empInput['left_reason'] = $left_reason;
-            $empInput['recruit_again'] = $recruit_again;
-            $empInput['is_active'] = 'No';
-            $employeeData->update($empInput);
-
-            // Ctc::where('employee_id', $empId)->update(['is_active' => 'No']);
-
-            $userInput['is_active'] = 'No';
-            $userData = User::where('emp_id', $empId)->first();
-
-            if (isset($userData) && $userData->count() > 0) {
-                $userData->update($userInput);
-            }
-            // Account::where('employee_id', $empId)->update(['is_active' => 'No']);
-
-            // if (isset($sales_emp_id) && $sales_emp_id > 0) {
-            //     Lead::where('sales_cordinator_id', $userData->id)->update(['sales_cordinator_id' => $sales_emp_id]);
-            //     Lead::where('lead_owner_id', $userData->id)->update(['lead_owner_id' => $sales_emp_id]);
-            //     Account::where('managed_by', $userData->id)->update(['managed_by' => $sales_emp_id]);
-            //     Account::where('secondary_managed_by', $userData->id)->update(['secondary_managed_by' => $sales_emp_id]);
-            // }
-
-            /*try {
-                $db_conn3 = DB::connection('mysql3');
-                $db_conn3->table(env('DB_PREFIX').'_accounts')->where('employee_id', $empId)->update(['is_active' => 'No']);
-            } catch (\Exception $e) {}*/
-
-
-            return response()->json([
-                'success' => true,
-                'message' => __('common.update_success'),
-            ], 200);
-        }
-    }
-
-    public function leftCreate(Request $request)
-    {
-        $emp_id = $request->emp_id;
-        $this->data['is_sales'] = false;
-        $this->data['salesCordinator'] = [];
-        if ($emp_id) {
-            $employeeData = Employee::with('DepartmentName')->findOrFail($emp_id);
-            $department = $employeeData->DepartmentName->name ?? '';
-            if ($department == 'Sales') {
-                $this->data['is_sales'] = true;
-                $this->data['salesCordinator'] =  $this->common->getSalesCordinator();
-            }
-        }
-        return response()->json([
-            'html' =>  view('employee.employee_left_modal', $this->data)->render()
-        ]);
-    }
-
-    public function employeeRejoin($parentId)
-    {
-        // dd($parentId);
-        if ($parentId) {
-            $this->data['generateCode'] = $this->idGenerator(new Employee, 'id', 4, 'E');
-            $withArr = ['employeeAddress',  'employeeDocument'];
-            $employee = Employee::with($withArr)->findOrFail($parentId);
-            // /dd($employee);
-            $employeeAddress = $employee->employeeAddress;
-            $employeeDocument = $employee->employeeDocument;
-
-            $employee['join_date'] = '';
-            $employee['total_experience'] = '';
-            $employee['department_id'] = '';
-            $employee['designation_id'] = '';
-            $employee['experience'] = '';
-
-            if ($employeeAddress) {
-                $employee['present_address'] = $employeeAddress->present_address;
-                $employee['permanent_address'] = $employeeAddress->permanent_address;
-                $employee['present_state_id'] = $employeeAddress->present_state_id;
-                $employee['permanent_state_id'] = $employeeAddress->permanent_state_id;
-                $employee['present_city'] = $employeeAddress->present_city;
-                $employee['permanent_city'] = $employeeAddress->permanent_city;
-                $employee['present_pincode'] = $employeeAddress->present_pincode;
-                $employee['permanent_pincode'] = $employeeAddress->permanent_pincode;
-                $employee['same_as_present'] = $employeeAddress->get('same_as_present', null);
-                $employee['mobile1'] = $employeeAddress->mobile1;
-            }
-
-            if ($employeeDocument) {
-                $employee['aadhar_card_no'] = $employeeDocument->aadhar_card_no;
-                $employee['driving_licence_no'] = $employeeDocument->driving_licence_no;
-                $employee['pan_card_no'] = $employeeDocument->pan_card_no;
-                $employee['passport_no'] = $employeeDocument->passport_no;
-            }
-
-            $this->data['present_state_id'] = State::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-            $this->data['permanent_state_id'] = State::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-            $this->data['present_city'] = !empty($employeeAddress->present_state_id) ? $this->common->getCities($employeeAddress->present_state_id) : [];
-            $this->data['permanent_city'] = !empty($employeeAddress->permanent_state_id) ? $this->common->getCities($employeeAddress->permanent_state_id) : [];
-            $this->data['maritalstatus'] = Config('project.marital_status');
-            $this->data['department'] = Department::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-            $this->data['designation'] = Designation::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-            $this->data['bloodgroup'] = Config('project.bloodgroup');
-            $this->data['appointedBy'] = Employee::where('is_active', 'Yes')->pluck('person_name', 'id')->toArray();
-
-            $this->data['parentId'] = $parentId;
-            $this->data['employee'] = $employee;
-            $this->data['customers'] = $this->common->getCustomer();
-            $this->data['branchList'] = $this->common->getBranchList();
-
-            return view('employee.edit', $this->data);
-        }
-    }
-
-    public function employeeExport(Request $request)
-    {
-        $settingsCmpNmData = Setting::where([ 'name' => 'company_name'])->first();
-        $settingsCmpAddrData = Setting::where([ 'name' => 'company_address'])->first();
-        $settingsCmpEmailData = Setting::where([ 'name' => 'company_email'])->first();
-
-        $this->data['company_title'] = $settingsCmpNmData->value;
-        $this->data['company_address'] = $settingsCmpAddrData->value;
-        $this->data['company_email'] = $settingsCmpEmailData->value;
-        $this->data['module_title'] = $this->title;
-
-        return Excel::download(new EmployeeExport($this->data), 'employee.xlsx');
-    }
-
-    // public function employeeAllDetailExport(Request $request)
-    // {
-    //     $settingsCmpNmData = Setting::where(['group' => 'company', 'name' => 'company_name'])->first();
-    //     $settingsCmpAddrData = Setting::where(['group' => 'company', 'name' => 'company_address'])->first();
-    //     $settingsCmpEmailData = Setting::where(['group' => 'company', 'name' => 'company_email'])->first();
-
-    //     $this->data['company_title'] = $settingsCmpNmData->value;
-    //     $this->data['company_address'] = $settingsCmpAddrData->value;
-    //     $this->data['company_email'] = $settingsCmpEmailData->value;
-    //     $this->data['module_title'] = $this->title;
-
-    //     return Excel::download(new EmployeeAllDetailExport($this->data), 'employee_all_details.xlsx');
-    // }
 
     public function checkDuplicateAdhar(Request $request, $id = '')
     {
@@ -949,33 +656,6 @@ class EmployeeController extends Controller
             $this->createIndexHtmlFile($path);
         }
         return $path . $file_name;
-    }
-
-    public function employeeCustomers($id)
-    {
-        $viewPermission = $this->user->hasAnyAccess(['customers.view', 'users.superadmin']);
-
-        $customerIds = EmployeeCustomers::where('employee_id', $id)->pluck('customer_id')->toArray();
-        $results = Customer::whereIn('id', $customerIds)->get();
-        $data_arr = [];
-        foreach ($results as $index => $record) {
-            // $checked = '';
-            // $url = route('common.change-status', [$record->id]);
-            // if (strtoupper($record->is_active) == 'YES' && $record->is_active !== NULL) {
-            //     $checked = "checked";
-            // }
-            $data_arr[] = array(
-                "id" => $index + 1,
-                "company_name" =>
-                $viewPermission ?
-                    '<a href="' . route('customers.show', $record->id) . '">' . $record->company_name . '</a>' : $record->company_name,
-                "person_name" => $record->person_name ?? null,
-                "email" => $record->email ?? null,
-                "gst_no" => $record->gst_no ?? null,
-                //"is_active" => '<div class="text-center"><span class="switch switch-icon switch-md"><label><input type="checkbox" class="change-status" id="status_' . $record->id . '" name="status_' . $record->id . '" data-url="' . $url . '" data-table="customers" value="' . $record->id . '" ' . $checked . '><span></span></label></span></div>',
-            );
-        }
-        return response()->json(['aaData' => $data_arr]);
     }
     public function checkDuplicateEmail(Request $request)
     {
@@ -1039,118 +719,5 @@ class EmployeeController extends Controller
         }
     }
 
-    public function getCustomerlist($id)
-    {
-        $this->data['id'] = $id;
-        
-        $customerEmployeeId = EmployeeCustomers::where('employee_id', $id)->pluck('customer_id')->toArray();
-        $customerList = Customer::with(['customerAddress'])->where(['is_active' => 'Yes'])
-            ->orWhereIn('id', $customerEmployeeId)
-            ->get();
-
-        $this->data['customerList'] = $customerList;
-        $this->data['customerIds'] = $customerList->pluck('id')->toArray();
-        $this->data['customerEmployeeId'] = $customerEmployeeId;
-
-        return response()->json([
-            'html' =>  view('employee.assign_customer', $this->data)->render()
-        ]);
-    }
-
-    public function getEmployeeUpdate(Request $request)
-    {
-        $assign_customer = $request->assign_customer ?? [];
-        $empId = $request->id ?? null;
-
-        DB::beginTransaction();
-        try {
-            $employeeCustomerId = EmployeeCustomers::where('employee_id', $empId)->pluck('customer_id')->toArray();
-            if(!empty($assign_customer) && count($assign_customer) > 0){
-                $deletedIds = array_diff($employeeCustomerId, $assign_customer);
-                if(count($deletedIds) > 0){
-                    EmployeeCustomers::where('employee_id', $empId)->whereIn('customer_id', $deletedIds)->delete();
-                }
-                $createIds = array_diff($assign_customer, $employeeCustomerId);
-                $input['employee_id'] = $empId;
-                if(count($createIds) > 0){
-                    foreach($createIds as $row){
-                        $input['customer_id'] = $row;
-                        EmployeeCustomers::create($input);
-                    }
-                }
-            }else{
-                if(count($employeeCustomerId) > 0 && empty($assign_customer)){
-                    EmployeeCustomers::where('employee_id', $empId)->delete();
-                }
-            }
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message'=> $e->getMessage()
-            ], 403);
-        }
-        return redirect()->route('employee.show', $empId)->with('success', __('employee.success'));
-    }
-
-    public function getSalesmanlist($id)
-    {
-        $this->data['id'] = $id;
-        $subEmployeeId = AsmEmployee::where('employee_id', $id)->pluck('sub_employee_id')->toArray();
-        $subOtherEmployeeId = AsmEmployee::where('employee_id','!=', $id)->pluck('sub_employee_id')->toArray();
-        $asmEmployeeList = Employee::where(['is_active' => 'Yes','is_asm'=>'0'])->where('id','!=', $id)->whereNotIn('id',$subOtherEmployeeId)->where('department_id',$this->depart_id)->orderBy('first_name')->get();
-
-        $this->data['salesmanList'] = $asmEmployeeList;
-        $this->data['salesmanIds'] = $asmEmployeeList->pluck('id')->toArray();
-        $this->data['subEmployeeId'] = $subEmployeeId;
-
-        return response()->json([
-            'html' =>  view('employee.assign_salesman', $this->data)->render()
-        ]);
-    }
-
-    public function getAsmEmployeeUpdate(Request $request)
-    {
-        $assign_salesman = $request->assign_salesman ?? [];
-        $empId = $request->id ?? null;
-
-        DB::beginTransaction();
-        try {
-            $employeeAsmId = AsmEmployee::where('employee_id', $empId)->pluck('sub_employee_id')->toArray();
-            if(!empty($assign_salesman) && count($assign_salesman) > 0){
-                $deletedIds = array_diff($employeeAsmId, $assign_salesman);
-
-
-                if(count($deletedIds) > 0){
-                    AsmEmployee::where('employee_id', $empId)->whereIn('sub_employee_id', $deletedIds)->delete();
-                    Employee::whereIn('id', $deletedIds)->update(['is_use_asm'=> '0']);
-                }
-                $createIds = array_diff($assign_salesman, $employeeAsmId);
-                $input['employee_id'] = $empId;
-                if(count($createIds) > 0){
-                    foreach($createIds as $row){
-                        $input['sub_employee_id'] = $row;
-                        AsmEmployee::create($input);
-                        Employee::where('id', $row)->update(['is_use_asm'=> '1']);
-                        Employee::where('id', $empId)->update(['is_asm'=> '1']);
-                    }
-                }
-            }else{
-                if(count($employeeAsmId) > 0 && empty($assign_customer)){
-                    AsmEmployee::where('employee_id', $empId)->delete();
-                    Employee::whereIn('id', $employeeAsmId)->update(['is_use_asm'=> '0']);
-                    Employee::where('id', $empId)->update(['is_asm'=> '0']);
-                }
-            }
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message'=> $e->getMessage()
-            ], 403);
-        }
-        return redirect()->route('employee.show', $empId)->with('success', __('employee.salesman_success'));
-    }
+    
 }

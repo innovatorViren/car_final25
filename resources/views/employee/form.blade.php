@@ -171,13 +171,7 @@
                                     ]) !!}
                                 </div>
                                 <div class="form-group col-lg-4">
-                                    {!! Form::label('branch_id', trans('Branch')) !!}<i class="text-danger">*</i>
-                                    {{ Form::select('branch_id', ['' => 'Select Branch'] + $branchList, null, [
-                                                'class' => 'form-control required',
-                                                'id' => 'branch_list_id',
-                                                'data-placeholder' => 'Select Branch',
-                                        ]) 
-                                    }}
+                                    
                                     
                                 </div>
                                 <div class="col-lg-4">
@@ -415,19 +409,7 @@
 
                         <div class="tab-pane fade slide" id="document_information-5" role="tabpanel"
                             aria-labelledby="document_information-tab-5">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('uan_no', trans('employee.uan')) !!}
-                                        {!! Form::text('uan_no', null, [
-                                            'class' => 'form-control jsOptionRequired',
-                                            'maxlength' => '12',
-                                            'minlength' => '12',
-                                            'placeholder' => 'UAN No (Optional)',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                            </div>
+                            
                             @php
                                 if (isset($parentId)) {
                                     $readonly = 'readonly';
@@ -516,31 +498,7 @@
                                             name="pancard_img_preview" style="height: 60%;width: 60%;">
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('passport_no', trans('employee.passport_no')) !!}
-                                        {!! Form::text('passport_no', null, [
-                                            'class' => 'form-control',
-                                            'placeholder' => 'Passport No (Optional)',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group pt-8">
-                                        {!! Form::label('passport_img', trans('employee.photo')) !!} :
-                                        {!! Form::file('passport_img', [
-                                            'id' => 'passport_img',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-2">
-                                    <div class="form-group">
-                                        <img alt="Logo"
-                                            src="{{ isset($employee->employeeDocument) && !empty($employee->employeeDocument->passport_img_path) ? asset($employee->employeeDocument->passport_img_path) : asset('default.jpg') }}"
-                                            class="h-75 align-self-end" id="passport_img_preview"
-                                            name="passport_img_preview" style="height: 60%;width: 60%;">
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
 
@@ -633,119 +591,6 @@
                                     </div>
                                 </div>
 
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade slide last" id="job_information-10" role="tabpanel"
-                            aria-labelledby="job_information-tab-10">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        {!! Form::label('experience', trans('employee.previous_emp_with_year')) !!}
-                                        {!! Form::textarea('experience', null, [
-                                            'class' => 'form-control',
-                                            'rows' => 3,
-                                            'placeholder' => 'Write something about previous experience (if any)',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        {!! Form::label('total_experience', trans('employee.past_total_experience')) !!}<i class="text-danger">*</i>
-                                        {!! Form::text('total_experience', null, [
-                                            'class' => 'form-control required',
-                                            'id' => 'total_experience',
-                                            'placeholder' => 'Total Experience',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        {!! Form::label('join_date', trans('employee.join_date')) !!}<i class="text-danger">*</i>
-                                        {!! Form::date(
-                                            'join_date',
-                                            isset($employee->join_date) && !isset($parentId) ? date('Y-m-d', strtotime($employee->join_date)) : null,
-                                                ['class' => 'form-control jsJoinDate required', isset($employee->join_date) && !isset($parentId) ? 'readonly' : '',
-                                                ],
-                                        ) !!}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        {!! Form::label('department_id', trans('employee.department')) !!}<i class="text-danger">*</i>
-                                        <div>
-                                            {{ Form::select('department_id', ['' => 'select'] + $department, null, [
-                                                'class' => 'form-control required',
-                                                'id' => 'department_id',
-                                                'data-placeholder' => 'Select Department',
-                                                'data-ajaxurl' => route('getDesignation'),
-                                            ]) }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        {!! Form::label('designation_id', trans('employee.designation')) !!}<i class="text-danger">*</i>
-                                        <div>
-                                            {!! Form::hidden('designation_id', $employee->designation_id ?? null, ['id' => 'designationid']) !!}
-
-                                            {!! Form::select('designation_id', [], null, [
-                                                'class' => 'form-control designation_id required',
-                                                'id' => 'designation_id',
-                                                'data-placeholder' => 'Select Designation',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row row-cols-2">
-                                <div class="col emp_customers_div d-none">
-                                    <div class="form-group">
-                                        {!! Form::label('emp_customers', trans('customers.customers')) !!}
-                                        <div>
-                                            {!! Form::select('emp_customers[]', $customers, $employee_customers ?? '', [
-                                                'class' => 'form-control emp_customers d-none',
-                                                'id' => 'emp_customers',
-                                                'data-placeholder' => 'Select Customers',
-                                                'multiple' => 'multiple',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        {!! Form::label('appointed_by', trans('Reference By')) !!}
-                                        <div>
-                                            {{ Form::select(
-                                                'appointed_by',
-                                                ['' => 'select'] + $appointedBy,
-                                                isset($employee) ? $employee['appointed_by'] : null,
-                                                [
-                                                    'class' => 'form-control',
-                                                    'id' => 'appointed_by',
-                                                    'data-placeholder' => 'Select Reference By',
-                                                ],
-                                            ) }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        {!! Form::label('designation_of_appointee', 'Designation of Reference By') !!}
-                                        {!! Form::text('designation_of_appointee', null, [
-                                            'class' => 'form-control',
-                                            'readonly' => 'readonly',
-                                            'id' => 'designation_of_appointee',
-                                            'placeholder' => 'Designation of Reference By  (Auto Fill)',
-                                        ]) !!}
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <!--end::Accordion-->

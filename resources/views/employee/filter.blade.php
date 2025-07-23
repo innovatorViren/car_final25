@@ -36,24 +36,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    {!! Form::label('departmentFilter', trans('employee.department')) !!}
-                    {!! Form::select('departmentFilter', ['' => 'Select'] + $department, null, [
-                        'class' => 'form-control departmentFilter jsDepartmentFilter',
-                        'id' => 'department_id',
-                        'data-placeholder' => 'Select Department',
-                        'data-ajaxurl' => route('getDesignation'),
-                    ]) !!}
-                </div>
-
-                <div class="form-group">
-                    {!! Form::label('designationFilter', trans('employee.designation')) !!}
-                    {!! Form::select('designationFilter', ['' => 'Select'], null, [
-                        'class' => 'form-control designationFilter jsDesignationFilter',
-                        'id' => 'designation_id',
-                        'data-placeholder' => 'Select Designation',
-                    ]) !!}
-                </div>
+                
                 <div class="form-group">
                     {!! Form::label('statusFilter', trans('common.status')) !!}
                     {!! Form::select('statusFilter', ['' => 'Select', 'Yes' => 'Active', 'No' => 'Inactive'], null, [
