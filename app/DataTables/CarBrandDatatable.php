@@ -29,7 +29,14 @@ class CarBrandDatatable extends DataTable
             ->editColumn('is_active', function ($row) {
                 return getStatusHtml($row);
             })
-            ->rawColumns(['action', 'is_active']);
+            ->addColumn('logo', function ($row) {
+                $logoHtml = "";
+                $brand_logo = '<div class="left-center">
+                    <img class="" src="' . asset('') . '' . $row->brand_logo . '" style="max-width:100%;width:100px;min-height:auto;" />
+                    </div>';
+                return $brand_logo;
+            })
+            ->rawColumns(['action', 'is_active','logo']);
     }
 
     public function checkrights($row)

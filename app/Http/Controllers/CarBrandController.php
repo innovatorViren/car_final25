@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\carBrand;
+use App\Models\CarBrand;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\DataTables\CarBrandDatatable;
@@ -56,74 +56,16 @@ class CarBrandController extends Controller
      */
     public function store(Request $request)
     {
-        // $input = $request->all();
-        // dd($input);
         $input = $request->except(['_token','brand_logo']);
-        // $user = Sentinel::getUser();
-        // $input['created_by'] = $user->id ?? '';
-        // $input['ip'] = $request->ip();
-        // $input['brand_name'] = trim($request->brand_name);
+        $logo = '';
+        if ($request->hasfile('brand_logo')) {
+            $logo = uploadFile($request, 'Logo/','brand_logo');
+        }
+        $input['brand_logo'] = $logo;
+
         $model = CarBrand::create($input);
-        $carBrandId = $model->id;
-        $this->uploadCarLogo($request, null,$carBrandId);
 
         return redirect()->route('car-brand.index')->with('success', __('car_brand.create_success'));
-    }
-
-    public function uploadCarLogo($request, $unlink = null, $carBrandId = null)
-    {
-        if ($request->hasFile('brand_logo')) {
-
-            $storepath = '/uploads/Logo/';
-
-            $file['brand_logo'] = $this->getUniqueFilename($request->file('brand_logo'), $this->getImagePath($storepath));
-
-            $request->file('brand_logo')->move($this->getImagePath($storepath), $file['brand_logo']);
-
-            $carBrandData['brand_logo'] = $file['brand_logo'];
-            $carBrandData['brand_logo_path'] = $storepath . $file['brand_logo'];
-
-            if (File::exists($unlink)) {
-                unlink(base_path('public' . $storepath . $unlink));
-            }
-            $carBrand = CarBrand::findOrFail($carBrandId);
-            $carBrand->update($carBrandData);
-        }
-    }
-    public function getUniqueFilename($fileInput, $destination)
-    {
-        $filename = $fileInput->getClientOriginalName();
-        $i = 0;
-        $path_parts = pathinfo($filename);
-        $path_parts['filename'] = Str::slug($path_parts['filename'], '-');
-        $filename = $path_parts['filename'];
-        while (File::exists($destination . '/' . $filename . '.' . $path_parts['extension'])) {
-            $filename = $path_parts['filename'] . '-' . $i;
-            $i++;
-        }
-        return time() . '_' . $filename . '.' . $path_parts['extension'];
-    }
-
-    public function getImagePath($file_name = '')
-    {
-        if ($this->is_public) {
-            $path = public_path($this->path);
-        } else {
-            $path = storage_path($this->path);
-        }
-
-        if (File::isDirectory($path) === false) {
-            File::makeDirectory($path, 0777, true);
-            $this->createIndexHtmlFile($path);
-        }
-        return $path . $file_name;
-    }
-
-    public function path($path, $is_public = true)
-    {
-        $this->path = $path;
-        $this->is_public = $is_public;
-        return $this;
     }
 
     /**
@@ -159,15 +101,14 @@ class CarBrandController extends Controller
      *
      * @return Response
      */
-    public function update($id, Request $request)
+    public function update(Request $request,$id)
     {
         $carBrand = CarBrand::findOrFail($id);
-        
-        $input = $request->except(['_token','_method']);
-        $user = Sentinel::getUser();
-        $input['updated_by'] = $user->id ?? '';
-        $input['update_from_ip'] = $request->ip();
-        $input['brand_name'] = trim($request->brand_name);
+        $input = $request->except(['_token','_method','brand_logo']);
+        if ($request->hasfile('brand_logo')) {
+            $logo = uploadFile($request, 'Logo/','brand_logo',$carBrand->brand_logo);
+            $input['brand_logo'] = $logo;
+        }
         $carBrand->update($input);
         return redirect()->route('car-brand.index')->with('success', __('car_brand.update_success'));
     }
@@ -185,6 +126,10 @@ class CarBrandController extends Controller
         if ($carBrand) {
             $dependency = $carBrand->deleteValidate($id);
             if (!$dependency) {
+                $image_path = public_path($carBrand->brand_logo);
+                if (File::exists($image_path)) {
+                    unlink(public_path($carBrand->brand_logo));
+                }
                 $carBrand->delete();
             } else {
                 return response()->json([

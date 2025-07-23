@@ -841,10 +841,12 @@ if (!function_exists('uploadFile')) {
             $fileName = str_replace(' ', '_', $fileName);
             $request->{$input_name}->move(public_path('uploads/' . $folder_name), $fileName);
             $image_path = 'uploads/' . $folder_name . $fileName;
-
-            /*if ($unlink) {
-                Storage::delete($unlink);
-            }*/
+            if($unlink){
+                $image_destroy = public_path($unlink);
+                if (File::exists($image_destroy)) {
+                    unlink(public_path($unlink));
+                }
+            }
             return $image_path;
         }
         return  $unlink ? $unlink : NULL;

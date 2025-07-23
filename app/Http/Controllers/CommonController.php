@@ -40,6 +40,7 @@ use App\Models\{
     OutwardChallan,
     Branch,
     BranchTransfer,
+    CarBrand
 };
 use Carbon\Carbon;
 use URL;
@@ -269,6 +270,29 @@ class CommonController extends Controller
                 ->orderBy('name', 'ASC')
                 ->pluck('name', 'id')->toArray();
             return $countries;
+        }
+    }
+
+    public function getCarBrand($carBrandId = null)
+    {
+        $request = request();
+        $platform = $request->header('platform');
+        if ($platform == 1) {
+            $carBrand = CarBrand::select('id AS value', 'name AS text')->where('is_active', 'Yes')->orderBy('name', 'asc')->get();
+
+            $toReturn = $carBrand;
+            $this->data = $toReturn;
+
+            return $this->responseSuccess();
+        } else {
+            $carBrandId = $request->get('carBrandId', $carBrandId);
+            $carBrand = CarBrand::where('is_active', 'Yes')
+                ->when($carBrandId, function ($sql) use ($carBrandId) {
+                    $sql->orWhere('id', $carBrandId);
+                })
+                ->orderBy('name', 'ASC')
+                ->pluck('name', 'id')->toArray();
+            return $carBrand;
         }
     }
 

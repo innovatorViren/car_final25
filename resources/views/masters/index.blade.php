@@ -78,6 +78,16 @@
                                     class="text-dark text-hover-primary mb-1 font-size-lg">{{ __('common.car_brand') }}</a>
                             </div>
                         </div>
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="symbol symbol-40 symbol-light-primary mr-5" id="car_model"
+                                name="car_model">
+                                <i class="flaticon2-arrow text-primary"></i>
+                            </div>
+                            <div class="d-flex flex-column font-weight-bold">
+                                <a href="{{ url('car-model') }}"
+                                    class="text-dark text-hover-primary mb-1 font-size-lg">{{ __('common.car_model') }}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

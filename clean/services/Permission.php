@@ -63,6 +63,12 @@ class Permission
             'car_brand.edit',
             'car_brand.delete',
         ],
+        'car_model' => [
+            'car_model.list',
+            'car_model.add',
+            'car_model.edit',
+            'car_model.delete',
+        ],
         'years' => [
             'years.list',
             // 'years.view',

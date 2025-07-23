@@ -1,5 +1,5 @@
 @extends('app-modal')
-@section('modal-title',( !isset($carBrands)) ? __('car_brand.add_car_brand') : __('car_brand.edit_car_brand') )
+@section('modal-title',( !isset($carBrand)) ? __('car_brand.add_car_brand') : __('car_brand.edit_car_brand') )
 @section('modal-content')
 
 <div class="form-group">
@@ -26,7 +26,7 @@
     </div>
 </div>
 
-@section('modal-btn',( !isset($carBrands)) ? __('common.save') : __('common.update') )
+@section('modal-btn',( !isset($carBrand)) ? __('common.save') : __('common.update') )
 @endsection
 
 @include('car-brand.script')

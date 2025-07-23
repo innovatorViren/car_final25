@@ -2,18 +2,18 @@
 @extends('app')
 {{-- Content --}}
 @section('content')
-@section('title', 'Car Brand')
+@section('title', 'Car Model')
 
 @component('partials._subheader.subheader-v6', [
-    'page_title' => __('common.car_brand'),
+    'page_title' => __('common.car_model'),
     'add_modal' => collect([
-        'action' => route('car-brand.create'),
+        'action' => route('car-model.create'),
         'target' => '#commonModalID',
         'text' => __('common.add'),
     ]),
     'back_text' => __('common.back'),
     'model_back_action' => route('masterPages'),
-    'permission' => $current_user->hasAnyAccess(['car_brand.add', 'users.superadmin']),
+    'permission' => $current_user->hasAnyAccess(['car_model.add', 'users.superadmin']),
 ])
 @endcomponent
 
@@ -29,7 +29,10 @@
                             <th></th>
                             <th class="d-none"></th>
                             <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_car_brand',Request::get('filter_car_brand',null),array('class' => 'form-control')) !!}</div>
+                                <div class="datatable-form-filter no-padding">{!! Form::text('name',Request::get('filter_car_model',null),array('class' => 'form-control')) !!}</div>
+                            </th>
+                            <th>
+                                <div class="datatable-form-filter no-padding">{!! Form::text('brand_name',Request::get('filter_brand',null),array('class' => 'form-control')) !!}</div>
                             </th>
                             <th></th>
                             <th></th>
@@ -37,9 +40,9 @@
                         <tr>
                             <th>{{__('common.action')}}</th>
                             <th class="d-none"></th>
+                            <th>{{__('car_model.car_model')}}</th>
                             <th>{{__('car_brand.table.car_brand')}}</th>
-                            <th>{{__('car_brand.logo')}}</th>
-                            <th>{{__('car_brand.no_of_model')}}</th>
+                            <th>{{__('car_model.photo')}}</th>
                             <th>{{__('common.status')}}</th>
 
                         </tr>
@@ -58,10 +61,10 @@
 @section('scripts')
 
 <script type="text/javascript">
-    var car_brand = "{{__('car_brand.table.car_brand')}}";
-    var no_of_model = "{{__('car_brand.no_of_model')}}";
+    var name = "{{__('car_model.car_model')}}";
+    var brand = "{{__('car_brand.table.car_brand')}}";
     var status = "{{__('common.status')}}";
-    var logo = "{{__('car_brand.logo')}}";
+    var photo = "{{__('car_model.photo')}}";
 
     var action = "{{__('common.action')}}";
 
@@ -72,7 +75,8 @@
             "processing": true,
             "ajax": {
                 data: function(d) {
-                    d.name = jQuery(".datatable-form-filter input[name='filter_car_brand']").val();
+                    d.name = jQuery(".datatable-form-filter input[name='name']").val();
+                    d.brand = jQuery(".datatable-form-filter input[name='brand_name']").val();
                 }
             },
             "columns": [{
@@ -92,23 +96,23 @@
             },{
                 "name": "name",
                 "data": "name",
-                "title": car_brand,
+                "title": name,
                 "orderable": true,
                 "searchable": false
             }, {
-                "name": "logo",
-                "data": "logo",
-                "title": logo,
-                "orderable": true,
-                "searchable": false
-            },{
-                "name": "car_model_count",
-                "data": "car_model_count",
-                "title": no_of_model,
+                "name": "brand_name",
+                "data": "brand_name",
+                "title": brand,
                 "orderable": true,
                 "searchable": false,
                 "width": "100px"
             }, {
+                "name": "photo",
+                "data": "photo",
+                "title": photo,
+                "orderable": true,
+                "searchable": false
+            },{
                 "name": "is_active",
                 "data": "is_active",
                 "title": status,

@@ -1,9 +1,9 @@
 
-{!! Form::model($country, ['route' => ['country.update', $country->id],'id' => 'countryForm']) !!}
+{!! Form::model($carBrand, ['route' => ['car-brand.update', $carBrand->id],'id' => 'carBrandForm','files' => true]) !!}
 @method('PUT')
-{!! Form::hidden ('id', $country->id ,['id' => 'id' ])!!}
-@include('countries.form',[
-        'country' => $country
+{!! Form::hidden ('id', $carBrand->id ,['id' => 'id' ])!!}
+@include('car-brand.form',[
+        'carBrand' => $carBrand
     ])
 
 {!! Form::close() !!}
