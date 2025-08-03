@@ -98,17 +98,10 @@
                     return true;
                 }
             });
-
-            $('#parent_account_id,.jsPaymentDueDay').select2({
-                allowClear: true
-            });
-            $('#country, #price_list_id').select2({
+            $('#country').select2({
                 allowClear: true
             });
             $('#factory_country').select2({
-                allowClear: true
-            });
-            $('#branch_list_id').select2({
                 allowClear: true
             });
             $('#state').select2({
@@ -117,55 +110,23 @@
             $('#city').select2({
                 allowClear: true
             });
-            $('#gst_type').select2({
-                allowClear: true
-            });
-            $('#primary_managed_by').select2({
-                allowClear: true
-            });
 
 
 
-            $('#gst_type').change(function() {
-                var gst_type = $(this).val();
-                if (gst_type == 'Un-registered' || gst_type == 'Overseas') {
-                    $('.gstData').hide();
-                    $('#gst_no').val('');
-                    $('.gstData').addClass('d-none');
-                    $('#gst_no').removeClass('required');
-                } else {
-                    $('.gstData').show();
-                    $('.gstData').removeClass('d-none');
-                    $('#gst_no').addClass('required');
-                }
-            });
+           
 
-            function panCard(input) {
+            function aadharCard(input) {
                 if (input.files && input.files[0]) {
                     var reader = new FileReader();
 
                     reader.onload = function(e) {
-                        $('#pan_card_preview').attr('src', e.target.result);
+                        $('#aadhar_card_preview').attr('src', e.target.result);
                     }
                     reader.readAsDataURL(input.files[0]);
                 }
             }
-            $("#pan_card_photo").change(function() {
-                panCard(this);
-            });
-
-            function gstCertificate(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        $('#gst_certificate_preview').attr('src', e.target.result);
-                    }
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-            $("#gst_certificate_photo").change(function() {
-                gstCertificate(this);
+            $("#aadharcard_img").change(function() {
+                aadharCard(this);
             });
         };
 

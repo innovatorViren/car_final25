@@ -12,8 +12,6 @@
     ])
     @endcomponent
 
-    {{-- @include('employee.image_modal') --}}
-
     <div class="d-flex flex-column-fluid">
         <div class="container-fluid">
             <div class="accordion accordion-light accordion-light-borderless accordion-svg-toggle" id="faq">
@@ -49,54 +47,15 @@
 
                             <span class="svg-icon pt-4" style="float:right;">
 
-                                @if (isset($employee->left_date) &&
-                                        $employee->left_date != '0000-00-00' &&
-                                        $employee->recruit_again == 'Yes' &&
-                                        ($employee->rejoin_date == '0000-00-00' || $employee->rejoin_date == null))
-                                    <a href="{{ route('employeeRejoin', $employee->id) }}"
-                                        class="btn btn-light-primary btn-sm font-weight-bold">
-                                        <i class="fas fa-pencil-alt fa-1x"></i> {{ __('employee.rejoin') }}
-                                    </a>
-                                @endif
-                                @if ($current_user->hasAnyAccess(['employee.assign_salesman', 'users.superadmin']) && $department->slug == "sales" && $designation->slug == "area_sales_manager")
-                                    <a href="{{ route('employee.assign_salesman', $employee->id) }}" 
-                                        class="btn btn-secondary text-dark btn-sm font-weight-bold call-modal"
-                                        data-target-modal="#customerModalID"
-                                        data-id="{{ $employee->id }}"
-                                        data-toggle="modal" 
-                                        data-url="{{ route('employee.assign_salesman',$employee->id) }}"
-                                        >
-                                        <span class="navi-text">
-                                            {{ __('employee.assign_salesman') }}
-                                        </span>
-                                    </a>
-                                @endif
+                                
 
-                                @if ($current_user->hasAnyAccess(['employee.assign_customer', 'users.superadmin']) && $department->slug == "sales")
-                                    <a href="{{ route('employee.assign_customer', $employee->id) }}" 
-                                        class="btn btn-secondary text-dark btn-sm font-weight-bold call-modal"
-                                        data-target-modal="#customerModalID" 
-                                        data-id="{{ $employee->id }}"
-                                        data-toggle="modal" 
-                                        data-url="{{ route('employee.assign_customer',$employee->id) }}"
-                                        >
-                                        <span class="navi-text">
-                                            {{ __('employee.assign_customer') }}
-                                        </span>
-                                    </a>
-                                @endif
-
-                                @if (
-                                    $current_user->hasAnyAccess(['employee.edit', 'users.superadmin']) &&
-                                        ($employee->left_date == '0000-00-00' || $employee->left_date == null))
+                                @if ($current_user->hasAnyAccess(['employee.edit', 'users.superadmin']))
                                     <a href="{{ route('employee.edit', $employee->id) }}"
                                         class="btn btn-light-primary btn-sm font-weight-    bold">
                                         <i class="fas fa-pencil-alt fa-1x"></i> {{ __('common.edit') }}
                                     </a>
                                 @endif
-                                @if (
-                                    $current_user->hasAnyAccess(['employee.destroy']) &&
-                                        ($employee->left_date == '0000-00-00' || $employee->left_date == null))
+                                @if ($current_user->hasAnyAccess(['employee.destroy']))
                                     <a href="{{ route('employee.destroy', $employee->id) }}"
                                         data-redirect="{{ route('employee.index') }}"
                                         class="btn btn-light-danger btn-sm font-weight-bold delete-confrim">
@@ -117,15 +76,6 @@
                                 @endif
                             </span>
                         </div>
-                        <div class="col-12 ml-10 mt-n5">
-                            <p class="font-weight-bold text-dark-50">
-                                {{ isset($employee->DepartmentName) ? $employee->DepartmentName->name : '' }}
-                                {{ isset($employee->designationName) ? '| ' . $employee->designationName->name : '' }}
-                                {{ $employee->DepartmentName->name == 'Production' && $employee->processName ? '| ' . $employee->processName->name : '' }}
-                                {{ $employee->DepartmentName->name == 'CM Production' && $employee->cylinderProcessName ? '| ' . $employee->cylinderProcessName->name : '' }}
-                            </p>
-                        </div>
-
                     </div>
                     <div id="faq1" class="collapse" aria-labelledby="faqHeading1" data-parent="#faq">
                         <div class="card-body pl-10 pt-5 pb-2">
@@ -157,15 +107,6 @@
                                             <th width="30%">
                                                 <div class="font-weight-bold my-2" style=" color : #9d9595;">Email</div>
                                             </th>
-                                            <th width="30%">
-                                                <div class="font-weight-bold my-2" style=" color : #9d9595;">Join Date</div>
-                                            </th>
-                                            @if (isset($employee->recruit_again) && $employee->left_date != null && $employee->left_date != '0000-00-00')
-                                                <th width="30%">
-                                                    <div class="font-weight-bold my-2" style=" color : #9d9595;">Recruit
-                                                        Again</div>
-                                                </th>
-                                            @endif
                                         </tr>
                                         <tr>
                                             <th>
@@ -174,20 +115,6 @@
                                                         {{ $employee->email }}</div>
                                                 </h6>
                                             </th>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold mt-n2" style=" color : #000000;">
-                                                        {{ date('d-m-Y', strtotime($employee->join_date)) }}</div>
-                                                </h6>
-                                            </th>
-                                            @if (isset($employee->recruit_again) && $employee->left_date != null && $employee->left_date != '0000-00-00')
-                                                <th>
-                                                    <h6>
-                                                        <div class="font-weight-bold mt-n2" style=" color : #000000;">
-                                                            {{ $employee->recruit_again ?? '' }}</div>
-                                                    </h6>
-                                                </th>
-                                            @endif
                                         </tr>
 
 
@@ -195,20 +122,6 @@
                                             <th width="30%">
                                                 <div class="font-weight-bold my-2" style=" color : #9d9595;">Mobile</div>
                                             </th>
-                                            @if (isset($employee->left_date) && $employee->left_date != null && $employee->left_date != '0000-00-00')
-                                                <th width="30%">
-                                                    <div class="font-weight-bold my-2" style=" color : #9d9595;">Left Date
-                                                    </div>
-                                                </th>
-                                            @endif
-
-                                            @if (isset($employee->left_reason) && $employee->left_date != null && $employee->left_date != '0000-00-00')
-                                                <th width="30%">
-                                                    <div class="font-weight-bold my-2" style=" color : #9d9595;">Left
-                                                        Reason
-                                                    </div>
-                                                </th>
-                                            @endif
                                         </tr>
                                         <tr>
                                             <th>
@@ -220,36 +133,12 @@
                                                     </div>
                                                 </h6>
                                             </th>
-                                            @if (isset($employee->left_date) && $employee->left_date != null && $employee->left_date != '0000-00-00')
-                                                <th>
-                                                    <h6>
-                                                        <div class="font-weight-bold mt-n2" style=" color : #000000;">
-                                                            {{ date('d-m-Y', strtotime($employee->left_date)) }}</div>
-                                                    </h6>
-
-                                                </th>
-                                            @endif
-                                            @if (isset($employee->left_reason) && $employee->left_date != null && $employee->left_date != '0000-00-00')
-                                                <th>
-                                                    <h6>
-                                                        <div class="font-weight-bold mt-n2" style=" color : #000000;">
-                                                            {{ $employee->left_reason ?? '' }}</div>
-                                                    </h6>
-
-                                                </th>
-                                            @endif
                                         </tr>
 
                                         <tr>
                                             <th width="30%">
                                                 <div class="font-weight-bold my-2" style=" color : #9d9595;"></div>
                                             </th>
-                                            @if (isset($employee->rejoin_date) && $employee->rejoin_date != null && $employee->rejoin_date != '0000-00-00')
-                                                <th width="30%">
-                                                    <div class="font-weight-bold my-2" style=" color : #9d9595;">Re-Join
-                                                        Date</div>
-                                                </th>
-                                            @endif
                                             <th width="30%">
                                                 <div class="font-weight-bold my-2" style=" color : #9d9595;"></div>
                                             </th>
@@ -260,20 +149,7 @@
                                                     <div class="font-weight-bold mt-n2" style=" color : #000000;"></div>
                                                 </h6>
                                             </th>
-                                            @if (isset($employee->rejoin_date) && $employee->rejoin_date != null && $employee->rejoin_date != '0000-00-00')
-                                                <th>
-                                                    <h6>
-                                                        <div class="font-weight-bold mt-n2" style=" color : #000000;">
-                                                            @if ($child_employee_id)
-                                                                <a href="{{ route('employee.show', $child_employee_id) }}"
-                                                                    target="_blank">{{ date('d-m-Y', strtotime($employee->rejoin_date)) }}</a>
-                                                            @else
-                                                                {{ date('d-m-Y', strtotime($employee->rejoin_date)) }}
-                                                            @endif
-                                                        </div>
-                                                    </h6>
-                                                </th>
-                                            @endif
+                                            
                                             <th>
                                                 <div class="font-weight-bold mt-n2" style=" color : #000000;"></div>
                                             </th>
@@ -293,18 +169,8 @@
                             <div class="card-title font-weight-bolder text-dark">
                                 <ul class="nav nav-light-success nav-bold nav-pills">
                                     <li class="nav-item">
-                                        <a class="nav-link active" data-toggle="tab" href="#Overview">
-                                            <span class="nav-text">Overview</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_4_1">
+                                        <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_4_1">
                                             <span class="nav-text">General</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#job">
-                                            <span class="nav-text">Professional</span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -312,49 +178,12 @@
                                             <span class="nav-text">Document</span>
                                         </a>
                                     </li>
-                                    @if($department->slug == "sales")
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#customers">
-                                                <span class="nav-text">Customers</span>
-                                            </a>
-                                        </li>
-                                    @endif
                                 </ul>
                             </div>
                         </div>
                         <div class="card-body pt-1">
                             <div class="tab-content">
-                                <div class="tab-pane fade show active" id="Overview" role="tabpanel"
-                                    aria-labelledby="Overview">
-                                    <table style="width:100%">
-                                        @php
-                                            $join_date = $employee->join_date;
-                                            $time = now()->diff($join_date);
-                                        @endphp
-                                        <tr>
-                                            <th>
-                                                &nbsp;
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th width="30%">
-                                                <div class="font-weight-bold" style="color:#9d9595;">
-                                                    {{ trans('employee.working_since') }}</div>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold" style="color:#000000;">
-                                                        {{ $time->y . ' Year ' . $time->m . ' Month ' }}</div>
-                                                </h6>
-                                            </th>
-                                        </tr>
-
-                                    </table>
-
-                                </div>
-                                <div class="tab-pane fade" id="kt_tab_pane_4_1" role="tabpanel"
+                                <div class="tab-pane fade show active" id="kt_tab_pane_4_1" role="tabpanel"
                                     aria-labelledby="kt_tab_pane_4_1">
                                     <table style="width:100%">
                                         <tr>
@@ -411,7 +240,6 @@
                                                 &nbsp;
                                             </th>
                                         </tr>
-                                        <tr></tr>
                                         <tr>
                                             <th width="30%">
                                                 <div class="font-weight-bold" style=" color : #9d9595;">
@@ -468,21 +296,6 @@
                                                 &nbsp;
                                             </th>
                                         </tr>
-                                        <tr>
-                                            <th width="30%">
-                                                <div class="font-weight-bold" style=" color : #9d9595;">
-                                                    {{ trans('Branch') }}</div>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $branchList[$employee->branch_id] ?? '' }}</div>
-                                                </h6>
-                                            </th>
-                                        </tr>
-
                                     </table>
                                     <hr>
                                     <table style="width:100%">
@@ -672,18 +485,9 @@
 
                                     </table>
                                 </div>
-
-                                <div class="tab-pane fade" id="job" role="tabpanel"
-                                    aria-labelledby="kt_tab_pane_4_2">
-                                    @include('employee.job')
-                                </div>
                                 <div class="tab-pane fade" id="document" role="tabpanel"
                                     aria-labelledby="kt_tab_pane_4_2">
                                     @include('employee.document')
-                                </div>
-                                <div class="tab-pane fade" id="customers" role="tabpanel"
-                                    aria-labelledby="kt_tab_pane_4_2">
-                                    @include('employee.customers')
                                 </div>
                             </div>
                         </div>

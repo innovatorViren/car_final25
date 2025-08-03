@@ -80,7 +80,7 @@ class SessionController extends Controller
                 $error_message = trans('Access denied due to user not activated.');
                 Session::put('error', $error_message);
                 $this->authManager->logout(null, null);
-                $this->loginLog('Reject',$error_message);
+                // $this->loginLog('Reject',$error_message);
                 $route = 'auth.login.form';
                 $validLogin = false;
             } 
@@ -106,7 +106,7 @@ class SessionController extends Controller
             $route = 'dashboard';
             $this->authenticated($request, $user);
             DB::table('sessions')->where('id', Session::getId())->update(['user_id' => $user_id]);
-            $this->loginLog('Active','Login has been successfully.');
+            // $this->loginLog('Active','Login has been successfully.');
         
             $default_year = Year::where('is_default','Yes')->first();
             if($default_year){
@@ -123,9 +123,9 @@ class SessionController extends Controller
         } else {
             $this->authManager->logout(null, null);
             $route = '/';
-            if($validLogin){
-                $this->loginLog('Reject',$result->message ?? '');
-            }
+            // if($validLogin){
+            //     $this->loginLog('Reject',$result->message ?? '');
+            // }
         }
         // Return the appropriate response
         $path = session()->pull('url.intended', $route);
@@ -160,7 +160,7 @@ class SessionController extends Controller
     {
         // Terminate the user's current session.  Passing true as the
         // second parameter kills all of the user's active sessions.
-        $this->loginLog('Logout','');
+        // $this->loginLog('Logout','');
         $result = $this->authManager->logout(null, null);
         // Return the appropriate response
         sessions::where('id', session::getId())->delete();

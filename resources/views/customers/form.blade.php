@@ -31,18 +31,6 @@
                             <!--end::Nav Item-->
                             <!--begin::Nav Item-->
                             <li class="navi-item mb-2">
-                                <a class="navi-link" id="bank_detail-tab-7" data-toggle="tab" href="#bank_detail-7"
-                                    aria-controls="bank_detail">
-                                    <span class="nav-icon mr-3">
-                                        <i class="flaticon-notes"></i>
-                                    </span>
-                                    <span class="navi-text">{{ __('customers.form.bank_detail') }}</span>
-                                </a>
-                            </li>
-                            <!--end::Nav Item-->
-
-                            <!--begin::Nav Item-->
-                            <li class="navi-item mb-2">
                                 <a class="navi-link" id="document-tab-9" data-toggle="tab" href="#document-9"
                                     aria-controls="document">
                                     <span class="nav-icon mr-3">
@@ -63,41 +51,20 @@
                             <div class="tab-pane fade show active first slide active-slide" id="basic_detail-5"
                                 role="tabpanel" aria-labelledby="basic_detail-tab-5">
                                 <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            {!! Form::label('company_name', trans('customers.company_name')) !!} <i class="text-danger">*</i>
-                                            {!! Form::text('company_name', null, [
-                                                'class' => 'form-control company_name jsOptionRequired required',
-                                                'data-rule-remote' => route('checkCustomerDuplicateCompanyName', [$customers->id ?? '']),
-                                                'data-msg-remote' => 'Company Name already exists',
-                                                'placeholder' => 'Company Name',
-                                                'id' => 'company_name',
-                                            ]) !!}
-                                        </div>
+                                    <div class="form-group col-lg-4">
+                                        {!! Form::label('first_name',trans("customers.first_name"))!!} <i class="text-danger">*</i>
+                                        {!! Form::text('first_name', null, ['class' => 'form-control required','placeholder' => 'First Name']) !!}
                                     </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            {!! Form::label('person_name', trans('customers.person_name')) !!} <i class="text-danger">*</i>
-                                            {!! Form::text('person_name', null, [
-                                                'class' => 'form-control required',
-                                                'placeholder' => 'Person Name',
-                                            ]) !!}
-                                        </div>
+                                    <div class="form-group col-lg-4">
+                                        {!! Form::label('middle_name',trans("customers.middle_name"))!!}
+                                        {!! Form::text('middle_name', null, ['class' => 'form-control','placeholder' => 'Middle Name']) !!}
                                     </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            {!! Form::label('mobile', trans('common.mobile')) !!}<i class="text-danger">*</i>
-                                            {!! Form::text('mobile', null, [
-                                                'class' => 'form-control mobile jsOptionRequired required',
-                                                'data-rule-remote' => route('checkCustomerDuplicateMobileNo', [$customers->id ?? '']),
-                                                'data-msg-remote' => 'Mobile No. already exists',
-                                                'id' => 'mobile',
-                                                'placeholder' => '9xxxxxxxxx',
-                                                'title' => 'Please enter a 10-digit mobile number.',
-                                                'pattern' => '(^[0-9]{10}$)',
-                                            ]) !!}
-                                        </div>
+                                    <div class="form-group col-lg-4">
+                                        {!! Form::label('last_name',trans("customers.last_name"))!!} <i class="text-danger">*</i>
+                                        {!! Form::text('last_name', null, ['class' => 'form-control required','placeholder' => 'Last Name']) !!}
                                     </div>
+                                    
+                                    
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -111,6 +78,20 @@
                                                 'data-msg-remote' => 'Email already exists',
                                                 'placeholder' => 'Email',
                                                 'id' => 'email',
+                                            ]) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            {!! Form::label('mobile', trans('common.mobile')) !!}<i class="text-danger">*</i>
+                                            {!! Form::text('mobile', null, [
+                                                'class' => 'form-control mobile jsOptionRequired required',
+                                                'data-rule-remote' => route('checkCustomerDuplicateMobileNo', [$customers->id ?? '']),
+                                                'data-msg-remote' => 'Mobile No. already exists',
+                                                'id' => 'mobile',
+                                                'placeholder' => '9xxxxxxxxx',
+                                                'title' => 'Please enter a 10-digit mobile number.',
+                                                'pattern' => '(^[0-9]{10}$)',
                                             ]) !!}
                                         </div>
                                     </div>
@@ -165,35 +146,6 @@
                                         @endif
                                     </div>
                                 </div>
-
-                                <div class="row">
-                                    <div class="col-lg-4 col-4">
-                                        <div class="form-group">
-                                            {!! Form::label('credit_days', trans('customers.credit_day')) !!}
-                                            {!! Form::text('credit_days', null, [
-                                                'class' => 'form-control number',
-                                                'id' => 'credit_days',
-                                                'placeholder' => '0-99 (Optional)',
-                                                'min' => 0,
-                                                'max' => 99,
-                                                'title' => 'Credit Days should be in the range of 0 to 99',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-4">
-                                        <div class="form-group">
-                                            {!! Form::label('credit_limit', trans('customers.credit_limit')) !!}
-                                            {!! Form::text('credit_limit', null, [
-                                                'class' => 'form-control number',
-                                                'id' => 'credit_limit',
-                                                'placeholder' => '0-10000000 (Optional)',
-                                                'min' => 0,
-                                                'max' => 10000000,
-                                                'title' => 'Credit Limit should be in the range of 0 to 10000000',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                             <div class="tab-pane fade slide" id="account-address-6" role="tabpanel"
@@ -209,33 +161,18 @@
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
-                                                    {!! Form::label('address_line1', trans('Address Line 1')) !!}<i class="text-danger">*</i>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    {!! Form::label('address_line2', trans('Address Line 2')) !!}
+                                                    {!! Form::label('address_line', trans('Address Line')) !!}<i class="text-danger">*</i>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
-                                                    {!! Form::textarea('address_line1', null, [
+                                                    {!! Form::textarea('address_line', null, [
                                                         'class' => 'form-control required',
-                                                        'id' => 'address_line1',
+                                                        'id' => 'address_line',
                                                         'rows' => 3,
-                                                        'placeholder' => 'Address Line 1',
-                                                    ]) !!}
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    {!! Form::textarea('address_line2', null, [
-                                                        'class' => 'form-control',
-                                                        'id' => 'address_line2',
-                                                        'rows' => 3,
-                                                        'placeholder' => 'Address Line 2 (Optional)',
+                                                        'placeholder' => 'Address Line',
                                                     ]) !!}
                                                 </div>
                                             </div>
@@ -294,21 +231,6 @@
                                         </div>
 
                                         <div class="row">
-
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    {!! Form::label('mobile2', trans('customers.mobile2')) !!}
-                                                    {!! Form::text('mobile2', null, [
-                                                        'class' => 'form-control mobile2 jsOptionRequired',
-                                                        // 'data-rule-remote' => route('checkCustomerDuplicateMobileNo', [$customers->id ?? '']),
-                                                        // 'data-msg-remote' => 'Mobile No. already exists',
-                                                        'id' => 'mobile2',
-                                                        'placeholder' => '9xxxxxxxxx (Optional)',
-                                                        'title' => 'Please enter a 10-digit mobile number.',
-                                                        'pattern' => '(^[0-9]{10}$)',
-                                                    ]) !!}
-                                                </div>
-                                            </div>
                                             <div class="col-lg-6">
                                                 <div class="form-group">
                                                     {!! Form::label('phone', trans('common.phone')) !!}
@@ -321,124 +243,41 @@
                                                     ]) !!}
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    {!! Form::label('phone2', trans('Phone 2')) !!}
-                                                    {!! Form::text('phone2', null, [
-                                                        'class' => 'form-control number',
-                                                        'minlength' => '10',
-                                                        'maxlength' => '10',
-                                                        'id' => 'phone2',
-                                                        'placeholder' => 'phone 2 (Optional)',
-                                                    ]) !!}
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="tab-pane fade slide" id="bank_detail-7" role="tabpanel"
-                                aria-labelledby="bank_detail-tab-7">
-
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            {!! Form::label('account_no', trans('customers.form.account_no')) !!}
-                                            {!! Form::text('account_no', null, [
-                                                'class' => 'form-control number',
-                                                'placeholder' => 'Account No',
-                                                'id' => 'account_no',
-                                                'pattern' => '(^[0-9]{9,18}$)',
-                                                'title' => 'Account No should be 9 to 18 digits long',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            {!! Form::label('ifsc_code', trans('customers.form.ifsc_code')) !!}
-                                            {!! Form::text('ifsc_code', null, [
-                                                'class' => 'form-control',
-                                                'placeholder' => 'IFSC Code',
-                                                'id' => 'ifsc_code',
-                                                'pattern' => '(^[A-Za-z]{4}0[A-Z0-9a-z]{6}$)',
-                                                'title' => 'IFSC Code should be in the format ABCD0123456',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            {!! Form::label('beneficiary_name', trans('employee.beneficiary_name')) !!}
-                                            {!! Form::text('beneficiary_name', null, [
-                                                'class' => 'form-control',
-                                                'placeholder' => 'Beneficiary Name',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            {!! Form::label('branch_name', trans('customers.form.branch_name')) !!}
-                                            {!! Form::text('branch_name', null, [
-                                                'class' => 'form-control',
-                                                'placeholder' => 'Branch Name',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            {!! Form::label('bank_name', trans('customers.form.bank_name')) !!}
-                                            {!! Form::text('bank_name', null, [
-                                                'class' => 'form-control',
-                                                'placeholder' => 'Bank Name',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
 
                             <div class="tab-pane fade slide last" id="document-9" role="tabpanel"
                                 aria-labelledby="document-tab-9">
 
                                 <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="row">
-                                            <div class="form-group">
-                                                {!! Form::label('pan_card_photo', trans('customers.form.pan_card')) !!} <br>
-                                                {!! Form::file('pan_card_photo', [
-                                                    'id' => 'pan_card_photo',
-                                                ]) !!}
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="form-group">
-                                                <img alt="Logo"
-                                                    src="{{ isset($customers->pan_card_photo) && !empty($customers->pan_card_photo) ? asset($customers->pan_card_photo) : asset('default.jpg') }}"
-                                                    class="h-75 align-self-end" id="pan_card_preview"
-                                                    name="pan_card_preview" style="height: 30%;width: 30%;">
-                                            </div>
-                                        </div>
+                                    <div class="col-lg-4">
+                                    <div class="form-group">
+                                        {!! Form::label('aadhar_card_no', trans('employee.aadhar')) !!}<i class="text-danger">*</i>
+                                        {!! Form::number('aadhar_card_no', null, [
+                                            'class' => 'form-control number aadhar_card_no jsOptionRequired required',
+                                            'maxlength' => '12',
+                                            'minlength' => '12',
+                                            'placeholder' => 'Aadhar Card No (Required)',
+                                            'id' => 'aadhar_card_no',
+                                            'pattern' => '\d{12}',
+                                            'title' => 'Please enter 12 digit number',
+                                        ]) !!}
                                     </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="row">
-                                            <div class="form-group">
-                                                {!! Form::label('gst_certificate_photo', trans('customers.form.gst_certificate')) !!}<br>
-                                                {!! Form::file('gst_certificate_photo', [
-                                                    'id' => 'gst_certificate_photo',
-                                                ]) !!}
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="form-group">
-                                                <img alt="Logo"
-                                                    src="{{ isset($customers->gst_certificate_photo) && !empty($customers->gst_certificate_photo) ? asset($customers->gst_certificate_photo) : asset('default.jpg') }}"
-                                                    class="h-75 align-self-end" id="gst_certificate_preview"
-                                                    name="gst_certificate_preview" style="height: 30%;width: 30%;">
-                                            </div>
-                                        </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group pt-8">
+                                        {!! Form::label('aadharcard_img', trans('employee.photo')) !!} :
+                                        {!! Form::file('aadharcard_img', ['id' => 'aadharcard_img']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <img alt="Logo"
+                                            src="{{ isset($customers->aadharcard_img) && !empty($customers->aadharcard_img) ? asset($customers->aadharcard_img) : asset('default.jpg') }}"
+                                            class="h-75 align-self-end" id="aadhar_card_preview"
+                                            name="aadhar_card_preview" style="height: 100%;width: 100%;">
                                     </div>
                                 </div>
 
@@ -491,7 +330,6 @@
     $divArr = [
         ['id' => 'basic_detail-5', 'tab' => 'basic_detail-tab-5'],
         ['id' => 'account-address-6', 'tab' => 'account-address-tab-6'],
-        ['id' => 'bank_detail-7', 'tab' => 'bank_detail-tab-7'],
         ['id' => 'document-9', 'tab' => 'document-tab-9'],
     ];
 @endphp

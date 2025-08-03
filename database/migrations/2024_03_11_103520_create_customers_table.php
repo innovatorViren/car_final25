@@ -9,26 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up(): void 
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('company_name');
-            $table->string('person_name');
+            $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('email', 255)->nullable();
-            $table->integer('managed_by')->nullable();
-            $table->string('credit_days')->nullable();
-            $table->string('credit_limit')->nullable();
             $table->string('mobile', 15)->nullable();
-
-            $table->string('pan_no', 20)->nullable();
-            $table->string('gst_type')->nullable();
-            $table->string('gst_no', 20)->nullable();
-            $table->string('fssai_no', 20)->nullable();
             $table->enum('is_create_user', [0, 1])->default(0);
-            $table->string('pan_card_photo')->nullable();
-            $table->string('gst_certificate_photo')->nullable();
-
+            $table->string('aadhar_card_no')->nullable();
+            $table->string('aadharcard_img')->nullable();
+            $table->string('address_line', 200)->nullable();
+            $table->string('phone', 15)->nullable();
+            $table->foreignId('country_id')->constrained();
+            $table->foreignId('state_id')->constrained();
+            $table->foreignId('city_id')->constrained();
+            $table->string('pincode', 6)->nullable();
             $table->enum('is_active', ['Yes', 'No'])->default('Yes');
             $table->string('ip')->nullable();
             $table->string('update_from_ip')->nullable();

@@ -25,32 +25,23 @@ class CustomerDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            // ->addColumn('action', function ($row) {
-            //     return $this->checkrights($row);
-            // })
+            ->addColumn('action', function ($row) {
+                return $this->checkrights($row);
+            })
             ->editColumn('rownum', function ($row) {
                 return $this->i++;
             })
-            ->editColumn('company_name', function ($row) {
+            ->editColumn('first_name', function ($row) {
                 $copyHtml = ' <a href="javascript:void(0)"
                 class="btn btn-hover-light-primary btn-sm btn-icon copy-btn">
                 <i class="fas fa-copy"></i></a> ';
                 $user = Sentinel::getUser();
                 if ($user->hasAnyAccess(['customers.view', 'users.superadmin'])) {
                     return '<a href="' . route('customers.show', [$row->id]) . '"  class="navi-link" target="_blank">' .
-                        '  <span class="navi-text cust-text">' . $row->company_name . '</span></a> ' . $copyHtml;
-                        // return '<a href="' . route('customers.show', [$row->id]) . '"  class="navi-link" target="_blank">' .
-                        // '  <span class="navi-text cust-text name_ellipsis_modual mt-10px" data-toggle="tooltip" data-placement="top" title="'.$row->company_name.'">' . $row->company_name . '</span></a> ' . $copyHtml;
+                        '  <span class="navi-text cust-text">' . $row->first_name . '</span></a> ' . $copyHtml;
                 } else {
-                    return $row->company_name;//'<span class="navi-text cust-text name_ellipsis_modual mt-10px" data-toggle="tooltip" data-placement="top" title="'.$row->company_name.'">' . $row->company_name . '</span>';
+                    return $row->first_name;
 
-                } // return '<a href="' . route('customers.show', [$row->id]) . '"  class="navi-link" target="_blank">' .
-                // '  <span c
-                if ($user->hasAnyAccess(['customers.view', 'users.superadmin'])) {
-                    return '<a href="' . route('customers.show', [$row->id]) . '"  class="navi-link" target="_blank">' .
-                        '  <span class="navi-text cust-text name_ellipsis_modual mt-10px" data-toggle="tooltip" data-placement="top" title="'.$row->company_name.'">' . $row->company_name . '</span></a> ' . $copyHtml;
-                } else {
-                    return  '<span class="navi-text cust-text name_ellipsis_modual mt-10px" data-toggle="tooltip" data-placement="top" title="'.$row->company_name.'">' . $row->company_name . '</span>';
                 }
             })
             ->editColumn('is_active',function ($row) {
@@ -58,8 +49,8 @@ class CustomerDataTable extends DataTable
             })
 
             ->rawColumns([
-                // 'action',
-                'company_name',
+                'action',
+                'first_name',
                 'is_active',
             ]);
     }
@@ -98,103 +89,33 @@ class CustomerDataTable extends DataTable
     public function query()
     {
         $user = Sentinel::getUser();
-        $primaryCustomer = Customer::where('managed_by', $user->id)->count();
-        $empData = Employee::where('id', $user->emp_id)->first();
-        $cheack = $empData->department_id ?? '';
         $login_user_id = $user->id ?? '';
 
-        $type_filter = request()->get("type_filter", false);
-        $gstTypeFilter = request()->get("gstTypeFilter", false);
-        $gst_type = request()->get("gst_type", false);
-        $pan_no = request()->get("pan_no", false);
-
-        // rownum
-        // DB::statement(DB::raw('set @rownum=0'));
         $fields = [
-            DB::raw('@rownum := @rownum as rownum'),
             'customers.id as id',
-            'customers.company_name as company_name',
-            'customers.person_name as person_name',
+            'customers.first_name as first_name',
+            'customers.middle_name as middle_name',
+            'customers.last_name as last_name',
             'customers.mobile as mobile',
             'customers.email as email',
-            'customers.gst_type as gst_type',
-            'customers.gst_no as gst_no',
-            'customers.pan_no as pan_no',
-            'states.name as state',
-            'cities.name as city',
-            'customer_addresses.pincode as pincode',
-            'employees.first_name',
-            'employees.last_name',
-            'customers.is_active',
-            'customers.created_by',
-            'customers.created_at',
-            'customers.updated_by',
-            'customers.updated_at',
-            'customers.credit_days',
-            'customers.credit_limit',
+            'customers.is_active'
         ];
-        $model = Customer::select($fields)
-            ->leftJoin('customer_addresses', function ($join) {
-                $join->on('customer_addresses.customer_id', '=', 'customers.id');
-                // $join->where('customer_addresses.address_type', '=', 'office');
-            })
-            ->leftJoin('customer_bank_details', 'customers.id', '=', 'customer_bank_details.customer_id')
-            ->leftJoin('states', 'customer_addresses.state_id', '=', 'states.id')
-            ->leftJoin('cities', 'customer_addresses.city_id', '=', 'cities.id')
-            ->leftJoin('employees', 'customers.managed_by', '=', 'employees.id');
+        $model = Customer::select($fields);
 
-        if (request()->get('customerfilter') != '') {
-            $companyName = request()->get('customerfilter');
-            $model->where('customers.id', $companyName);
+        if (request()->get('first_name', false)) {
+            $model->where('first_name', 'like', "%" . request()->get("first_name") . "%");
         }
-
-        if (request()->get('statefilter') != '') {
-            $model->where('states.id', 'like', "%" . request()->get('statefilter') . "%");
+        if (request()->get('middle_name', false)) {
+            $model->where('customers.middle_name', 'like', "%" . request()->get("middle_name") . "%");
         }
-
-        if ($gstTypeFilter != '') {
-            $model->where('customers.gst_type', $gstTypeFilter);
-        }
-
-        if (request()->get('company_name', false)) {
-            $model->where('company_name', 'like', "%" . request()->get("company_name") . "%");
-        }
-        if (request()->get('person_name', false)) {
-            $model->where('customers.person_name', 'like', "%" . request()->get("person_name") . "%");
+        if (request()->get('last_name', false)) {
+            $model->where('customers.last_name', 'like', "%" . request()->get("last_name") . "%");
         }
         if (request()->get('email', false)) {
             $model->where('customers.email', 'like', "%" . request()->get("email") . "%");
         }
         if (request()->get('mobile', false)) {
             $model->where('customers.mobile', 'like', "%" . request()->get("mobile") . "%");
-        }
-        if (request()->get('pan_no', false)) {
-            $model->where('customers.pan_no', 'like', "%" . request()->get("pan_no") . "%");
-        }
-        if (request()->get('gst_no', false)) {
-            $model->where('customers.gst_no', 'like', "%" . request()->get("gst_no") . "%");
-        }
-        if (request()->get('state', false)) {
-            $model->where('states.name', 'like', "%" . request()->get("state") . "%");
-        }
-        if (request()->get('city', false)) {
-            $model->where('cities.name', 'like', "%" . request()->get("city") . "%");
-        }
-        if (request()->get('pincode', false)) {
-            $model->where('customer_addresses.pincode', 'like', "%" . request()->get("pincode") . "%");
-        }
-        if (request()->get('credit_days', false)) {
-            $model->where('customers.credit_days', 'like', "%" . request()->get("credit_days") . "%");
-        }
-        if (request()->get('credit_limit', false)) {
-            $model->where('customers.credit_limit', 'like', "%" . request()->get("credit_limit") . "%");
-        }
-        if ($gst_type != '') {
-            $model->where('customers.gst_type','like', "%" . $gst_type . "%");
-        }
-
-        if ($pan_no != '') {
-            $model->where('customers.pan_no','like', "%" . $pan_no . "%");
         }
 
         return $this->applyScopes($model);

@@ -26,20 +26,7 @@ class EmployeeRequest extends FormRequest
      */
     public function rules()
     {
-        $parent_employee_id = '';
-        if ($this->get('parentId')) {
-            $id  = $this->get('parentId');
-            $parent_employee_id = '';
-        } else {
-            $id  = $this->get('id');
-            $parent_employee_id  = $this->get('parent_employee_id');
-        }
-        $parent_id = [];
-        if ($id > 0) {
-            $get_parent =  DB::select("WITH RECURSIVE tree (parent_employee_id) AS ( SELECT parent_employee_id FROM employees WHERE id = $id UNION ALL SELECT lpc.parent_employee_id FROM employees lpc JOIN tree t ON t.parent_employee_id = lpc.id ) SELECT parent_employee_id FROM tree");
-            $parent_id = array_filter(array_column($get_parent, 'parent_employee_id'));
-        }
-        // dd($this->get('id') == null || $this->get('parentId') == null);
+        $id  = $this->get('id');
         $validation = [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -52,9 +39,6 @@ class EmployeeRequest extends FormRequest
                         $qry->where(function ($query) use ($id) {
                             return $query->where('id', '!=', $id);
                         });
-                    })
-                    ->when(!empty($parent_id), function ($query) use ($parent_id) {
-                        return $query->whereNOTIN('id', $parent_id);
                     }),
 
                 function ($attribute, $value, $fail) {
@@ -86,9 +70,6 @@ class EmployeeRequest extends FormRequest
                         $qry->where(function ($query) use ($id) {
                             return $query->where('employee_id', '!=', $id);
                         });
-                    })
-                    ->when(!empty($parent_id), function ($query) use ($parent_id) {
-                        return $query->whereNOTIN('employee_id', $parent_id);
                     })
             ],
         ];

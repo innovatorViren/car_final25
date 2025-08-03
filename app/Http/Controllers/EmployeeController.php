@@ -11,8 +11,6 @@ use App\Models\{
     EmployeeAddress,
     EmployeeDocument,
     State,
-    Department,
-    Designation,
     Country,
     Customer,
     Role,
@@ -82,9 +80,9 @@ class EmployeeController extends Controller
 
     public function store(EmployeeRequest $request)
     {
-        DB::beginTransaction();
-        try {
-            list($employeeData, $employeeAddress, $employeeDocument, $emp_customers) = $this->getInput($request->all());
+        // DB::beginTransaction();
+        // try {
+            list($employeeData, $employeeAddress, $employeeDocument) = $this->getInput($request->all());
 
             $employee = Employee::create($employeeData);
             $userPassword = $request->get('password', false);
@@ -112,73 +110,46 @@ class EmployeeController extends Controller
 
             $this->uploadDrivingLicence($request, null, $img_path, $employee_id);
             $this->uploadPanCard($request, null, $img_path, $employee_id);
-            $this->uploadPassport($request, null, $img_path, $employee_id);
-            // dd(66); 
-            // dd($request->parentId);
-            if ($request->parentId) {
-                // $employeeData['parent_employee_id'] = $request->parentId;
-                $pastEmployee = Employee::find($request->parentId);
-                $pastInput['rejoin_date'] = $request->join_date;
-                // $pastInput['is_active'] = "Yes";
-                $pastEmployee->update($pastInput);
+            
 
-                $regUserData = User::where('emp_id', $pastEmployee->id)->where('is_active', 'No')->first();
+            $roleModal = Role::where('slug', 'employee')->first();
+            $role_id = (!empty($roleModal)) ? $roleModal->id : NULL;
+            $userData = [];
+            $userData['first_name'] = $employee['first_name'];
+            $userData['middle_name'] = $employee['middle_name'];
+            $userData['last_name'] = $employee['last_name'];
+            $userData['email'] = $employee['email'] ?? null;
+            $userData['mobile'] = $employee['mobile'] ?? null;
+            $userData['password'] = $userPassword;
+            $regUserData = Sentinel::registerAndActivate($userData);
+            if ($regUserData) {
+                $userId = $regUserData->id;
+                $userDataUpdate = [
+                    'is_active' => 'Yes',
+                    'emp_type' => 'employee',
+                    'emp_id' => $employee['id'],
+                    'roles_id' => $role_id,
+                    'mobile' => $employee['mobile'],
+                    'first_name' => $employee['first_name'],
+                    'last_name' => $employee['last_name'],
+                    'middle_name' => $employee['middle_name'],
+                    'email' => $employee['email'],
+                ];
+                User::where('id', $userId)->update($userDataUpdate);
 
-                if ($regUserData) {
-                    $userId = $regUserData->id;
-
-                    $userDataUpdate = [
-                        'is_active' => 'Yes',
-                        'emp_id' => $employee_id,
-                        'mobile' => $employee['mobile'] ?? '',
-                        'first_name' => $employee['first_name'] ?? '',
-                        'last_name' => $employee['last_name'] ?? '',
-                        'middle_name' => $employee['middle_name'] ?? '',
-                        'email' => $employee['email'] ?? '',
-                    ];
-                    User::where('id', $userId)->update($userDataUpdate);
-                }
-            } else {
-
-                $roleModal = Role::where('slug', 'employee')->first();
-                $role_id = (!empty($roleModal)) ? $roleModal->id : NULL;
-                $userData = [];
-                $userData['first_name'] = $employee['first_name'];
-                $userData['middle_name'] = $employee['middle_name'];
-                $userData['last_name'] = $employee['last_name'];
-                $userData['email'] = $employee['email'] ?? null;
-                $userData['mobile'] = $employee['mobile'] ?? null;
-                $userData['password'] = $userPassword;
-                $regUserData = Sentinel::registerAndActivate($userData);
-                if ($regUserData) {
-                    $userId = $regUserData->id;
-                    $userDataUpdate = [
-                        'is_active' => 'Yes',
-                        'emp_type' => 'employee',
-                        'emp_id' => $employee['id'],
-                        'roles_id' => $role_id,
-                        'mobile' => $employee['mobile'],
-                        'first_name' => $employee['first_name'],
-                        'last_name' => $employee['last_name'],
-                        'middle_name' => $employee['middle_name'],
-                        'email' => $employee['email'],
-                    ];
-                    User::where('id', $userId)->update($userDataUpdate);
-
-                    $roleUser = [];
-                    $roleUser['user_id'] = $userId;
-                    $roleUser['role_id'] = $role_id;
-                    RoleUser::create($roleUser);
-                }
+                $roleUser = [];
+                $roleUser['user_id'] = $userId;
+                $roleUser['role_id'] = $role_id;
+                RoleUser::create($roleUser);
             }
             DB::commit();
-        } catch (Exception $e) {
-            DB::rollback();
-            info($e);
-            // return false;
-            $this->response_json['message'] = $e->getMessage();
-            return $this->responseError();
-        }
+        // } catch (Exception $e) {
+        //     DB::rollback();
+        //     info($e);
+        //     // return false;
+        //     $this->response_json['message'] = $e->getMessage();
+        //     return $this->responseError();
+        // }
         return redirect()->route('employee.index')->with('success', __('common.create_success'));
     }
 
@@ -275,14 +246,6 @@ class EmployeeController extends Controller
         $withArr = [
             'employeeAddress',
             'employeeDocument',
-            'appointed' => function ($query) {
-                $query->select('id', 'first_name', 'last_name', 'designation_id');
-                $query->with([
-                    'designationName' => function ($query) {
-                        $query->select('id', 'name');
-                    }
-                ]);
-            }
         ];
         $employee = Employee::with($withArr)->findOrFail($id);
         // dd($employee->appointed);
@@ -318,11 +281,8 @@ class EmployeeController extends Controller
     {
         $employee = Employee::with([
             'employeeAddress',
-            'employeeDocument',
-            'employeeCustomers'
-            // "appointeds"
+            'employeeDocument'
         ])->findOrFail($id);
-        // $appointeds_ids = $employee->appointeds->pluck('id')->toArray();
         $employeeAddress = $employee->employeeAddress;
         $employeeDocument = $employee->employeeDocument;
         if ($employeeAddress) {
@@ -353,25 +313,10 @@ class EmployeeController extends Controller
         $this->data['present_city'] = !empty($employeeAddress->present_state_id) ? $this->common->getCities($employeeAddress->present_state_id) : [];
         $this->data['permanent_city'] = !empty($employeeAddress->permanent_state_id) ? $this->common->getCities($employeeAddress->permanent_state_id) : [];
         $this->data['maritalstatus'] = Config('project.marital_status');
-        $this->data['department'] = Department::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
-        $this->data['designation'] = Designation::where('is_active', 'Yes')->pluck('name', 'id')->toArray();
+        
         $this->data['bloodgroup'] = Config('project.bloodgroup');
-        // $this->data['appointedBy'] = Employee::where('is_active', 'Yes')->pluck('person_name', 'id')->toArray();
-        $field = [DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as employee_name"), 'id'];
-        // $doNotSelect = [$id, ...$appointeds_ids];
-        $this->data['appointedBy'] =
-            Employee::select($field)
-            ->where('is_active', 'Yes')
-            // ->whereNotIn('id', $doNotSelect)
-            ->whereNotIn('id', [$id])
-            ->orderBy('first_name', 'ASC')
-            ->pluck('employee_name', 'id')
-            ->toArray();
+        
         $this->data['employee'] = $employee;
-        $this->data['customers'] = $this->common->getCustomer();
-        $this->data['branchList'] = $this->common->getBranchList();
-        // employee_customers
-        $this->data['employee_customers'] = $employee->employeeCustomers->pluck('customer_id')->toArray();
         return view('employee.edit', $this->data);
     }
 
@@ -387,34 +332,11 @@ class EmployeeController extends Controller
         $employee = Employee::with(['employeeAddress', 'employeeDocument'])->findOrFail($id);
         // dd($employee);
         $userPassword = $request->get('password', false);
-        list($employeeData, $employeeAddress, $employeeDocument, $emp_customers) = $this->getInput($request->all(), $id);
+        list($employeeData, $employeeAddress, $employeeDocument) = $this->getInput($request->all(), $id);
         $employee->update($employeeData);
         $employee_id = $id;
         $img_path = $employee_id;
         $this->uploadImage($request, $employee->photo, $img_path, $employee_id);
-
-        // $old_emp_cust_ids = EmployeeCustomers::where('employee_id', $employee_id)->get();
-
-        // if (!empty($old_emp_cust_ids)) {
-        //     foreach ($old_emp_cust_ids as $old_emp_cust_id) {
-        //         if (!in_array($old_emp_cust_id->customer_id, $emp_customers)) {
-        //             EmployeeCustomers::where('employee_id', $employee_id)->where('customer_id', $old_emp_cust_id->customer_id)->delete();
-        //         }
-        //     }
-        // }
-
-        // if (!empty($emp_customers)) {
-        //     foreach ($emp_customers as $customer) {
-        //         $customerData = [
-        //             'employee_id' => $employee_id,
-        //             'customer_id' => $customer,
-        //         ];
-        //         $old_emp_cust_id = EmployeeCustomers::where('employee_id', $employee_id)->where('customer_id', $customer)->first();
-        //         if (empty($old_emp_cust_id)) {
-        //             EmployeeCustomers::create($customerData);
-        //         }
-        //     }
-        // }
 
         $loginUser = Sentinel::getUser();
         $user_id = $loginUser ? $loginUser->id : 0;
@@ -458,7 +380,6 @@ class EmployeeController extends Controller
         $this->uploadAadharCard($request, $employee->aadharcard_img, $img_path, $employee_id);
         $this->uploadDrivingLicence($request, $employee->drivinglicence_img, $img_path, $employee_id);
         $this->uploadPanCard($request, $employee->pancard_img, $img_path, $employee_id);
-        $this->uploadPassport($request, $employee->passport_img, $img_path, $employee_id);
 
         $regUserData = User::where('emp_id', $employee->id)->where('is_active', 'Yes')->first();
         if ($regUserData) {
@@ -470,7 +391,6 @@ class EmployeeController extends Controller
                 'first_name' => $employee['first_name'],
                 'last_name' => $employee['last_name'],
                 'middle_name' => $employee['middle_name'],
-                // 'email' => $employee['email'],
             ];
             User::where('id', $userId)->update($userDataUpdate);
         }
@@ -493,7 +413,6 @@ class EmployeeController extends Controller
                 $unlink_aadhar_card = $employee->employeeDocument->aadharcard_img_path;
                 $unlink_drivinglicence = $employee->employeeDocument->drivinglicence_img_path;
                 $unlink_pancard = $employee->employeeDocument->pancard_img_path;
-                $unlink_passport = $employee->employeeDocument->passport_img_path;
 
                 if (File::exists($unlink_aadhar_card) && $unlink_aadhar_card != null) {
                     unlink(base_path('public' . $unlink_aadhar_card));
@@ -503,9 +422,6 @@ class EmployeeController extends Controller
                 }
                 if (File::exists($unlink_pancard) && $unlink_pancard) {
                     unlink(base_path('public' . $unlink_pancard));
-                }
-                if (File::exists($unlink_passport) && $unlink_passport) {
-                    unlink(base_path('public' . $unlink_passport));
                 }
 
                 EmployeeAddress::where('employee_id', $id)->delete();

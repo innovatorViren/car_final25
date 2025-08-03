@@ -8,51 +8,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    {!! Form::label('customerfilter', trans('customers.company_name')) !!}
-                    {!! Form::select('customerfilter', ['' => 'Select'] + $customers, null, [
-                        'class' => 'form-control customerfilter jscustomerfilter',
-                        'id' => 'customerfilter_id',
-                        'data-placeholder' => 'Company Name',
-                    ]) !!}
-                </div>
 
-                <div class="form-group">
+                {{--<div class="form-group">
                     {!! Form::label('statefilter', trans('customers.state')) !!}
                     {!! Form::select('statefilter', ['' => 'Select'] + $states, null, [
                         'class' => 'form-control state jsstatefilter',
                         'id' => 'state_id',
                         'data-placeholder' => 'State',
                     ]) !!}
-                </div>
+                </div>--}}
 
-               
-
-                {{-- <div class="form-group">
-                    {!! Form::label('product_type', trans('customers.product_type')) !!}
-                    {!! Form::select('product_type', ['' => 'Select'] + $productType, null, [
-                        'class' => 'form-control jsProductTypefilter ',
-                        'id' => 'product_type',
-                        'data-placeholder' => 'Product Type',
-                    ]) !!}
-                </div> --}}
-
-                <div class="form-group">
-                    {!! Form::label('gstTypeFilter', trans('customers.gst_type')) !!}
-                    {!! Form::select('gstTypeFilter', ['' => 'Select'] + $gst_type, null, [
-                        'class' => 'form-control gstTypeFilter jsGstTypeFilter',
-                        'id' => 'gstTypeFilter_id',
-                        'data-placeholder' => 'GST Type',
-                    ]) !!}
-                </div>
-
-                {{-- <div class="form-group">
-                    {!! Form::label('type_filter', trans('customers.type')) !!}
-                    {!! Form::select('type_filter', ['' => 'Select', 'Roll'=>'Roll','Pouch'=>'Pouch'], null, [
-                        'class' => 'form-control jsTypeFilter ',
-                        'id' => 'type_filter','data-placeholder' => 'Type'
-                    ]) !!}
-                </div> --}}
 
             </div>
             <div class="modal-footer">

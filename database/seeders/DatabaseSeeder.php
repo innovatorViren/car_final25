@@ -28,18 +28,18 @@ class DatabaseSeeder extends Seeder
         $admin = User::where('email', "virendrabutani@gmail.com")->first();
         
 
-        $support_smtp_config = SmtpConfiguration::create([
-            'from_name' => 'MNS Technologies Support',
-            'host_name' => 'smtppro.zoho.com',
-            'username' => 'virendrabutani@gmail.com',
-            'port' => '465',
-            'password' => 'Admin@123',
-            'driver' => 'smtp',
-            'encryption' => 'SSL',
-            'is_active' => "Yes",
-            "ip" => "127.0.0.1",
-            "created_by" => $admin->id,
-        ]);
+        // $support_smtp_config = SmtpConfiguration::create([
+        //     'from_name' => 'MNS Technologies Support',
+        //     'host_name' => 'smtppro.zoho.com',
+        //     'username' => 'virendrabutani@gmail.com',
+        //     'port' => '465',
+        //     'password' => 'Admin@123',
+        //     'driver' => 'smtp',
+        //     'encryption' => 'SSL',
+        //     'is_active' => "Yes",
+        //     "ip" => "127.0.0.1",
+        //     "created_by" => $admin->id,
+        // ]);
 
         // SmtpConfiguration::create([
         //     'from_name' => 'MNS Technologies Info',

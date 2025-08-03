@@ -15,5 +15,14 @@ class Employee extends MyModel
     protected $revisionCleanup = true;
     protected $historyLimit = 500;
     protected $guarded = [];
+    public function employeeAddress()
+    {
+        return $this->hasOne(EmployeeAddress::class)->with(['presentState','permanentCity']);
+    }
+
+    public function employeeDocument()
+    {
+        return $this->hasOne(EmployeeDocument::class);
+    }
     
 }
