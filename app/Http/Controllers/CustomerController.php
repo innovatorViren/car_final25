@@ -52,7 +52,7 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customers = Customer::with('customerAddress')->findOrFail($id);
+        $customers = Customer::findOrFail($id);
         $this->data['countries'] =  $this->common->getCountries();
         $this->data['states'] =  $this->common->getStates();
         $this->data['customers'] = $customers;
@@ -64,20 +64,7 @@ class CustomerController extends Controller
 
     public function edit($id)
     {
-        $customers = Customer::with('customerAddress')->findOrFail($id);
-        $address = $customers->customerAddress;
-
-
-        $customers['customer_addresses_id'] = $address->id;
-        $customers['address_line'] = $address->address_line;
-        $customers['city'] = $address->city;
-        $customers['pincode'] = $address->pincode;
-        $customers['country_id'] = $address->country_id;
-        $customers['state_id'] = $address->state_id;
-        $customers['city_id'] = $address->city_id;
-        $customers['mobile'] = $customers->mobile;
-        $customers['phone'] = $address->phone;
-
+        $customers = Customer::findOrFail($id);
     
         $this->data['customers'] = $customers;
         $this->data['countries'] =  $this->common->getCountries($customers['country_id']);
@@ -92,8 +79,7 @@ class CustomerController extends Controller
 
         try {
             list(
-                $customerData,
-                $customerAddress,
+                $customerData
             ) = $this->getInput($request->all(), $id);
             $id = $request->id;
                 $customer = Customer::findOrFail($id);
@@ -104,13 +90,11 @@ class CustomerController extends Controller
                 $customerId = $customer->id;
                 $img_path = $customerId;
                 $userPassword = $request->get('password', false);
-                $this->uploadPanCard($request, null, $img_path, $customerId);
-                $this->uploadGstCertificate($request, null, $img_path, $customerId);
-    
-                $customer_addresses_id = $request->customer_addresses_id;
-    
-                $customerAddressData = CustomerAddress::findOrFail($customer_addresses_id);
-                $customerAddressData->update($customerAddress);
+
+
+                if ($request->hasFile('aadharcard_img')) {
+                    $this->uploadAadharCard($request, null, $img_path, $customerId);
+                }
                 
                 $regUserData = User::where('customer_id', $customer->id)->where('is_active', 'Yes')->first();
     
@@ -134,8 +118,9 @@ class CustomerController extends Controller
                         'emp_type' => 'customer',
                         'customer_id' => $customer['id'],
                         'mobile' => $customer['mobile'],
-                        'first_name' => $customer['person_name'],
-                        'email' => $customer['email'] ?? null,
+                        'first_name' => $customer['first_name'],
+                        'middle_name' => $customer['middle_name'],
+                        'last_name' => $customer['last_name'],
                     ];
                     User::where('id', $userId)->update($userDataUpdate);
                 }
@@ -259,23 +244,6 @@ class CustomerController extends Controller
         return $path . $file_name;
     }
 
-    // checkDuplicatePanNo
-    public function checkDuplicatePanNo(Request $request)
-    {
-        $pan_no = $request->pan_no;
-        $id = $request->id;
-        $customer = Customer::where('pan_no', $pan_no);
-        if ($id) {
-            $customer = $customer->where('id', '!=', $id);
-        }
-        $customer = $customer->first();
-        if ($customer) {
-            return 'false';
-        } else {
-            return 'true';
-        }
-    }
-
     // checkDuplicateEmail
     public function checkDuplicateEmail(Request $request)
     {
@@ -347,7 +315,9 @@ class CustomerController extends Controller
                 $role_id = (!empty($roleModal)) ? $roleModal->id : NULL;
 
                 $userData = [];
-                $userData['first_name'] = $customer['person_name'];
+                $userData['first_name'] = $customer['first_name'];
+                $userData['middle_name'] = $customer['middle_name'];
+                $userData['last_name'] = $customer['last_name'];
                 $userData['email'] = $customer['email'] ?? null;
                 $userData['mobile'] = $customer['mobile'] ?? null;
                 $userData['password'] = Hash::make($userPassword);

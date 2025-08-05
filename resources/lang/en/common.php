@@ -40,16 +40,13 @@ return [
     'year' => 'Year',
     'mobile' => 'Mobile',
     'phone' => 'Phone',
-    'pan_no' => 'PAN No',
-    'msme_no' => 'MSME No',
-    'gst_no' => 'GST No',
+    
     'address' => 'Address',
     'pincode' => 'Pin Code',
-    'msmeno' => 'MSME No',
+    
     'height' => 'Height',
     'weight' => 'Weight',
     'width' => 'Width',
-    'hsn_code' => 'HSN',
     'rate' => 'Rate',
     'total' => 'Total',
     'customer_name' => 'Customer Name',
