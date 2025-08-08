@@ -23,7 +23,7 @@ use App\Http\Controllers\{
     UserController,
     SmtpConfigurationController,
     ProfileController,
-    PrivacypolicyController,ContactController
+    PrivacypolicyController,ContactController,PlanController
 };
 use App\Http\Controllers\Auth\PasswordController;
 use Database\Seeders\SeriesSeeder;
@@ -181,6 +181,8 @@ Route::get('/get-role-permission', [RoleController::class, 'getRolePermission'])
 Route::get('/get-users-list', [RoleController::class, 'getUsersList'])->name('role.getUsersList');
 Route::get('/view-permission', [RoleController::class, 'viewPermission'])->name('role.viewPermission');
 
+Route::resource('plan', PlanController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
+
 
 Route::resource('smtp-configuration', SmtpConfigurationController::class)
     ->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
@@ -192,3 +194,4 @@ Route::resource('banner', BannerController::class)->only(['index', 'create', 'st
 
 Route::get('privacy-policy', [PrivacypolicyController::class, 'index'])->name('privacy-policy');
 Route::get('contact-us', [ContactController::class, 'index'])->name('contact-us');
+

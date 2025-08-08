@@ -112,14 +112,17 @@ class Permission
             'employee.add',
             'employee.edit',
             'employee.delete',
-            'employee.assign_customer',
-            'employee.assign_salesman',
         ],
 
-        
-        // 'salesman' => [
-        //     'salesman.daily_activity',
-        // ],
+        //Plan (Menu)
+        'plan' => [
+            'plan.list',
+            'plan.view',
+            'plan.add',
+            'plan.edit',
+            'plan.delete',
+            'plan.assign_car',
+        ],
 
         /* don't remove this */
     ];

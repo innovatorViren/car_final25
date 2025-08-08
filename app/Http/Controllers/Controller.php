@@ -233,22 +233,19 @@ class Controller extends BaseController
     {
         if (Auth::check()) {
             $user = Auth::user();
-            // dd($user);
 
             $user->id = $user->id;
-            $user->mobile_no_1 = $user->mobile ?? '';
+            $user->mobile_no = $user->mobile ?? '';
             if ($user->emp_type == 'customer') {
-                $customer = Customer::select('id','person_name','mobile')->where('id', $user->customer_id)->first();
+                $customer = Customer::select('id','first_name','middle_name','last_name','mobile')->where('id', $user->customer_id)->first();
                 $user->login_id = (!empty($customer)) ? $customer->id : '';
-                $user->person_name = (!empty($customer)) ? $customer->person_name : '';                  
+                $user->person_name = (!empty($customer)) ? ($customer->first_name .' '. $customer->middle_name .' '. $customer->last_name) : '';                  
             }
             if ($user->emp_type == 'employee') {
                 // $salesmen = Salesmans::select('id','first_name','middle_name','last_name','mobile_1')->where('user_id', $user->id)->first();
-                $employee = Employee::select('id','person_name','mobile')->where('id', $user->emp_id)->first();
+                $employee = Employee::select('id','first_name','middle_name','last_name','mobile')->where('id', $user->emp_id)->first();
                 $user->login_id = (!empty($employee)) ? $employee->id : '';
-                // $user->first_name = (!empty($employee)) ? $employee->first_name : '';
-                // $user->middle_name = (!empty($employee)) ? $employee->middle_name : '';
-                // $user->last_name = (!empty($employee)) ? $employee->last_name : '';
+                $user->person_name = (!empty($employee)) ? ($employee->first_name .' '. $employee->middle_name .' '. $employee->last_name) : ''; 
             }
             return $user;
         } else {
@@ -260,22 +257,11 @@ class Controller extends BaseController
 
         $userType = $user->emp_type ?? '';
         if($userType == 'customer'){
-            $userTypeId = 1;
-            $salesmanAsm = 'No';
-        }else if($userType == 'employee'){
             $userTypeId = 2;
-            $empDesId = Employee::where('id', $user->emp_id)->first()->designation_id; 
-            $desgId = Designation::where('slug', 'area_sales_manager')->first()->id;
-            if($empDesId == $desgId)
-            {
-                $salesmanAsm = 'Yes';
-            }else{
-                $salesmanAsm = 'No';
-            }
-            // $is_asm = Employee::where('id', $user->emp_id)->first()->is_asm;
-        }else{
+        }else if($userType == 'employee'){
             $userTypeId = 3;
-            $salesmanAsm = 'No';
+        }else{
+            $userTypeId = 1;
         }
         return collect([
             'id' => $user->id ?? '',
@@ -286,8 +272,7 @@ class Controller extends BaseController
             'user_type_name' => $user->emp_type ?? '',
             'email' => $user->email ?? '',
             'is_active' => $user->is_active ?? '',
-            'salesman_asm' => $salesmanAsm,
-            'access_token' => $user->createToken('MNS Mahalaxmi Token for customer and salesmen login with secure')->accessToken,
+            'access_token' => $user->createToken('Clear Car Token for customer and employee login with secure')->accessToken,
             'token_type' => 'Bearer',
         ]);
     }
@@ -302,7 +287,7 @@ class Controller extends BaseController
 
     public function getSettingData()
     {
-        $settings = Setting::whereIn('name', ['android_version','ios_version','company_brochure'])->get()->toArray();
+        $settings = Setting::whereIn('name', ['android_version','ios_version'])->get()->toArray();
     
         $android_version = array_reduce(array_filter($settings, function($val, $key){
             return ($val['name'] == 'android_version');
@@ -312,14 +297,9 @@ class Controller extends BaseController
             return ($val['name'] == 'ios_version');
         },ARRAY_FILTER_USE_BOTH), 'array_merge', array());
 
-        $catalog = array_reduce(array_filter($settings, function($val, $key){
-            return ($val['name'] == 'company_brochure');
-        },ARRAY_FILTER_USE_BOTH), 'array_merge', array());
-
         return [
                 'android_version' => (!empty($android_version)) ? (int)$android_version['value'] : 0,
                 'ios_version' => (!empty($ios_version)) ? (int)$ios_version['value'] : 0,
-                'catalog' => (!empty($catalog)) ? URL::asset('').'/'.$catalog['value'] : '',
             ];
     }
 

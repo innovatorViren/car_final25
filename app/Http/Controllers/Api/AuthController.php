@@ -22,7 +22,6 @@ class AuthController extends ApiController
 {
     public function login(Request $request)
     {
-        // dd($request->all());
         try {
 
             $loginData = Validator::make($this->request->all(), [
@@ -58,6 +57,19 @@ class AuthController extends ApiController
 
             
             $curr_user = $this->currentuser();
+
+            // Multiple login are another device autometic logout strat
+            $sessions = sessions::get();
+            if(!empty($sessions)){
+                foreach ($sessions as $key => $session) {
+                    $user_id = $session->user_id ?? 0;
+                    if ($user_id == $user->id && $session->token != Session::get('_token')) {
+                        DB::table('oauth_access_tokens')->where('user_id',$user->id)->delete();
+                        $session->delete();
+                    }
+                }
+            }
+            
             $login_user = Sentinel::findById($curr_user->id);
             $superadmin = $login_user->hasAccess(['users.superadmin']);
 
@@ -68,26 +80,20 @@ class AuthController extends ApiController
             }
 
             $user_role_id = $this->currentuser()->roles_id;
-            // dd($user_role_id);
+
             $rolesData = Role::where('id',$user_role_id)->first();
             $rolesData_array = Role::where('id',$user_role_id)->first()->permissions;
                 
 
             $this->data = $this->userCollection($user);
             $this->response_json['setting_info'] = $this->getSettingData();
-            // $settings = new Setting;
-            // $android_version = $settings->where('name', 'android_version')->first();
-            // $ios_version = $settings->where('name', 'ios_version')->first();
-
-            // $this->data['android_version'] = (int) $android_version->value;
-            // $this->data['ios_version'] = (int) $ios_version->value;
 
             $payload = '';
             $platform = $request->get('Platform', '');
-            $deviceModel = apache_request_headers()['Devicemodel'] ?? '';
-            $deviceId = apache_request_headers()['Deviceid'] ?? '';
-            $deviceVersion = apache_request_headers()['Deviceversion'] ?? '';
-            $deviceBattery = apache_request_headers()['Devicebattery'] ?? '';
+            $deviceModel = $request->get('DeviceModel', '');
+            $deviceId = $request->get('DeviceId', '');
+            $deviceVersion = $request->get('DeviceVersion', '');
+            $deviceBattery = $request->get('DeviceBattery', '');
             $payload = json_encode([
                 "platform" => $platform,
                 "device_model" => $deviceModel,
@@ -95,17 +101,7 @@ class AuthController extends ApiController
                 "device_version" => $deviceVersion,
                 "device_battery" => $deviceBattery,
             ]);
-             // Multiple login are another device autometic logout strat
-            $sessions = sessions::get();
-            if(!empty($sessions)){
-                foreach ($sessions as $key => $session) {
-                    $user_id = $session->user_id ?? 0;
-                    if ($user_id == $user->id && $session->token != Session::get('_token')) {
-                        $session->delete();
-                    }
-                }
-            }
-            // End
+
             
             $session_data = array(
                 'id' => Session::getId(),
@@ -359,8 +355,7 @@ class AuthController extends ApiController
     public function getSettingData()
     {
 
-        // $settings = Setting::whereIn('name', ['android_version','ios_version'])->get()->toArray();
-        $settings = Setting::whereIn('name', ['android_version','ios_version','company_brochure'])->get()->toArray();
+        $settings = Setting::whereIn('name', ['android_version','ios_version'])->get()->toArray();
 
         $android_version = array_reduce(array_filter($settings, function($val, $key){
             return ($val['name'] == 'android_version');
@@ -370,15 +365,9 @@ class AuthController extends ApiController
             return ($val['name'] == 'ios_version');
         },ARRAY_FILTER_USE_BOTH), 'array_merge', array());
 
-        $catalog = array_reduce(array_filter($settings, function($val, $key){
-            return ($val['name'] == 'company_brochure');
-        },ARRAY_FILTER_USE_BOTH), 'array_merge', array());
-
         return [
             'android_version' => (!empty($android_version)) ? (int)$android_version['value'] : 0,
             'ios_version' => (!empty($ios_version)) ? (int)$ios_version['value'] : 0,
-            'catalog' => (!empty($catalog)) ? URL::asset('').'/'.$catalog['value'] : '',
-            'google_api_key' => config('global.google_api_key') ?? '',
         ];
     }
 

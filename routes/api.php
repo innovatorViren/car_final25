@@ -17,7 +17,6 @@ use App\Http\Controllers\CommonController;
 
 Route::namespace('Api')->group(function () {
 
-
     /**
      * Public routes can be accessed without login
      */
