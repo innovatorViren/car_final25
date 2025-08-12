@@ -1,5 +1,5 @@
 <?php
-namespace mahalaxmi\Auth;
+namespace clean\Auth;
 
 /**
  *

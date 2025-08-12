@@ -28,10 +28,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $this->data['totalCustomers'] = 0;
-        $this->data['totalSuppliers'] = 0;
-        $this->data['totalEmployee'] = 0;
-        $this->data['totalProduct'] = 0;
+        $customer = DB::table('customers')->where('is_active','Yes')->count();
+        $employee = DB::table('employees')->where('is_active','Yes')->count();
+        $carModel = DB::table('car_models')->where('is_active','Yes')->count();
+        
+        $this->data['totalCustomers'] = $customer;
+        $this->data['totalEmployee'] = $employee;
+        $this->data['todayOrder'] = 0;
+        $this->data['totalCarModel'] = $carModel;
 
         return view('dashboard.dashboard', $this->data);
     }

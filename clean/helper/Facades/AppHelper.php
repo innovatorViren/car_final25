@@ -1,5 +1,5 @@
 <?php
-namespace Mahalaxmi\Helper\Facades;
+namespace Clean\Helper\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -12,6 +12,6 @@ class AppHelper extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Mahalaxmi\Helper\AppHelper';
+        return 'Clean\Helper\AppHelper';
     }
 }

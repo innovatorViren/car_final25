@@ -82,7 +82,6 @@ Route::resource('settings', SettingController::class)->only(['index', 'create', 
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-// Route::get('dashboardadmin', [DashboardController::class, 'index'])->name('dashboardadmin');
 Route::post('user-logout', [DashboardController::class, 'userLogout'])->name('userLogout');
 Route::get('/master-page', [DashboardController::class, 'masterPages'])->name('masterPages');
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mahalaxmi\Helper;
+namespace Clean\Helper;
 
 use Intervention\Image\Facades\Image as Image;
 use File;

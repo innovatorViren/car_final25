@@ -19,12 +19,14 @@ $default_date = request()->get('date', $date);
     @if($current_user->hasAnyAccess(['users.superadmin']))
     <div class="container-fluid">
         <div class="row">
-            {{-- <div class="col-sm-6 col-md-4 col-xl-3">
+            <div class="col-sm-6 col-md-4 col-xl-3">
                 <a href="" class="font-weight-bold text-dark-50 font-size-lg">  
                     <div class="card card-custom card-stretch gutter-b" style="background-color:#F1D6E2">
                         <div class="card-body">
-                            <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0"></span>
-                            {{ __('dashboard.lead') }}
+                            <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0">
+                                {{ $totalCustomers }}
+                            </span>
+                            {{ __('dashboard.total_customer') }}
                         </div>
                     </div>
                 </a>   
@@ -34,9 +36,9 @@ $default_date = request()->get('date', $date);
                     <div class="card card-custom card-stretch gutter-b" style="background-color:#dbe6f0">
                         <div class="card-body pr-1">
                             <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0">
-                                
+                                {{ $totalEmployee }}
                             </span>
-                            {{ __('dashboard.total_customer') }}
+                            {{ __('dashboard.total_employee') }}
                         </div>
                     </div>
                 </a>   
@@ -45,8 +47,10 @@ $default_date = request()->get('date', $date);
                 <a href="" class="font-weight-bold text-dark-50 font-size-lg">  
                     <div class="card card-custom card-stretch gutter-b" style="background-color:#D3F1E5">
                         <div class="card-body">
-                            <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0"></span>
-                            {{ __('common.raw_material') }}
+                            <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0">
+                                {{ $totalCarModel }}
+                            </span>
+                            {{ __('dashboard.total_car_model') }}
                         </div>
                     </div>
                 </a>   
@@ -55,12 +59,14 @@ $default_date = request()->get('date', $date);
                 <a href="" class="font-weight-bold text-dark-50 font-size-lg">  
                     <div class="card card-custom card-stretch gutter-b" style="background-color:#f3FEEB">
                         <div class="card-body pr-1">
-                            <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0"></span>
-                            {{ __('common.product') }}
+                            <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0">
+                                {{ $todayOrder }}
+                            </span>
+                            {{ __('dashboard.today_order') }}
                         </div>
                     </div>
                 </a>   
-            </div> --}}
+            </div>
             
         </div>
 

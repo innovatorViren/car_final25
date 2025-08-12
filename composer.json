@@ -39,10 +39,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Mahalaxmi\\Crud\\": "mahalaxmi/crud/src/",
-            "Mahalaxmi\\Flash\\": "mahalaxmi/flash/src/",
-            "Mahalaxmi\\Services\\": "mahalaxmi/services",
-            "Mahalaxmi\\Helper\\": "mahalaxmi/helper"
+            "Clean\\Crud\\": "clean/crud/src/",
+            "Clean\\Flash\\": "clean/flash/src/",
+            "Clean\\Services\\": "clean/services",
+            "Clean\\Helper\\": "clean/helper"
         },
         "files": [
             "app/Http/helpers.php",

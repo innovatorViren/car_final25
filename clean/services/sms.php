@@ -1,5 +1,5 @@
 <?php
-namespace mahalaxmi\Services;
+namespace clean\Services;
 
 /**
  * This class is onzup service for sending SMS.

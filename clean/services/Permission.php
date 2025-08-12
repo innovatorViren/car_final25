@@ -1,6 +1,6 @@
 <?php
 
-namespace Mahalaxmi\Services;
+namespace Clean\Services;
 
 /**
  * This class is onzup service for Permissions.

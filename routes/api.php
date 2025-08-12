@@ -21,13 +21,9 @@ Route::namespace('Api')->group(function () {
      * Public routes can be accessed without login
      */
     Route::post('login', [AuthController::class, 'login']);
-    Route::post('/send_otp', [AuthController::class, 'sendotp']);
-    Route::post('/verify_otp', [AuthController::class, 'otpVerify']);
-    Route::post('/forgot_password', [AuthController::class, 'forgot_password']);
-
+        Route::post('/register', [AuthController::class, 'register']);
 
     Route::get('get-countries', [CommonController::class, 'getCountries']);
-    Route::get('get-states', [CommonController::class, 'getStates']);
     Route::get('get-city', [CommonController::class, 'getCity']);
 
     Route::post('/get-app-info-data',[AuthController::class, 'getAppInfoData']);
@@ -38,6 +34,7 @@ Route::namespace('Api')->group(function () {
      */
     Route::middleware('auth:api')->group(function () {
         // logout user
+    Route::get('get-states', [CommonController::class, 'getStates']);
         Route::get('/logout', [AuthController::class, 'logout']);
 
         // Employee(salesman) api

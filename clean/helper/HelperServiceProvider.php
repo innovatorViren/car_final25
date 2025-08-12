@@ -1,5 +1,5 @@
 <?php
-namespace Mahalaxmi\Helper;
+namespace Clean\Helper;
 
 use Illuminate\Support\ServiceProvider;
 

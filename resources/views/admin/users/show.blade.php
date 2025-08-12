@@ -79,16 +79,6 @@
                                                 <span class="navi-text">Info</span>
                                             </a>
                                         @endif
-
-                                        @if ($current_user->hasAnyAccess(['users.autologin', 'users.superadmin']))
-                                            @if ($current_user->hasAnyAccess(['users.superadmin']) || $users->rolesData->slug != 'administrator')
-                                                <a href="{{ route('user.auto-login', $users->id) }}"
-                                                    class="btn btn-light-dark btn-sm font-weight-bold">
-                                                    <i class="fa fa-sign-in-alt fa-1x"></i>
-                                                    Login
-                                                </a>
-                                            @endif
-                                        @endif
                                     </span>
                                 </div>
                             </div>

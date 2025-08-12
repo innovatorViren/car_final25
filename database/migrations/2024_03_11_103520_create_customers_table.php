@@ -23,11 +23,13 @@ return new class extends Migration
             $table->string('aadharcard_img')->nullable();
             $table->string('address_line', 200)->nullable();
             $table->string('phone', 15)->nullable();
-            $table->foreignId('country_id')->constrained();
-            $table->foreignId('state_id')->constrained();
-            $table->foreignId('city_id')->constrained();
+            $table->integer('country_id')->nullable();
+            $table->integer('state_id')->nullable();
+            $table->integer('city_id')->nullable();
             $table->string('pincode', 6)->nullable();
             $table->enum('is_active', ['Yes', 'No'])->default('Yes');
+            $table->string('platform')->nullable();
+            $table->string('otp')->nullable();
             $table->string('ip')->nullable();
             $table->string('update_from_ip')->nullable();
             $table->integer('created_by')->nullable();
