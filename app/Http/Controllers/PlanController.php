@@ -30,10 +30,7 @@ class PlanController extends Controller
      */
     public function index()
     {
-        //
-    }
-    public function index(PlanDataTable $dataTable)
-    {
+        dd(454);
         return $dataTable->render('plan.index');
     }
 
@@ -50,6 +47,7 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         //
     }
 
