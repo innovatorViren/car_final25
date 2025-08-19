@@ -42,6 +42,7 @@ class CarModelController extends Controller
     public function create()
     {
         $this->data['carBrand'] =  $this->common->getCarBrand();
+        $this->data['carSizes']  = Config('global.car_sizes');
         return response()->json(['html' =>  view('car-model.create', $this->data)->render()]);
     }
 
@@ -50,6 +51,7 @@ class CarModelController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $input = $request->except(['_token','model_photo']);
 
         $photo = '';

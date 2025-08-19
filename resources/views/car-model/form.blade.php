@@ -14,6 +14,10 @@
         </div>
     </div>
 </div>
+<div class="form-group ">
+    {!! Form::label('car_size', 'Car Size') !!}<span class="text-danger">*</span>
+     {!! Form::select('car_size_id', $carSizes, null, ['class' => 'form-control','id' => 'car_size_id', 'placeholder' => 'Select Car Size']) !!}
+</div>
 <div class="row">
     <div class="form-group col-lg-12">
         {!! Form::label('model_photo', trans('car_model.photo')) !!}

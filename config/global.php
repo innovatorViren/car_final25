@@ -10,6 +10,21 @@ return [
     'app_update_date' => '2024-04-31',
     'GOOGLE_RECAPTCHA_KEY'=>'6LdwIkUrAAAAALBbW3MVfYIWwGobXInBAMAixiZx',
     'GOOGLE_RECAPTCHA_SECRET'=>'6LdwIkUrAAAAAF_RT0Stod58w4Y6igItt7uJTeXe',
+
+    'car_sizes' => [
+        '1' => "Small Car",
+        '2' => "Middle Car",
+        '3' => "Large Car",
+        '4' => "Bike",
+    ],
+
+    'frequency' => [
+        'one_time' => 'One Time',
+        'daily' => 'Daily',
+        'weekly_2x' => 'Weekly 2 Times',
+        'weekly_4x' => 'Weekly 4 Times',
+    ],
+
 ];
   
 ?>

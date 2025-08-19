@@ -1,4 +1,5 @@
-<?php
+ <?php
+
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,6 +17,7 @@ return new class extends Migration
             $table->bigInteger('car_brand_id')->unsigned();
             $table->foreign('car_brand_id')->references('id')->on('car_brands');
             $table->string('name');
+            $table->integer('car_size_id')->nullable();
             $table->string('model_photo')->nullable();
             $table->string('model_photo_path')->nullable();
             $table->enum('is_active', ['Yes', 'No'])->default('Yes');

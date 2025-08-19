@@ -39,7 +39,9 @@ class PlanController extends Controller
      */
     public function create()
     {
-        return view('plan.create');
+        $this->data['carSizes']  = Config('global.car_sizes');
+        $this->data['frequency']  = Config('global.frequency');
+        return view('plan.create',$this->data);
     }
 
     /**
@@ -47,8 +49,15 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'car_size_id' => 'nullable|integer',
+            'frequency' => 'required|in:one_time,daily,weekly_2x,weekly_4x',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+        ]);
+        Plan::create($validated);
+        return redirect()->route('plan.index')->with('success', 'Plan created successfully.');
     }
 
     /**

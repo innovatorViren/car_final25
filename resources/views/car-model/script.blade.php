@@ -45,4 +45,5 @@
     });
 
     $('#car_brand_id').select2({allowClear:true});
+    $('#car_size_id').select2({allowClear:true});
 </script>

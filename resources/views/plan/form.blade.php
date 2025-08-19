@@ -18,56 +18,38 @@
                             <table class="table table-separate table-head-custom table-checkable">
                                 <tbody>
                                     <tr class="data-row">
-                                        <td width="300">
+                                        <td width="150">
+                                                <div class="form-group">
+                                                    {!! Form::label('name', 'Plan Name') !!}
+                                                    {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                                                </div>
+                                        </td>
+                                        <td width="150">
                                             <div class="form-group ">
-                                                {!! Form::label('name', trans('Name')) !!}<span class="text-danger">*</span>
-                                                {!! Form::text('name', null, [
-                                                    'class' => 'form-control name required',
-                                                    'id' => '',
-                                                    'placeholder' => 'Select Name',
-                                                ]) !!}
+                                                {!! Form::label('car_size', 'Car Size') !!}<span class="text-danger">*</span>
+                                                 {!! Form::select('car_size_id', $carSizes, null, ['class' => 'form-control','id' => 'car_size_id', 'placeholder' => 'Select Car Size']) !!}
                                             </div>
                                         </td>
                                         <td width="150">
-                                            <div class="form-group text-right">
-                                                {!! Form::label('per_day', trans('Per Day')) !!}<span class="text-danger">*</span>
-                                                {!! Form::text('per_day', null, [
-                                                    'class' => 'form-control text-right required',
-                                                    'min' => '0.1',
-                                                ]) !!}
-                                            </div>
-                                        </td>
-                                        <td width="150">
-                                            <div class="form-group text-right">
-                                                {!! Form::label('weekly_2', trans('Weekly(2)')) !!}<span class="text-danger">*</span>
-                                                {!! Form::text('weekly_2', null, [
-                                                    'class' => 'form-control text-right required',
-                                                    'min' => '0.1',
-                                                ]) !!}
-                                            </div>
-                                        </td>
-                                        <td width="150">
-                                            <div class="form-group text-right">
-                                                {!! Form::label('weekly_4', trans('Weekly(4)')) !!}<span class="text-danger">*</span>
-                                                {!! Form::text('weekly_4', null, [
-                                                    'class' => 'form-control text-right required',
-                                                    'min' => '0.1',
-                                                ]) !!}
-                                            </div>
-                                        </td>
-                                        <td width="150">
-                                            <div class="form-group text-right">
-                                                {!! Form::label('one_time', trans('One Time')) !!}<span class="text-danger">*</span>
-                                                {!! Form::text('one_time', null, [
-                                                    'class' => 'form-control text-right required',
-                                                    'min' => '0.1',
-                                                ]) !!}
-                                            </div>
-                                        </td>
+                                            <div class="form-group">
 
-                                        
+                                                {!! Form::label('frequency', 'Wash Frequency') !!}<span class="text-danger">*</span>
+                                                {!! Form::select('frequency', $frequency, null, ['class' => 'form-control', 'id' => 'frequency','placeholder' => 'Select Frequency']) !!}
+                                            </div>
+                                        </td>
+                                        <td width="150">
+                                            <div class="form-group text-right">
+                                                {!! Form::label('price', 'Price') !!}<span class="text-danger">*</span>
+                                                {!! Form::number('price', null, ['class' => 'form-control', 'step' => '0.01', 'required']) !!}
+                                            </div>
+                                        </td>
+                                        <td width="150">
+                                            <div class="form-group">
+                                                {!! Form::label('description', 'Description') !!}
+                                                {!! Form::textarea('description', null, ['class' => 'form-control', 'rows' => 3]) !!}
+                                            </div>
+                                        </td>
                                     </tr>
-                                        
                                 </tbody>
                             </table>
                         </div>
