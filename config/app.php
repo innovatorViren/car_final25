@@ -234,7 +234,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'AppHelper' => Mahalaxmi\Helper\Facades\AppHelper::class,
+        'AppHelper' => Clean\Helper\Facades\AppHelper::class,
 
         // Metronic Aliases
         'Metronic' => App\Classes\Theme\Metronic::class,

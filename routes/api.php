@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController,CustomerApiController};
+use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController};
 use App\Http\Controllers\CommonController;
 
 /*
@@ -24,7 +24,11 @@ Route::namespace('Api')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
 
     Route::get('get-countries', [CommonController::class, 'getCountries']);
+    Route::get('get-states', [CommonController::class, 'getStates']);
     Route::get('get-city', [CommonController::class, 'getCity']);
+    Route::get('get-car-brand', [CommonController::class, 'getCarBrand']);
+    Route::get('get-car-model', [CommonController::class, 'getCarModel']);
+    Route::get('get-banner', [CommonController::class, 'getBanner']);
 
     Route::post('/get-app-info-data',[AuthController::class, 'getAppInfoData']);
 
@@ -34,11 +38,10 @@ Route::namespace('Api')->group(function () {
      */
     Route::middleware('auth:api')->group(function () {
         // logout user
-    Route::get('get-states', [CommonController::class, 'getStates']);
         Route::get('/logout', [AuthController::class, 'logout']);
 
-        // Employee(salesman) api
-        Route::get('/get-customer', [SalesmenApiController::class, 'getCustomer']);
+        Route::get('/get-car-wise-plan', [PlanApiController::class, 'getCarWisePlan']);
+
         Route::get('/get-customer-detail', [SalesmenApiController::class, 'getCustomerDetail']);
         
 

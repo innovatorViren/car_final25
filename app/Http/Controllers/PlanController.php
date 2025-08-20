@@ -109,7 +109,7 @@ class PlanController extends Controller
         $plan = Plan::findOrFail($id);
         if ($plan) {
             $dependency = $plan->deleteValidate($id);
-                $state->delete();
+                $plan->delete();
         }
         return response()->json([
             'success' => true,

@@ -40,7 +40,6 @@ class BannerDataTable extends DataTable
         $menu = '';
         $editUrl = route('banner.edit', [$row->id]);
         $deleteUrl = route('banner.destroy', [$row->id]);
-        $delete_reason = route('delete-reason', [$row->id, 'banner']);
 
         if ($user->hasAnyAccess(['users.info', 'banner.edit', 'banner.delete', 'users.superadmin'])) {
             $menu .= '<td class="text-center">
@@ -59,9 +58,9 @@ class BannerDataTable extends DataTable
         }
 
         if ($user->hasAnyAccess(['banner.delete', 'users.superadmin'])) {
-            $menu .= '<li class="navi-item"><a href="' . $deleteUrl . '" data-id="' . $row->id . '" data-table="dataTableBuilder" class="call-modal navi-link" data-target-modal="#commonModalID" data-id="{{ $row->id }}" data-toggle="modal" data-url="' . $delete_reason . '">' .
-                '<span class="navi-icon"><i class="fas fa-trash-alt"></i></span><span class="navi-text">' . __('common.delete') . '</span>' .
-                '</a></li>';
+            $menu .= '<li class="navi-item"><a href="' . $deleteUrl . '" data-id="' . $row->id . '" data-table="dataTableBuilder" class="delete-confrim navi-link">' .
+            '<span class="navi-icon"><i class="fas fa-trash-alt"></i></span><span class="navi-text">' . __('common.delete') . '</span>' .
+            '</a></li>';
         }
         if ($user->hasAnyAccess(['users.info', 'users.superadmin'])) {
             $menu .= getInfoHtml($row);

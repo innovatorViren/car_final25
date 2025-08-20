@@ -40,7 +40,7 @@ use App\Models\{
     OutwardChallan,
     Branch,
     BranchTransfer,
-    CarBrand
+    CarBrand,CarModel
 };
 use Carbon\Carbon;
 use URL;
@@ -296,65 +296,64 @@ class CommonController extends Controller
         }
     }
 
-    public function getPrimaryManagedBy($primary_managed_by_id = null)
+    public function getCarModel($car_brand_id = null)
+    {
+        $request = request();
+        $platform = $request->header('platform');
+        $carSizes  = Config('global.car_sizes');
+        
+        if ($platform == 1) {
+            $carModel = CarModel::select('id AS value', 'name AS text','car_size_id')
+                        ->when($request->car_brand_id, function ($query) use ($request) {
+                            $query->where('car_brand_id', $request->car_brand_id);
+                        })
+                        ->where('is_active', 'Yes')
+                        ->orderBy('name', 'asc')
+                        ->get()
+                        ->map(function ($item) use ($carSizes){
+                            $item->car_size = $carSizes[$item->car_size_id];
+                            return $item;
+                        });
+
+
+            $toReturn = $carModel;
+            $this->data = $toReturn;
+
+            return $this->responseSuccess();
+        } else {
+            $carBrandId = $request->get('car_brand_id', $car_brand_id);
+            $carModel = CarModel::where('is_active', 'Yes')
+                ->when($carBrandId, function ($sql) use ($carBrandId) {
+                    $sql->orWhere('id', $carBrandId);
+                })
+                ->orderBy('name', 'ASC')
+                ->pluck('name', 'id')->toArray();
+            return $carModel;
+        }
+    }
+
+    public function getBanner()
     {
         $request = request();
         $platform = $request->header('platform');
         if ($platform == 1) {
-            $usersData = User::select(DB::raw("CONCAT(first_name, ' ', last_name) as user_full_name"), 'id')
-                ->where('is_active', 'Yes')
-                ->orderBy('first_name', 'ASC')
-                ->pluck('user_full_name', 'id')
-                ->toArray();
 
-            /** List of users which are not superadmin */
-            $userList = [];
-            if (!empty($usersData) && count($usersData)) {
-                foreach ($usersData as $key => $value) {
-                    $login_user = Sentinel::findById($key);
-                    $superadmin = $login_user->hasAccess(['users.superadmin']);
+            $path = URL::asset('');
+            $banner = DB::table('banners as B')
+                            ->select(
+                                    'B.id',
+                                    DB::raw("(CASE WHEN B.title IS NOT NULL THEN  B.title ELSE '' END) as title"),
+                                    DB::raw("(CASE WHEN B.image !='' THEN  CONCAT('".$path."', B.image) ELSE '' END) as banner_image")
+                                )
+                            ->whereNull('B.deleted_at')
+                            ->where('is_active','Yes')
+                            ->orderBy('id','DESC')
+                            ->get();
 
-                    if (!$superadmin) {
-                        $objData = [
-                            'value' => $key,
-                            'text' => $value
-                        ];
-                        array_push($userList, $objData);
-                    }
-                }
-            }
-            /** List of users which are not superadmin */
-
-            $toReturn = $userList;
-            $this->data = $toReturn;
-
+            $this->data = $banner;
             return $this->responseSuccessWithoutObject();
         } else {
-            $primary_managed_by_id = $request->get('primary_managed_by_id', $primary_managed_by_id);
-            $usersData = User::select(DB::raw("CONCAT(first_name, ' ', last_name) as user_full_name"), 'id')
-                ->when($primary_managed_by_id, function ($sql) use ($primary_managed_by_id) {
-                    $sql->where('id', $primary_managed_by_id);
-                })
-                ->where('is_active', 'Yes')
-                ->orderBy('first_name', 'ASC')
-                ->pluck('user_full_name', 'id')
-                ->toArray();
-
-            /** List of users which are not superadmin */
-            $userList = [];
-            if (!empty($usersData) && count($usersData)) {
-                foreach ($usersData as $key => $value) {
-                    $login_user = Sentinel::findById($key);
-                    $superadmin = $login_user->hasAccess(['users.superadmin']);
-
-                    if (!$superadmin) {
-                        $userList[$key] = $value;
-                    }
-                }
-            }
-            /** List of users which are not superadmin */
-
-            return $userList;
+            return '';
         }
     }
 
