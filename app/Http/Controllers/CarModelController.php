@@ -81,6 +81,7 @@ class CarModelController extends Controller
     {
         $carModel = CarModel::find($id);
         $this->data['carBrand'] =  $this->common->getCarBrand($carModel->car_brand_id);
+        $this->data['carSizes']  = Config('global.car_sizes');
         $this->data['carModel'] = $carModel;
 
         return response()->json(['html' => view('car-model.edit', $this->data)->render()]);

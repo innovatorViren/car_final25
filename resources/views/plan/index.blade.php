@@ -2,22 +2,15 @@
 @extends($theme)
 {{-- Content --}}
 @section('content')
-@section('title', __('rate.rate'))
+@section('title', __('plan.plan'))
 
 @component('partials._subheader.subheader-v6', [
-    'page_title' => __('rate.rate'),
-    // 'action' => route('rate-update.create'),
-    // 'text' => __('common.add'),
-    'permission' => $current_user->hasAnyAccess(['rate.add', 'users.superadmin']),
+    'page_title' => __('plan.plan'),
+    'action' => route('plan.create'),
+    'text' => __('common.add'),
+    'permission' => $current_user->hasAnyAccess(['plan.add', 'users.superadmin'])
 ])
 @endcomponent
-@php
-    $actionclass = '';
-    if (!$current_user->hasAnyAccess(['rate.edit', 'rate.delete', 'users.superadmin'])) {
-        $actionclass = 'd-none';
-    }
-@endphp
-
 
 <div class="container-fluid">
     @include('components.error')
@@ -29,45 +22,28 @@
                         <table class="table table-separate table-head-custom table-checkable" id="dataTableBuilder">
                             <thead>
                                 <tr>
-                                    <th colspan="10">
-                                        <div class="jsFilterData"></div>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    {{-- <th style="width: 7px;" class="{{ $actionclass }}"></th> --}}
-
-                                    {{-- <th>
-                                        <div class="datatable-form-filter">
-                                            {!! Form::text('filter_name', Request::get('filter_name', null), [
-                                                'class' => 'form-control',
-                                            ]) !!}
-                                        </div>
-                                    </th> --}}
+                                    <th></th>
                                     <th class="d-none"></th>
                                     <th>
-                                        <div class="datatable-form-filter">
-                                            {!! Form::text('filter_sub_category', Request::get('filter_sub_category', null), [
-                                                'class' => 'form-control',
-                                            ]) !!}
-                                        </div>
+                                        <div class="datatable-form-filter no-padding">{!! Form::text('filter_name',Request::get('filter_name',null),array('class' => 'form-control')) !!}</div>
                                     </th>
-                                    {{-- <th>
-                                        <div class="datatable-form-filter">
-                                            {!! Form::text('filter_category', Request::get('filter_category', null), [
-                                                'class' => 'form-control',
-                                            ]) !!}
-                                        </div>
-                                    </th> --}}
+                                    <th>
+                                        <div class="datatable-form-filter no-padding">{!! Form::text('filter_car_size',Request::get('filter_car_size',null),array('class' => 'form-control')) !!}</div>
+                                    </th>
+                                    <th>
+                                        <div class="datatable-form-filter no-padding">{!! Form::text('filter_frequency',Request::get('filter_frequency',null),array('class' => 'form-control')) !!}</div>
+                                    </th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                                 <tr>
-                                    {{-- <th style="width: 7px;" class="{{ $actionclass }} text-center"> --}}
-                                        {{-- {{ __('common.action') }}</th> --}}
-                                    {{-- <th>{{ __('rate.category') }}</th> --}}
+                                    <th>{{ __('common.action') }}</th>
                                     <th class="d-none noVis"></th>
-                                    <th class="noVis">{{ __('rate.sub_category') }}</th>
-                                    <th>{{ __('rate.product') }}</th>
-                                    <th>{{ __('rate.last_updated_date') }}</th>
+                                    <th>{{ __('plan.name') }}</th>
+                                    <th>{{ __('plan.car_size') }}</th>
+                                    <th>{{ __('plan.frequency') }}</th>
+                                    <th>{{ __('plan.price') }}</th>
+                                    <th>{{__('common.status')}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -90,11 +66,11 @@
 @endsection
 @push('scripts')
 <script type="text/javascript">
-    var sub_category = "{{ __('rate.sub_category') }}";
-    var category = "{{ __('rate.category') }}";
-    var product = "{{ __('rate.product') }}";
+    var name = "{{ __('plan.name') }}";
+    var car_size = "{{ __('plan.car_size') }}";
+    var frequency = "{{ __('plan.frequency') }}";
 
-    var lastUpdatedDate = "{{ __('rate.last_updated_date') }}";
+    var price = "{{ __('plan.price') }}";
 
     var action = "{{ __('common.action') }}";
     var is_active = "{{ __('common.status') }}";
@@ -106,30 +82,21 @@
             "processing": true,
             "ajax": {
                 data: function(d) {
-                    d.name = jQuery(".datatable-form-filter input[name='filter_name']").val();
-                    d.filter_sub_category = jQuery(".datatable-form-filter input[name='filter_sub_category']").val();
-
-
+                    d.filter_name = jQuery(".datatable-form-filter input[name='filter_name']").val();
+                    d.filter_car_size = jQuery(".datatable-form-filter input[name='filter_car_size']").val();
+                    d.filter_frequency = jQuery(".datatable-form-filter input[name='filter_frequency']").val();
                 }
             },
             "columns": [
-                // {
-                //     "name": "action",
-                //     "data": "action",
-                //     "title": action,
-                //     "render": null,
-                //     "orderable": false,
-                //     "searchable": false,
-                //     class: '{{ $actionclass }}',
-                // },
-                // {
-                //     "name": "name",
-                //     "data": "name",
-                //     "title": category,
-                //     "orderable": true,
-                //     "searchable": false
-                // },
                 {
+                    "name": "action",
+                    "data": "action",
+                    "title": action,
+                    "render": null,
+                    "orderable": false,
+                    "searchable": false,
+                    "width": "80px"
+                }, {
                     "name": "id",
                     "data": "id",
                     "title": "id",
@@ -137,31 +104,38 @@
                     "class": "d-none",
                 }, {
                     "name": "name",
-                    "data": "sub_category",
-                    "title": sub_category,
+                    "data": "name",
+                    "title": name,
                     "orderable": true,
                     "searchable": false
                 },{
-                    "name": "category_id",
-                    "data": "product",
-                    "title": product,
+                    "name": "car_size",
+                    "data": "car_size",
+                    "title": car_size,
                     "orderable": true,
                     "searchable": false
                 },{
-                    "name": "rate_histories.created_at",
-                    "data": "lastUpdatedDate",
-                    "title": lastUpdatedDate,
+                    "name": "frequency",
+                    "data": "frequency",
+                    "title": frequency,
                     "orderable": false,
                     "searchable": false
                 },
-                // {
-                //     "name": "is_active",
-                //     "data": "is_active",
-                //     "title": is_active,
-                //     "orderable": false,
-                //     "searchable": false,
-                //     // class: 'text-center',
-                // }
+                {
+                    "name": "price",
+                    "data": "price",
+                    "title": price,
+                    "orderable": false,
+                    "searchable": false
+                },
+                {
+                    "name": "is_active",
+                    "data": "is_active",
+                    "title": is_active,
+                    "orderable": false,
+                    "searchable": false,
+
+                },
             ],
             "searching": false,
             "dom": `<'row'<'col-sm-12'tr>>
@@ -180,14 +154,7 @@
             ],
             "pageLength": page_show_entriess,
             //dom: 'Bfrtip',//visibility
-            dom: `Bfrt<'row'<'col-sm-6 col-md-6'i><'col-sm-6 col-md-6 dataTables_pager'lp>>`, //visibility
-            buttons: [ //visibility
-                {
-                    extend: 'colvis',
-                    columns: ':not(.noVis)',
-                    text: 'Column visibility',
-                }
-            ],
+            dom: `Bfrt<'row'<'col-sm-6 col-md-6'i><'col-sm-6 col-md-6 dataTables_pager'lp>>`, //
         });
     })(window, jQuery);
 
@@ -196,25 +163,7 @@
         table.columns.adjust();
     }); //visibility
 
-    jQuery('.btn_search').on('click', function(e) {
-        window.LaravelDataTables["dataTableBuilder"].draw();
-        $('.close').trigger('click');
-        var fieldList = [
-            'jsBuyerscountry',
-            'jsBuyername',
-            'jsbuyerNo',
-
-        ];
-        setFilterData(fieldList);
-        e.preventDefault();
-    });
-
-    jQuery(".btn_reset").on('click', function(e) {
-        jQuery(".datatable-form-filter input").val("");
-        jQuery(".datatable-form-filter select").val("");
-        window.LaravelDataTables["dataTableBuilder"].state.clear();
-        window.location.reload();
-    });
+    
 </script>
 @include('comman.datatable_filter')
 @endpush

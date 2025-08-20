@@ -11,6 +11,7 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Sentinel;
 
 class PlanDataTable extends DataTable
 {
@@ -21,9 +22,61 @@ class PlanDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query))
-            ->addColumn('action', 'plan.action')
-            ->setRowId('id');
+        return datatables()
+        ->eloquent($query)
+        ->addColumn('action', function ($row) {
+            return $this->checkrights($row);
+        })
+        ->editColumn('is_active', function ($row) {
+            return getStatusHtml($row);
+        })
+        ->editColumn('car_size', function ($row) {
+            $carSizes  = Config('global.car_sizes');
+            return $carSizes[$row->car_size_id] ?? '';
+        })
+        ->editColumn('frequency', function ($row) {
+            $frequency  = Config('global.frequency');
+            return $frequency[$row->frequency] ?? '';
+        })
+        ->rawColumns(['action', 'is_active','car_size','frequency']);
+    }
+
+    public function checkrights($row)
+    {
+        $user = Sentinel::getUser();
+        $menu = '';
+        $editUrl = route('plan.edit', [$row->id]);
+        $deleteUrl = route('plan.destroy', [$row->id]);
+
+        if ($user->hasAnyAccess(['users.info', 'plan.edit', 'plan.delete', 'users.superadmin'])) {
+            $menu .= '<td class="text-center">
+                        <div class="dropdown dropdown-inline text-center" title="" data-placement="left" data-original-title="Quick actions">
+                        <a href="#" class="btn btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="ki ki-bold-more-hor"></i>
+                        </a>
+                        <div class="dropdown-menu m-0 dropdown-menu-left" style="">
+                            <ul class="navi navi-hover">';
+        }
+
+        if ($user->hasAnyAccess(['plan.edit', 'users.superadmin'])) {
+            $menu .= '<li class="navi-item"><a href="' . $editUrl . '" data-toggle="modal" data-target-modal="#commonModalID"  data-url="' . $editUrl . '" class="call-modal navi-link">' .
+            '<span class="navi-icon"><i class="fas fa-edit"></i></span><span class="navi-text">' . __('common.edit') . '</span>' .
+            '</a></li>';
+        }
+
+        if ($user->hasAnyAccess(['plan.delete', 'users.superadmin'])) {
+        $menu .= '<li class="navi-item"><a href="' . $deleteUrl . '" data-id="' . $row->id . '" data-table="dataTableBuilder" class="delete-confrim navi-link">' .
+            '<span class="navi-icon"><i class="fas fa-trash-alt"></i></span><span class="navi-text">' . __('common.delete') . '</span>' .
+            '</a></li>';
+        }
+        if ($user->hasAnyAccess(['users.info', 'users.superadmin'])) {
+            $menu .= getInfoHtml($row);
+        }
+        if ($user->hasAnyAccess(['users.info', 'plan.edit', 'plan.delete', 'users.superadmin'])) {
+            $menu .= "</ul></div></div></td>";
+        }
+
+        return $menu;
     }
 
     /**
@@ -31,7 +84,10 @@ class PlanDataTable extends DataTable
      */
     public function query(Plan $model): QueryBuilder
     {
-        return $model->newQuery();
+        $fields = ['plans.*'];
+        $models = Plan::select($fields);
+
+        return $this->applyScopes($models);
     }
 
     /**

@@ -28,9 +28,8 @@ class PlanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(PlanDataTable $dataTable)
     {
-        dd(454);
         return $dataTable->render('plan.index');
     }
 
@@ -71,24 +70,50 @@ class PlanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Plan $plan)
+    public function edit($id)
     {
-        //
+        $plan = Plan::find($id);
+        // dd($plan);
+        $this->data['plan'] = $plan;
+        $this->data['carSizes']  = Config('global.car_sizes');
+        $this->data['frequency']  = Config('global.frequency');
+        return view('plan.edit',$this->data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Plan $plan)
+    public function update(Request $request, $id)
     {
-        //
+        // dd($request->all());
+        $request->validate([
+            'car_size_id' => 'nullable|integer',
+            'frequency' => 'required|in:one_time,daily,weekly_2x,weekly_4x',
+            'price' => 'required|numeric',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $plan = Plan::findOrFail($id);
+        $data = $request->except(['_token', '_method','saveBtn','saveExitBtn']);
+        $plan->update($data);
+        return redirect()->route('plan.index')->with('success', 'Plan updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Plan $plan)
+    public function destroy($id)
     {
-        //
+        $plan = Plan::findOrFail($id);
+        if ($plan) {
+            $dependency = $plan->deleteValidate($id);
+                $state->delete();
+        }
+        return response()->json([
+            'success' => true,
+            'message' => __('Plan deleted successfully.'),
+        ], 200);
     }
 }

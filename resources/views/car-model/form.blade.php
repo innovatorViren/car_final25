@@ -16,7 +16,7 @@
 </div>
 <div class="form-group ">
     {!! Form::label('car_size', 'Car Size') !!}<span class="text-danger">*</span>
-     {!! Form::select('car_size_id', $carSizes, null, ['class' => 'form-control','id' => 'car_size_id', 'placeholder' => 'Select Car Size']) !!}
+     {!! Form::select('car_size_id', ['' => 'Select Car Size'] + $carSizes, null, ['class' => 'form-control','id' => 'car_size_id', 'data-placeholder' => 'Select Car Size']) !!}
 </div>
 <div class="row">
     <div class="form-group col-lg-12">

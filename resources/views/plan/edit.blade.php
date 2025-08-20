@@ -7,7 +7,7 @@
 @component('partials._subheader.subheader-v6',
 [
 'page_title' => __('plan.plan'),
-'back_action'=> route('outward-challan.index'),
+'back_action'=> route('plan.index'),
 'text' => __('common.back'),
 'permission' => true,
 ])
