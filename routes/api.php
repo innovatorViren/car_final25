@@ -42,6 +42,11 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/get-car-wise-plan', [PlanApiController::class, 'getCarWisePlan']);
 
+        Route::post('/add-customer-address', [CustomerApiController::class, 'addCustomerAddress']);
+        Route::get('/get-customer-wise-address/{customer_id}', [CustomerApiController::class, 'getCustomerWiseAddress']);
+        Route::post('/edit-customer-address', [CustomerApiController::class, 'editCustomerAddress']);
+
+
         Route::get('/get-customer-detail', [SalesmenApiController::class, 'getCustomerDetail']);
         
 
@@ -55,7 +60,6 @@ Route::namespace('Api')->group(function () {
         Route::post('change-password', [AuthController::class, 'changePassword']);
         //Customer Api
         Route::get('/get-customer-home-page', [CustomerApiController::class, 'getCustomerHomePage']);
-        Route::get('/get-customer-product', [CustomerApiController::class, 'getCustomerProduct']);
         Route::get('/edit-customer', [CustomerApiController::class, 'editCustomer']);
     });
 

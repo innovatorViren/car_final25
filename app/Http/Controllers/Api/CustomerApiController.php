@@ -57,182 +57,127 @@ class CustomerApiController extends ApiController
         );
     }
 
-    public function getCustomerProduct(Request $request)
+    public function addCustomerAddress(Request $request)
     {
-        try {
-
+        try{
             $requestData = Validator::make($this->request->all(), [
-                'page' => 'required',
+                'customer_id' => 'required',
+                'name' => 'required|string',
+                'mobile' => 'required|string',
+                'address_line1' => 'required|string',
+                'address_line2' => 'required|string',
+                'address_type' => 'required|in:home,work,other',
+                'pincode' => 'required|string',
+                'state_id' => 'required|string',
+                'city_id' => 'required|string',
             ]);
+
             if ($requestData->fails()) {
                 throw new Exception($requestData->messages()->first(), 1);
             }
-
-            $product_path = URL::asset('');
-
-            $page = $request->page ?? 0;
-            $perPage = config('global.pagination_records');
-            $category_id = $request->category_id ?? 0;
             $customer_id = $request->customer_id ?? 0;
-            $search = $request->search ?? null;
 
-            $priseListId = DB::table('customers')->where('id',$customer_id)->first()->price_list_id ?? '';
+            DB::table('customer_adresses')->insert([
+                'customer_id'    => $customer_id,
+                'name'           => $request->name,
+                'mobile'         => $request->mobile ?? null,
+                'address_line1'  => $request->address_line1 ?? null,
+                'address_line2'  => $request->address_line2 ?? null,
+                'address_type'   => $request->address_type ?? 'home',
+                'landmark'       => $request->landmark ?? null,
+                'country_id'     => $request->country_id ?? null,
+                'state_id'       => $request->state_id ?? null,
+                'city_id'        => $request->city_id ?? null,
+                'pincode'        => $request->pincode ?? null,
+                'is_default'     => $request->has('is_default') ? true : false,
+                'created_by'     => loginUserDetail()->id,
+                'created_at'     => now(),
+                'updated_at'     => now(),
+            ]);
 
-            $result = Product::where('products.is_active','Yes')
-                        ->select([
-                            'products.id',
-                            'products.product_name',
-                            'products.image',
-                            'products.category_id',
-                            'products.hsncode_id',
-                            'hsn_codes.gst'
-                            // 'minimum_stock_qty',
-                            // 'pouch_qty',                
-                        ])
-                        ->leftJoin('hsn_codes','hsn_codes.id','products.hsncode_id')
-                        ->when($search, function ($query, $search) {
-                              return $query->where('products.product_name','LIKE', "%{$search}%");
-                        });
-                        // dd($result->get());
-            if($category_id > 0){
-                $result = $result->where('category_id', $category_id);
-            }
-            $result = $result->orderByRaw('RAND()')->get();
-
-            $toReturn = array();
-            if(!empty($result)){
-                $index = 0;
-
-                foreach ($result as $key => $row) 
-                {   
-                    $productShow = DB::table('price_list_items as PI')
-                                        ->where('PI.price_list_id',$priseListId)
-                                        ->where('PI.product_id',$row['id'])
-                                        ->first();
-                    if($productShow == null){
-                        continue;
-                    }
-
-                    $catName = DB::table('categories')->where('id',$row['category_id'])->first()->name ?? '';
-
-                    $prodId = $row->id;
-
-                    $productVariantData = DB::table('product_variants as PV')
-                                            ->select([
-                                                'PV.product_id as product_id',
-                                                'PV.variant_id as variant_id',
-                                                'PV.price as price',
-                                                'PV.id as product_variant_id',
-                                                'PV.bandha_pouch_qty as bandha_pouch_qty',
-                                                'PV.min_stock_qty',
-                                                'PV.weight',
-                                                'V.name as variant_name',
-                                                'V.description as description',
-                                                'C.customer_id as cart_customer_id',
-                                                'C.id as cart_id',
-                                                'C.qty as qty',
-                                            ])
-                                            ->leftJoin('carts as C', function ($join) {
-                                                $join->on('PV.variant_id', '=', 'C.variant_id')
-                                                     ->on('PV.product_id', '=', 'C.product_id');
-                                            })
-                                            ->leftJoin('variants as V','V.id','PV.variant_id')
-                                            ->where('PV.product_id',$prodId)
-                                            ->groupBy(['PV.product_id','PV.variant_id'])
-                                            ->get();
-                    
-                    $is_cart_data = array_filter($productVariantData->toArray(), function($data) use($customer_id) {
-                        return (!empty($data) && $data->cart_customer_id == $customer_id);
-                    });
-                    $is_cart = (!empty($is_cart_data)) ? 1 : 0;
-                    $wishData = DB::table('wishlists')->where('product_id',$prodId)->where('customer_id',$customer_id)->where('is_wishlist',1)->first();
-                    $is_wishlist = (!empty($wishData)) ? 1 : 0;
-
-                    $toReturn[$index]['id'] = $row['id'];
-                    $toReturn[$index]['product_name'] = $row['product_name'];
-                    $toReturn[$index]['hsncode_id'] = $row->hsncode_id ?? '';
-                    $toReturn[$index]['gst'] = $row->gst ?? '';
-                    $toReturn[$index]['category_name'] = $catName;
-                    $toReturn[$index]['image'] = (!empty($row['image'])) ? $product_path.'/'.$row['image'] : $product_path.'/product/product_default.jpg';
-                    $toReturn[$index]['category_id'] = $row['category_id'];
-                    $toReturn[$index]['is_wishlist'] = $is_wishlist;
-                    $toReturn[$index]['is_cart'] = $is_cart;
-                    
-                    
-
-                    $variants = array();
-                    $vInde = 0;
-                    if(!empty($productVariantData)){
-                        foreach ($productVariantData as $vkey => $variant_row)
-                        {
-                            $priceFinal = 0;
-                            $priceFinalData = DB::table('price_list_items as PI')
-                                        ->join('price_lists as P','P.id','PI.price_list_id')
-                                        ->where('P.is_active','Yes')
-                                        ->where('PI.price_list_id',$priseListId)
-                                        ->where('PI.product_id',$row['id'])
-                                        ->where('PI.variant_id',$variant_row->variant_id)
-                                        ->first();
-                            if($priceFinalData){
-                                $priceFinal = $priceFinalData->rate ?? 0;
-                            }else{
-                                continue;
-                            }
-
-                            $is_variant_cart = ($is_cart == 1 && (!empty($variant_cart))) ? 1 : 0;
-                            
-                            if($variant_row->cart_customer_id == $customer_id)
-                            {   
-                                $qty = $variant_row->qty;
-                            }else{
-                                $qty = '0';
-                            }
-
-                            
-                            $variants[$vInde]=array(
-                                'product_id' => $variant_row->product_id ?? '', 
-                                'product_variant_id' => $variant_row->product_variant_id ?? '', 
-                                'variant_id' => $variant_row->variant_id ?? '',
-                                'variant_name' => $variant_row->variant_name,
-                                'bandha_pouch_qty' => $variant_row->bandha_pouch_qty, 
-                                'qty' => $qty ?? "0", 
-                                'price' => (string)$variant_row->price ?? "0", 
-                                'final_price' => (string)$priceFinal ?? "0",
-                                'customer_id' => $customer_id, 
-                                'is_variant_cart' => $is_variant_cart,
-                                'minimum_stock_qty' => $variant_row->min_stock_qty, 
-                                'weight' => $variant_row->weight,
-                                'opening_stock_qty' => 0,
-                                'description' => $variant_row->description,
-                            );
-                            $vInde = $vInde + 1;
-                        }
-                    }
-
-                    $toReturn[$index]['variants'] = $variants;
-                    $index = $index + 1;
-                }
-            }
-
-            $data = collect($toReturn);
-
-            $dataPerPage = $data->forPage($page, $perPage);
-            $dataPerPage = array_values($dataPerPage->toArray());
-
-            $result = new LengthAwarePaginator(
-                $dataPerPage,
-                $data->count(),
-                $perPage, //length
-                $page
-            );
-            $this->data = $result;
-
+            $this->data = $request->all();
+            return $this->responseSuccessWithoutObject();
         } catch (Exception $e) {
             $this->response_json['message'] = $e->getMessage();
             return $this->responseError();
         }
 
+    }
+
+    public function getCustomerWiseAddress($customer_id)
+    {
+        $cusAddressData = DB::table('customer_adresses as CA')
+                            ->select('CA.id as customer_address_id',
+                                'CA.name',
+                                'CA.mobile',
+                                'CA.address_type',
+                                'CA.address_line1',
+                                'CA.address_line2',
+                                'CA.landmark',
+                                'CA.country_id',
+                                'CA.state_id',
+                                'CA.city_id',
+                                'CA.pincode',
+                                'CA.is_default',
+                                'S.name as state',
+                                'C.name as city'
+                            )
+                            ->leftjoin('states as S','S.id','CA.state_id')
+                            ->leftjoin('cities as C','C.id','CA.city_id')
+                            ->where('customer_id',$customer_id)
+                            ->get();
+        $this->data = $cusAddressData;
         return $this->responseSuccessWithoutObject();
+    }
+
+    public function editCustomerAddress(Request $request)
+    {
+        try{
+            $requestData = Validator::make($this->request->all(), [
+                'customer_adress_id' => 'required',
+                'customer_id' => 'required',
+                'name' => 'required|string',
+                'mobile' => 'required|string',
+                'address_line1' => 'required|string',
+                'address_line2' => 'required|string',
+                'address_type' => 'required|in:home,work,other',
+                'pincode' => 'required|string',
+                'state_id' => 'required|string',
+                'city_id' => 'required|string',
+            ]);
+
+            if ($requestData->fails()) {
+                throw new Exception($requestData->messages()->first(), 1);
+            }
+            $customerAdressId = $request->customer_adress_id ?? 0;
+            $customer_id = $request->customer_id ?? 0;
+
+            $updateData = [
+                'customer_id'    => $customer_id,
+                'name'           => $request->name,
+                'mobile'         => $request->mobile ?? null,
+                'address_line1'  => $request->address_line1 ?? null,
+                'address_line2'  => $request->address_line2 ?? null,
+                'address_type'   => $request->address_type ?? 'home',
+                'landmark'       => $request->landmark ?? null,
+                'country_id'     => $request->country_id ?? null,
+                'state_id'       => $request->state_id ?? null,
+                'city_id'        => $request->city_id ?? null,
+                'pincode'        => $request->pincode ?? null,
+                'is_default'     => $request->has('is_default') ? true : false,
+                'updated_by'     => loginUserDetail()->id,
+                'updated_at'     => now(),
+            ];
+
+            DB::table('customer_adresses')->where('id',$customerAdressId)->update($updateData);
+
+            $this->data = $request->all();
+            return $this->responseSuccessWithoutObject();
+        } catch (Exception $e) {
+            $this->response_json['message'] = $e->getMessage();
+            return $this->responseError();
+        }
+
     }
 
     public function editCustomer(Request $request)
