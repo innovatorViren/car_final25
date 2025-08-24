@@ -23,14 +23,14 @@ use Centaur\AuthManager;
 class AuthController extends ApiController
 {
 
-    // protected $authManager;
-    // public function __construct(AuthManager $authManager)
-    // {
-    //     $this->authManager = $authManager;
-    //     $this->common = new CommonController();
-    //     $this->userRepository = app()->make('sentinel.users');
+    protected $authManager;
+    public function __construct(AuthManager $authManager)
+    {
+        $this->authManager = $authManager;
+        $this->common = new CommonController();
+        $this->userRepository = app()->make('sentinel.users');
 
-    // }
+    }
 
 
     public function login(Request $request)

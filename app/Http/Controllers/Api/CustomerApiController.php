@@ -13,6 +13,55 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class CustomerApiController extends ApiController
 {
+
+    public function getCustomerList()
+    {
+
+        $customers = DB::table('customers as C')
+                    ->select(
+                        DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as first_name"),
+                        DB::raw("(CASE WHEN C.middle_name IS NOT NULL THEN  C.middle_name ELSE '' END) as middle_name"),
+                        DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as last_name"),
+                        DB::raw("(CASE WHEN C.email IS NOT NULL THEN  C.email ELSE '' END) as email"),
+                        DB::raw("(CASE WHEN C.pincode IS NOT NULL THEN  C.pincode ELSE '' END) as pincode"),
+                            DB::raw("(CASE WHEN C.address_line IS NOT NULL THEN  C.address_line ELSE '' END) as address_line"),
+                        )
+                    ->where('C.is_active','Yes')
+                    ->whereNull('C.deleted_at')
+                    ->groupBy('C.id')
+                    ->orderBy('first_name','ASC')
+                    ->get();
+        $this->data = $customers;
+
+        return $this->responseSuccessWithoutObject();
+    }
+
+    public function getCustomerDetail($customer_id)
+    {
+        $customers = DB::table('customers as C')
+                    ->select(
+                        DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as first_name"),
+                        DB::raw("(CASE WHEN C.middle_name IS NOT NULL THEN  C.middle_name ELSE '' END) as middle_name"),
+                        DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as last_name"),
+                        DB::raw("(CASE WHEN C.email IS NOT NULL THEN  C.email ELSE '' END) as email"),
+                        DB::raw("(CASE WHEN C.pincode IS NOT NULL THEN  C.pincode ELSE '' END) as pincode"),
+                        DB::raw("(CASE WHEN C.address_line IS NOT NULL THEN  C.address_line ELSE '' END) as address_line"),
+                        DB::raw("(CASE WHEN C.city_id IS NOT NULL THEN  C.city_id ELSE '' END) as city_id"),
+                        DB::raw("(CASE WHEN C.state_id IS NOT NULL THEN  C.state_id ELSE '' END) as state_id"),
+                        DB::raw("(CASE WHEN CI.name IS NOT NULL THEN  CI.name ELSE '' END) as city_name"),
+                        DB::raw("(CASE WHEN S.name IS NOT NULL THEN  S.name ELSE '' END) as state_name"),
+                        )
+                    ->leftjoin('cities as CI','CI.id','C.city_id')
+                    ->leftjoin('states as S','S.id','C.state_id')
+                    ->where('C.id',$customer_id)
+                    ->where('C.is_active','Yes')
+                    ->whereNull('C.deleted_at')
+                    ->first();
+        $this->data = $customers;
+        $this->response_json['orders'] = ''; 
+
+        return $this->responseSuccessWithoutObject();
+    }
     public function getCustomerHomePage(Request $request)
     {
         try {   

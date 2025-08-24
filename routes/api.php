@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController};
+use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController};
 use App\Http\Controllers\CommonController;
 
 /*
@@ -40,6 +40,12 @@ Route::namespace('Api')->group(function () {
         // logout user
         Route::get('/logout', [AuthController::class, 'logout']);
 
+        //admin Api
+        Route::get('/get-customer-list', [CustomerApiController::class, 'getCustomerList']);
+        Route::get('/get-customer-detail/{id}', [CustomerApiController::class, 'getCustomerDetail']);
+        Route::get('/get-employee-list', [EmployeeApiController::class, 'getEmployeeList']);
+        Route::get('/get-employee-detail/{id}', [EmployeeApiController::class, 'getEmployeeDetail']);
+
         Route::get('/get-car-wise-plan', [PlanApiController::class, 'getCarWisePlan']);
 
         Route::post('/add-customer-address', [CustomerApiController::class, 'addCustomerAddress']);
@@ -47,7 +53,6 @@ Route::namespace('Api')->group(function () {
         Route::post('/edit-customer-address', [CustomerApiController::class, 'editCustomerAddress']);
 
 
-        Route::get('/get-customer-detail', [SalesmenApiController::class, 'getCustomerDetail']);
         
 
         // add firebase token after user login
