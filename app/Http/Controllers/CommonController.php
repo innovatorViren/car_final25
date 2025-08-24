@@ -275,10 +275,13 @@ class CommonController extends Controller
 
     public function getCarBrand($carBrandId = null)
     {
+        $path = URL::asset('');
         $request = request();
         $platform = $request->header('platform');
         if ($platform == 1) {
-            $carBrand = CarBrand::select('id AS value', 'name AS text')->where('is_active', 'Yes')->orderBy('name', 'asc')->get();
+            $carBrand = CarBrand::select('id AS value', 'name AS text',
+                        DB::raw("(CASE WHEN brand_logo !='' THEN  CONCAT('".$path."', brand_logo) ELSE '' END) as brand_logo"))
+                        ->where('is_active', 'Yes')->orderBy('name', 'asc')->get();
 
             $toReturn = $carBrand;
             $this->data = $toReturn;
@@ -303,7 +306,10 @@ class CommonController extends Controller
         $carSizes  = Config('global.car_sizes');
         
         if ($platform == 1) {
-            $carModel = CarModel::select('id AS value', 'name AS text','car_size_id')
+            $path = URL::asset('');
+            $carModel = CarModel::select('id AS value', 'name AS text','car_size_id',
+                            DB::raw("(CASE WHEN model_photo !='' THEN  CONCAT('".$path."', model_photo) ELSE '' END) as model_photo")
+                        )
                         ->when($request->car_brand_id, function ($query) use ($request) {
                             $query->where('car_brand_id', $request->car_brand_id);
                         })

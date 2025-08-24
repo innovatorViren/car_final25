@@ -125,6 +125,8 @@ class AuthController extends ApiController
                 'token' => $this->data['access_token'] ?? '',
             );
             DB::table('sessions')->insert($session_data);
+
+            $this->response_json['message'] = "Success";
         } catch (Exception $e) {
             $this->response_json['message'] = $e->getMessage();
             return $this->responseError();
