@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController};
+use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController,TimeApiSlotController};
 use App\Http\Controllers\CommonController;
 
 /*
@@ -46,12 +46,14 @@ Route::namespace('Api')->group(function () {
         Route::get('/get-employee-list', [EmployeeApiController::class, 'getEmployeeList']);
         Route::get('/get-employee-detail/{id}', [EmployeeApiController::class, 'getEmployeeDetail']);
 
+        //Customer Api
         Route::get('/get-car-wise-plan', [PlanApiController::class, 'getCarWisePlan']);
-
         Route::post('/add-customer-address', [CustomerApiController::class, 'addCustomerAddress']);
         Route::get('/get-customer-wise-address/{customer_id}', [CustomerApiController::class, 'getCustomerWiseAddress']);
         Route::post('/edit-customer-address', [CustomerApiController::class, 'editCustomerAddress']);
-
+        Route::get('/get-frequency', [CommonController::class, 'getFrequency']);
+        Route::get('/time-slots', [TimeApiSlotController::class, 'getSlots']);
+        Route::get('/generate-slots', [TimeApiSlotController::class, 'generateSlots']);
 
         
 

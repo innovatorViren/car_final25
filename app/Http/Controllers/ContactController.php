@@ -63,11 +63,6 @@ class ContactController extends Controller
                                 ->setBody($sentData, 'text/html');
                 
                 $mailer->send($messageSend);
-                /*Mail::send(['email'], $data, function($message) {
-                    $message->to('heena@mnstechnologies.com', 'Meera Polymers Pvt. Ltd.')->subject
-                    ('Contact Message');
-                    $message->from($from,'MNS Technologies');
-                });*/
                 return back()->with('success', 'Thanks for contacting us!');
             }else{
                 return back()->with('danger', 'Something want wrong!');

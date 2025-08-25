@@ -2277,5 +2277,19 @@ class CommonController extends Controller
 
         $outwardChallans = $outerBarcodeData->merge($barcodeFG)->merge($openingFG);
         return $outwardChallans;
-    }    
+    }   
+
+
+    public function getFrequency()
+    {
+
+        $frequencyData = [
+                ['name' => 'Daily 1','value' => 'daily', 'title' => '30 days daily wash', 'description' => 'Every day for 30 days', 'washes' => 30, 'days' => 30],
+                ['name' => 'Week 2', 'value' => 'weekly_2', 'title' => '8 washes in 2 Week', 'description' => 'Any 8 washes within 14 days', 'washes' => 8, 'days' => 14],
+                ['name' => 'Week 1', 'value' => 'weekly_1', 'title' => '4 washes in 1 Week', 'description' => 'Any 4 washes within 7 days', 'washes' => 4, 'days' => 7],
+                ['name' => '1 Time Wash', 'value' => 'one_time', 'title' => 'Book a single Wash', 'description' => 'One time appoinment', 'washes' => 1, 'days' => 1],
+            ];
+            $this->data = collect($frequencyData);
+            return $this->responseSuccess();
+    } 
 }

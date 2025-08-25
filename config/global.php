@@ -19,10 +19,10 @@ return [
     ],
 
     'frequency' => [
-        'one_time' => 'One Time',
         'daily' => 'Daily',
-        'weekly_2x' => 'Weekly 2 Times',
-        'weekly_4x' => 'Weekly 4 Times',
+        'weekly_2' => 'Week 2',
+        'weekly_1' => 'Week 1',
+        'one_time' => 'One Time',
     ],
 
 ];

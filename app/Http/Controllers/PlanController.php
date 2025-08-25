@@ -51,7 +51,8 @@ class PlanController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'car_size_id' => 'nullable|integer',
-            'frequency' => 'required|in:one_time,daily,weekly_2x,weekly_4x',
+            // 'frequency' => 'required|in:one_time,daily,weekly_2x,weekly_4x',
+            'frequency' => 'required',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
         ]);
@@ -88,7 +89,7 @@ class PlanController extends Controller
         // dd($request->all());
         $request->validate([
             'car_size_id' => 'nullable|integer',
-            'frequency' => 'required|in:one_time,daily,weekly_2x,weekly_4x',
+            'frequency' => 'required',
             'price' => 'required|numeric',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',

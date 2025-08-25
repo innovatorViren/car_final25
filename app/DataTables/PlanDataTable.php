@@ -58,10 +58,8 @@ class PlanDataTable extends DataTable
                             <ul class="navi navi-hover">';
         }
 
-        if ($user->hasAnyAccess(['plan.edit', 'users.superadmin'])) {
-            $menu .= '<li class="navi-item"><a href="' . $editUrl . '" data-toggle="modal" data-target-modal="#commonModalID"  data-url="' . $editUrl . '" class="call-modal navi-link">' .
-            '<span class="navi-icon"><i class="fas fa-edit"></i></span><span class="navi-text">' . __('common.edit') . '</span>' .
-            '</a></li>';
+        if ($user->hasAnyAccess(['plan.edit', 'users.superadmin']) ) {
+            $menu .= '<li class="navi-item"><a href="' . $editUrl . '"  class="navi-link"><span class="navi-icon"><i class="fas fa-edit"></i></span><span class="navi-text">' . __('common.edit') . '</span></a></li>';
         }
 
         if ($user->hasAnyAccess(['plan.delete', 'users.superadmin'])) {
