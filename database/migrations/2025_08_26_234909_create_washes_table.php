@@ -18,6 +18,8 @@ return new class extends Migration
             $table->date('scheduled_date');
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
+            $table->string('before_wash_photo')->nullable();
+            $table->string('after_wash_photo')->nullable();
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
             $table->timestamps();
         });

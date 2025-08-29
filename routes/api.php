@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController,TimeApiSlotController};
+use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController,TimeApiSlotController,OrderApiController};
 use App\Http\Controllers\CommonController;
 
 /*
@@ -54,6 +54,10 @@ Route::namespace('Api')->group(function () {
         Route::get('/get-frequency', [CommonController::class, 'getFrequency']);
         Route::get('/time-slots', [TimeApiSlotController::class, 'getSlots']);
         Route::get('/generate-slots', [TimeApiSlotController::class, 'generateSlots']);
+
+        //Order api
+        Route::post('/add-order', [OrderApiController::class, 'addOrder']);
+
 
         
 

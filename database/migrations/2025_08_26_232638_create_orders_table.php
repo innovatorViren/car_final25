@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('car_model_id')->nullable();
             $table->unsignedBigInteger('car_size_id')->nullable();
             $table->string('frequency_type')->nullable();
+            $table->string('total_washes')->nullable();
             $table->double('price', 16, 2)->nullable();
             $table->double('pay_amount', 16, 2)->nullable();
             $table->date('start_date')->nullable();
