@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends MyModel
+class Wash extends MyModel
 {
     use HasFactory;
-    protected $table = 'orders';
+    protected $table = 'washes';
     protected $revisionCleanup = true;
     protected $historyLimit = 500;
     protected $guarded = [];

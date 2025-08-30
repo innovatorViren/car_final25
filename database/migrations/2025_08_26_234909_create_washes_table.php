@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('before_wash_photo')->nullable();
             $table->string('after_wash_photo')->nullable();
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

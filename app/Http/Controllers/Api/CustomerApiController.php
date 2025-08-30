@@ -281,4 +281,52 @@ class CustomerApiController extends ApiController
 
         return $this->responseSuccessWithoutObject();
     }
+
+    public function addCustomerCar(Request $request)
+    {
+        try{
+            $requestData = Validator::make($this->request->all(), [
+                'customer_id' => 'required',
+                'car_model_id' => 'required',
+                'car_brand_id' => 'required',
+            ]);
+
+            if ($requestData->fails()) {
+                throw new Exception($requestData->messages()->first(), 1);
+            }
+            $customer_id = $request->customer_id ?? 0;
+
+            DB::table('customer_cars')->insert([
+                'customer_id'    => $customer_id,
+                'car_model_id'   => $request->car_model_id,
+                'car_brand_id'   => $request->car_brand_id ?? null,
+                'created_by'     => loginUserDetail()->id,
+                'created_at'     => now(),
+                'updated_at'     => now(),
+            ]);
+
+            $this->data = $request->all();
+            return $this->responseSuccessWithoutObject();
+        } catch (Exception $e) {
+            $this->response_json['message'] = $e->getMessage();
+            return $this->responseError();
+        }
+
+    }
+
+    public function getCustomerWiseCar($customer_id)
+    {
+        $cusCarsData = DB::table('customer_cars as CC')
+                            ->select('CC.id as customer_car_id',
+                                DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
+                                DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                                DB::raw("0 as selected"),
+                            )
+                            ->leftjoin('car_brands as CB','CB.id','CC.car_brand_id')
+                            ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
+                            ->where('CC.customer_id',$customer_id)
+                            ->get();
+        $this->data = $cusCarsData;
+        return $this->responseSuccessWithoutObject();
+    }
 }
