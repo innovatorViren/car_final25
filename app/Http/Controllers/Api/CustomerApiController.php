@@ -329,4 +329,14 @@ class CustomerApiController extends ApiController
         $this->data = $cusCarsData;
         return $this->responseSuccessWithoutObject();
     }
+
+    public function customerCardelete(Request $request)
+    {
+        $customer_car_id = $request->customer_car_id;
+
+        $cart = DB::table('customer_cars')->where('id', $customer_car_id)->delete();
+
+        $this->response_json['message'] = 'Car Deleted';
+        return response()->json($this->response_json, 200);
+    }
 }

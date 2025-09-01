@@ -23,7 +23,7 @@ use App\Http\Controllers\{
     UserController,
     SmtpConfigurationController,
     ProfileController,
-    PrivacypolicyController,ContactController,PlanController
+    PrivacypolicyController,ContactController,PlanController,OrderController
 };
 use App\Http\Controllers\Auth\PasswordController;
 use Database\Seeders\SeriesSeeder;
@@ -193,4 +193,7 @@ Route::resource('banner', BannerController::class)->only(['index', 'create', 'st
 
 Route::get('privacy-policy', [PrivacypolicyController::class, 'index'])->name('privacy-policy');
 Route::get('contact-us', [ContactController::class, 'index'])->name('contact-us');
+
+//order Module
+Route::resource('order', OrderController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
 

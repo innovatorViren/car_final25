@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\DataTables\OrderDataTable;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -12,7 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        dd(1212);
     }
 
     /**

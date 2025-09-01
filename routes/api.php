@@ -56,6 +56,7 @@ Route::namespace('Api')->group(function () {
         Route::get('/generate-slots', [TimeApiSlotController::class, 'generateSlots']);
         Route::post('/add-customer-car', [CustomerApiController::class, 'addCustomerCar']);
         Route::get('/get-customer-wise-car/{customer_id}', [CustomerApiController::class, 'getCustomerWiseCar']);
+        Route::post('/customer-car-delete', [CustomerApiController::class, 'customerCardelete']);
 
         //Order api
         Route::post('/add-order', [OrderApiController::class, 'addOrder']);
