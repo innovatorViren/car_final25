@@ -10,4 +10,5 @@ return [
     'masters' => 'Masters',
     'reports' => 'Reports',
     'employee' => "Employee",
+    'order' => "Order",
 ];

@@ -124,6 +124,13 @@ class Permission
             'plan.assign_car',
         ],
 
+        //Orders (Menu)
+        'orders' => [
+            'orders.list',
+            'orders.view',
+            'orders.delete',
+        ],
+
         /* don't remove this */
     ];
     public function getPermissions()

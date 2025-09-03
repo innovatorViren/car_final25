@@ -14,9 +14,25 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function __construct()
     {
-        dd(1212);
+        parent::__construct();
+        $this->middleware('sentinel.auth');
+        $this->middleware('permission:orders.list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:orders.delete', ['only' => ['destroy']]);
+        $this->common = new CommonController();
+        $this->title = trans("orders.title");
+        view()->share('title', $this->title);
+    }
+
+    public function index(OrderDataTable $dataTable)
+    {
+        $this->data['customer'] =  $this->common->getCustomer();
+        // $this->data['shop'] =  $this->common->getShop();
+        // $salesname = $this->common->getSalename();
+
+        // $this->data['salesname'] = $salesname;
+        return $dataTable->render('orders.index', $this->data);
     }
 
     /**

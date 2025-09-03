@@ -195,5 +195,5 @@ Route::get('privacy-policy', [PrivacypolicyController::class, 'index'])->name('p
 Route::get('contact-us', [ContactController::class, 'index'])->name('contact-us');
 
 //order Module
-Route::resource('order', OrderController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
+Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
 

@@ -38,6 +38,12 @@
                                 <span class="menu-text">{{ __('header.plan') }}</span>
                             </a>
                         </li>
+                        <li class="menu-item {{ Route::currentRouteNamed('orders.*') ? 'menu-item-active' : '' }}"
+                            aria-haspopup="true">
+                            <a href="{{ route('orders.index') }}" class="menu-link">
+                                <span class="menu-text">{{ __('header.order') }}</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
