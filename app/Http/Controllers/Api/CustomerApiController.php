@@ -126,6 +126,9 @@ class CustomerApiController extends ApiController
             }
             $customer_id = $request->customer_id ?? 0;
 
+            $stateName = DB::table('states')->where('id',$request->state_id)->first()->name ?? '';
+            $cityName = DB::table('cities')->where('id',$request->city_id)->first()->name ?? '';
+
             DB::table('customer_adresses')->insert([
                 'customer_id'    => $customer_id,
                 'name'           => $request->name,
@@ -143,6 +146,9 @@ class CustomerApiController extends ApiController
                 'created_at'     => now(),
                 'updated_at'     => now(),
             ]);
+
+            $request->merge(['state_name'   => $stateName ?? '']);
+            $request->merge(['city_name'        => $cityName ?? '']);
 
             $this->data = $request->all();
             return $this->responseSuccessWithoutObject();
