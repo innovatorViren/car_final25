@@ -159,6 +159,19 @@ class CustomerApiController extends ApiController
 
     }
 
+    public function defaultCustomerAddress(Request $request)
+    {
+        $customerId = $request->get('customer_id','');
+        $customerAddressId = $request->get('customer_address_id','');
+
+        DB::table('customer_adresses')->where('customer_id',$customerId)->update(['is_default'=>0]);
+        DB::table('customer_adresses')->where('id',$customerAddressId)->update(['is_default'=>1]);
+
+        $this->response_json['message'] = 'Default address set successfully.';
+        return response()->json($this->response_json, 200);
+
+    }
+
     public function getCustomerWiseAddress($customer_id)
     {
         $cusAddressData = DB::table('customer_adresses as CA')

@@ -49,6 +49,7 @@ Route::namespace('Api')->group(function () {
         //Customer Api
         Route::get('/get-car-wise-plan', [PlanApiController::class, 'getCarWisePlan']);
         Route::post('/add-customer-address', [CustomerApiController::class, 'addCustomerAddress']);
+        Route::post('/default-customer-address', [CustomerApiController::class, 'defaultCustomerAddress']);
         Route::get('/get-customer-wise-address/{customer_id}', [CustomerApiController::class, 'getCustomerWiseAddress']);
         Route::post('/edit-customer-address', [CustomerApiController::class, 'editCustomerAddress']);
         Route::get('/get-frequency', [CommonController::class, 'getFrequency']);
