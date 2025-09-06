@@ -22,7 +22,7 @@ use App\Http\Controllers\{
     RoleController,
     UserController,
     SmtpConfigurationController,
-    ProfileController,
+    ProfileController, 
     PrivacypolicyController,ContactController,PlanController,OrderController
 };
 use App\Http\Controllers\Auth\PasswordController;
