@@ -9,21 +9,11 @@ class CustomerAddress extends MyModel
 {
     use HasFactory;
 
-    protected $table = 'customer_addresses';
+    protected $table = 'customer_adresses';
 
     protected $guarded = [];
 
-    protected $fillable = [
-        'customer_id',
-        'address_line1',
-        'address_line2',
-        'phone',
-        'country_id',
-        'state_id',
-        'city_id',
-        'pincode',
-    ];
-
+    
     public function customer()
     {
         return $this->belongsTo(Customer::class);

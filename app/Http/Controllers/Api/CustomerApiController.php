@@ -129,7 +129,7 @@ class CustomerApiController extends ApiController
             $stateName = DB::table('states')->where('id',$request->state_id)->first()->name ?? '';
             $cityName = DB::table('cities')->where('id',$request->city_id)->first()->name ?? '';
 
-            DB::table('customer_adresses')->insert([
+        $cuAdd = DB::table('customer_adresses')->insertGetId([
                 'customer_id'    => $customer_id,
                 'name'           => $request->name,
                 'mobile'         => $request->mobile ?? null,
@@ -146,6 +146,30 @@ class CustomerApiController extends ApiController
                 'created_at'     => now(),
                 'updated_at'     => now(),
             ]);
+
+
+            $cusAddressData = DB::table('customer_adresses as CA')
+                            ->select('CA.id as customer_address_id',
+                                DB::raw("(CASE WHEN CA.name IS NOT NULL THEN  CA.name ELSE '' END) as name"),
+                                DB::raw("(CASE WHEN CA.mobile IS NOT NULL THEN  CA.mobile ELSE '' END) as mobile"),
+                                DB::raw("(CASE WHEN CA.address_type IS NOT NULL THEN  CA.address_type ELSE '' END) as address_type"),
+                                DB::raw("(CASE WHEN CA.address_line1 IS NOT NULL THEN  CA.address_line1 ELSE '' END) as address_line1"),
+                                DB::raw("(CASE WHEN CA.address_line2 IS NOT NULL THEN  CA.address_line2 ELSE '' END) as address_line2"),
+                                DB::raw("(CASE WHEN CA.landmark IS NOT NULL THEN  CA.landmark ELSE '' END) as landmark"),
+                                DB::raw("(CASE WHEN CA.pincode IS NOT NULL THEN  CA.pincode ELSE '' END) as pincode"),
+                                'CA.country_id',
+                                'CA.state_id',
+                                'CA.city_id',
+                                'CA.is_default',
+                                'S.name as state',
+                                'C.name as city'
+                            )
+                            ->leftjoin('states as S','S.id','CA.state_id')
+                            ->leftjoin('cities as C','C.id','CA.city_id')
+                            ->where('CA.id',$cuAdd)
+                            ->first();
+        $this->data = $cusAddressData;
+        return $this->responseSuccessWithoutObject();
 
             $request->merge(['state_name'   => $stateName ?? '']);
             $request->merge(['city_name'        => $cityName ?? '']);
