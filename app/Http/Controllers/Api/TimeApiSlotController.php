@@ -135,9 +135,15 @@ class TimeApiSlotController extends ApiController
         $start = Carbon::parse($startDate)->setTimeFromTimeString($startTime);
         $end   = Carbon::parse($endTime)->format('g:i A');
 
+        if($totalWashes == 30){
+            $dayCount = 1;
+        }else{
+            $dayCount = 2;
+        }
+
         for ($i = 0; $i < $totalWashes; $i++) {
             $slots[] = [
-                'date' => $start->copy()->addDays($i * 2)->format('d-m-Y'),
+                'date' => $start->copy()->addDays($i * $dayCount)->format('d-m-Y'),
                 'start_time' => $start->format('g:i A'),
                 'end_time' => $end
             ];
