@@ -58,6 +58,7 @@ Route::namespace('Api')->group(function () {
         Route::post('/add-customer-car', [CustomerApiController::class, 'addCustomerCar']);
         Route::get('/get-customer-wise-car/{customer_id}', [CustomerApiController::class, 'getCustomerWiseCar']);
         Route::post('/customer-car-delete', [CustomerApiController::class, 'customerCardelete']);
+        Route::post('/default-customer-car', [CustomerApiController::class, 'defaultCustomerCar']);
 
         //Order api
         Route::post('/add-order', [OrderApiController::class, 'addOrder']);

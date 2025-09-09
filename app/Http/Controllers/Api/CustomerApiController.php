@@ -122,10 +122,10 @@ class CustomerApiController extends ApiController
             ]);
 
             if ($requestData->fails()) {
-                $this->response_json['status'] = 0;
                 $this->response_json['message'] = $requestData->messages()->first();
                 return $this->responseError();
             }
+
             $customer_id = $request->customer_id ?? 0;
 
             $stateName = DB::table('states')->where('id',$request->state_id)->first()->name ?? '';
@@ -170,16 +170,10 @@ class CustomerApiController extends ApiController
                             ->leftjoin('cities as C','C.id','CA.city_id')
                             ->where('CA.id',$cuAdd)
                             ->first();
-        $this->data = $cusAddressData;
-        return $this->responseSuccessWithoutObject();
-
-            $request->merge(['state_name'   => $stateName ?? '']);
-            $request->merge(['city_name'        => $cityName ?? '']);
-
-            $this->data = $request->all();
+            $this->data = $cusAddressData;
             return $this->responseSuccessWithoutObject();
+
         } catch (Exception $e) {
-            $this->response_json['status'] = 0;
             $this->response_json['message'] = $e->getMessage();
             return $this->responseError();
         }
@@ -195,9 +189,7 @@ class CustomerApiController extends ApiController
         DB::table('customer_adresses')->where('id',$customerAddressId)->update(['is_default'=>1]);
 
         $this->response_json['message'] = 'Default address set successfully.';
-        $this->response_json['status'] = 1;
         return $this->responseSuccessWithoutObject();
-        return response()->json($this->response_json, 200);
 
     }
 
@@ -244,7 +236,8 @@ class CustomerApiController extends ApiController
             ]);
 
             if ($requestData->fails()) {
-                throw new Exception($requestData->messages()->first(), 1);
+                $this->response_json['message'] = $requestData->messages()->first();
+                return $this->responseError();
             }
             $customerAdressId = $request->customer_adress_id ?? 0;
             $customer_id = $request->customer_id ?? 0;
@@ -285,7 +278,8 @@ class CustomerApiController extends ApiController
                 'customer_id' => 'required',
             ]);
             if ($requestData->fails()) {
-                throw new Exception($requestData->messages()->first(), 1);
+                $this->response_json['message'] = $requestData->messages()->first();
+                return $this->responseError();
             }
             $customerId = $request->customer_id;
 
@@ -340,11 +334,12 @@ class CustomerApiController extends ApiController
             ]);
 
             if ($requestData->fails()) {
-                throw new Exception($requestData->messages()->first(), 1);
+                $this->response_json['message'] = $requestData->messages()->first();
+                return $this->responseError();
             }
             $customer_id = $request->customer_id ?? 0;
 
-            DB::table('customer_cars')->insert([
+            $carCusId = DB::table('customer_cars')->insertGetId([
                 'customer_id'    => $customer_id,
                 'car_model_id'   => $request->car_model_id,
                 'car_brand_id'   => $request->car_brand_id ?? null,
@@ -353,7 +348,22 @@ class CustomerApiController extends ApiController
                 'updated_at'     => now(),
             ]);
 
-            $this->data = $request->all();
+
+            $cusCarsData = DB::table('customer_cars as CC')
+                            ->select(
+                                'CC.id as customer_car_id',
+                                'CC.car_model_id as car_model_id',
+                                'CC.car_brand_id as car_brand_id',
+                                DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
+                                DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                                DB::raw("0 as selected"),
+                            )
+                            ->leftjoin('car_brands as CB','CB.id','CC.car_brand_id')
+                            ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
+                            ->where('CC.id',$carCusId)
+                            ->first();
+
+            $this->data = $cusCarsData;
             return $this->responseSuccessWithoutObject();
         } catch (Exception $e) {
             $this->response_json['message'] = $e->getMessage();
@@ -365,7 +375,10 @@ class CustomerApiController extends ApiController
     public function getCustomerWiseCar($customer_id)
     {
         $cusCarsData = DB::table('customer_cars as CC')
-                            ->select('CC.id as customer_car_id',
+                            ->select(
+                                'CC.id as customer_car_id',
+                                'CC.car_model_id as car_model_id',
+                                'CC.car_brand_id as car_brand_id',
                                 DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
                                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
                                 DB::raw("0 as selected"),
@@ -376,6 +389,19 @@ class CustomerApiController extends ApiController
                             ->get();
         $this->data = $cusCarsData;
         return $this->responseSuccessWithoutObject();
+    }
+
+    public function defaultCustomerCar(Request $request)
+    {
+        $customerId = $request->get('customer_id','');
+        $customerCarId = $request->get('customer_car_id','');
+
+        DB::table('customer_cars')->where('customer_id',$customerId)->update(['is_default'=>0]);
+        DB::table('customer_cars')->where('id',$customerCarId)->update(['is_default'=>1]);
+
+        $this->response_json['message'] = 'Default Car set successfully.';
+        return $this->responseSuccessWithoutObject();
+
     }
 
     public function customerCardelete(Request $request)

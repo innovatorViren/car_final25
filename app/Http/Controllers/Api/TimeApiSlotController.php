@@ -19,13 +19,11 @@ class TimeApiSlotController extends ApiController
         $request->validate([
         ]);
 
-            if ($validatedData->fails()) {
-                // throw new Exception($validatedData->messages()->first(), 1);
-
-                 $this->response_json['status'] = 0;
-                $this->response_json['message'] = $validatedData->messages()->first();
-                return $this->responseError();
-            }
+        if ($validatedData->fails()) {
+             $this->response_json['status'] = 0;
+            $this->response_json['message'] = $validatedData->messages()->first();
+            return $this->responseError();
+        }
 
         $date = $request->input('date');
         $dateCheck = Carbon::parse($date);
@@ -43,11 +41,6 @@ class TimeApiSlotController extends ApiController
         $this->response_json['slots'] = $slots;
         $this->response_json['message'] = 'Time Slot SuccessFully';
         return response()->json($this->response_json, 200);
-
-        // return response()->json([
-        //     'date' => $date,
-        //     'slots' => $slots
-        // ]);
     }
 
     private function generateTimeSlots($startTime, $endTime = '21:00', $slotDuration = 60, $breakAfterSlots = 3, $breakDuration = 60)
@@ -85,13 +78,17 @@ class TimeApiSlotController extends ApiController
 
     public function generateSlots(Request $request)
     {
-        // dd($request->all());
-        $request->validate([
+        $requestData = Validator::make($this->request->all(), [
             'start_date' => 'required',
             'start_time' => 'required',
             'end_time' => 'required',
             'frequency_type' => 'required'
         ]);
+
+        if ($requestData->fails()) {
+            $this->response_json['message'] = $requestData->messages()->first();
+            return $this->responseError();
+        }
 
         $startDate = $request->get('start_date');
         $startTime = $request->input('start_time');

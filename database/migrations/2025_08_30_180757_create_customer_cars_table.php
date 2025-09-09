@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('customer_id')->nullable();
             $table->integer('car_model_id')->nullable();
             $table->integer('car_brand_id')->nullable();
+            $table->boolean('is_default')->default(false);
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
