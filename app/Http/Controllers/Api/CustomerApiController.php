@@ -122,7 +122,9 @@ class CustomerApiController extends ApiController
             ]);
 
             if ($requestData->fails()) {
-                throw new Exception($requestData->messages()->first(), 1);
+                $this->response_json['status'] = 0;
+                $this->response_json['message'] = $requestData->messages()->first();
+                return $this->responseError();
             }
             $customer_id = $request->customer_id ?? 0;
 
@@ -177,6 +179,7 @@ class CustomerApiController extends ApiController
             $this->data = $request->all();
             return $this->responseSuccessWithoutObject();
         } catch (Exception $e) {
+            $this->response_json['status'] = 0;
             $this->response_json['message'] = $e->getMessage();
             return $this->responseError();
         }
@@ -192,6 +195,8 @@ class CustomerApiController extends ApiController
         DB::table('customer_adresses')->where('id',$customerAddressId)->update(['is_default'=>1]);
 
         $this->response_json['message'] = 'Default address set successfully.';
+        $this->response_json['status'] = 1;
+        return $this->responseSuccessWithoutObject();
         return response()->json($this->response_json, 200);
 
     }

@@ -16,13 +16,17 @@ class PlanApiController extends ApiController
     {
         try {   
 
+           
             $requestData = Validator::make($this->request->all(), [
                 'car_model_id' => 'required',
                 'frequency_type' => 'required',
             ]);
 
             if ($requestData->fails()) {
-                throw new Exception($requestData->messages()->first(), 1);
+
+                $this->response_json['status'] = 0;
+                $this->response_json['message'] = $requestData->messages()->first();
+                return $this->responseError();
             }
 
             $carModelId = $request->get('car_model_id',false);
@@ -32,10 +36,12 @@ class PlanApiController extends ApiController
             $planData = DB::table('plans')->where('car_size_id',$carModel->car_size_id)->where('frequency', $frequencyType)->whereNull('deleted_at')->first();
             
             $this->data = $planData;
-
+            $this->response_json['message'] = 'Successfully';
+            $this->response_json['status'] = 1;
             return $this->responseSuccessWithoutObject();
         } catch (Exception $e) {
             $this->response_json['message'] = $e->getMessage();
+            $this->response_json['status'] = 0;
             return $this->responseError();
         }
 
