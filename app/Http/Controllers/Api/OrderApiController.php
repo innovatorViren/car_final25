@@ -10,6 +10,7 @@ use DB;
 use URL;
 use App\Models\{Order,Wash};
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class OrderApiController extends ApiController
 {
@@ -107,5 +108,141 @@ class OrderApiController extends ApiController
         }
 
         return $slots;
+    }
+
+    public function getOrderList(Request $request)
+    {
+        $page = $request->get('page', '');
+        $user = $this->currentuser();
+        $perPage = $this->perPageCommon();
+
+        if($user->emp_type == 'non-emplyee')
+        {
+            $fields = [
+                'O.id as order_id',
+                'O.code as code',
+                'O.total_washes as total_washes',
+                'O.status as status',
+                'O.pay_amount as pay_amount',
+                DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
+                DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+                DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
+                DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+            ];
+
+            $orderData = DB::table('orders as O')
+                    ->select($fields)
+                    ->join('customers as C','C.id','O.customer_id')
+                    ->leftjoin('employees as E', function ($join) {
+                        $join->on('E.id', '=', 'O.employee_id');
+                    })
+                    ->whereNull('O.deleted_at')
+                    ->orderBy('O.id', 'DESC')
+                    ->get();
+
+        }elseif($user->emp_type == 'customer'){
+            $fields = [
+                'O.id as order_id',
+                'O.code as code',
+                'O.total_washes as total_washes',
+                'O.status as status',
+                'O.pay_amount as pay_amount',
+                DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
+                DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+                DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
+                DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+            ];
+
+            $orderData = DB::table('orders as O')
+                    ->select($fields)
+                    ->join('customers as C','C.id','O.customer_id')
+                    ->leftjoin('employees as E', function ($join) {
+                        $join->on('E.id', '=', 'O.employee_id');
+                    })
+                    ->whereNull('O.deleted_at')
+                    ->where('O.customer_id',$user->customer_id)
+                    ->orderBy('O.id', 'DESC')
+                    ->get();
+            
+        }else{
+
+            $fields = [
+                'O.id as order_id',
+                'O.code as code',
+                'O.total_washes as total_washes',
+                'O.status as status',
+                'O.pay_amount as pay_amount',
+                DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
+                DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+                DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
+                DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+            ];
+
+            $orderData = DB::table('orders as O')
+                    ->select($fields)
+                    ->join('customers as C','C.id','O.customer_id')
+                    ->leftjoin('employees as E', function ($join) {
+                        $join->on('E.id', '=', 'O.employee_id');
+                    })
+                    ->whereNull('O.deleted_at')
+                    ->where('O.employee_id',$user->emp_id)
+                    ->orderBy('O.id', 'DESC')
+                    ->get();
+        }
+        
+        if (isset($orderData)) {
+            $data = collect($orderData);
+            $dataPerPage = $data->forPage($page, $perPage);
+            $dataPerPage = array_values($dataPerPage->toArray());
+
+            $result = new LengthAwarePaginator(
+                $dataPerPage,
+                $data->count(),
+                $perPage,
+                $page
+            );
+            $this->data =  $result;
+            $this->response_json['message'] = 'Success';
+            return $this->responseSuccessPagination();
+        } else {
+            $this->response_json['message'] = 'No data available';
+            return $this->responseError();
+        }
+
+    }
+
+
+    public function getOrderDetal($orderId)
+    {
+        $user = $this->currentuser();
+     
+        $fields = [
+            'O.id as order_id',
+            'O.code as code',
+            'O.total_washes as total_washes',
+            'O.status as status',
+            'O.pay_amount as pay_amount',
+            DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
+            DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+            DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
+            DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+        ];
+
+        $orderDetail = DB::table('orders as O')
+                ->select($fields)
+                ->join('customers as C','C.id','O.customer_id')
+                ->leftjoin('employees as E', function ($join) {
+                    $join->on('E.id', '=', 'O.employee_id');
+                })
+                ->where('O.id',$orderId)
+                ->whereNull('O.deleted_at')
+                ->orderBy('O.id', 'DESC')
+                ->get();
+
+        
+            $this->data =  $orderDetail;
+            $this->response_json['message'] = 'Success';
+            return $this->responseSuccessWithoutObject();
+
     }
 }

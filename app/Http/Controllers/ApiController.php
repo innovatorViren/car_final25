@@ -24,4 +24,9 @@ class ApiController extends Controller
         $this->response_json['status'] = 0;
         return response()->json($this->response_json, 401);
     }
+
+    public function perPageCommon()
+    {
+        return config('global.pagination_records');
+    }
 }

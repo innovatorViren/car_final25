@@ -62,6 +62,8 @@ Route::namespace('Api')->group(function () {
 
         //Order api
         Route::post('/add-order', [OrderApiController::class, 'addOrder']);
+        Route::get('/get-order-list', [OrderApiController::class, 'getOrderList']);
+        Route::get('/get-order-detail/{order_id}', [OrderApiController::class, 'getOrderDetal']);
 
 
         

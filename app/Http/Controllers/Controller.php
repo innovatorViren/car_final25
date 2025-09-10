@@ -194,7 +194,6 @@ class Controller extends BaseController
     public function responseSuccessPagination()
     {
         $this->response_json = $this->data;
-        $this->response_json['status'] = 1;
         return response()->json($this->response_json, 200);
     }
     /**

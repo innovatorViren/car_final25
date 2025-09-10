@@ -170,8 +170,11 @@ class CustomerApiController extends ApiController
                             ->leftjoin('cities as C','C.id','CA.city_id')
                             ->where('CA.id',$cuAdd)
                             ->first();
+            DB::table('customer_adresses')->where('customer_id',$customer_id)->update(['is_default'=>0]);
+            DB::table('customer_adresses')->where('id',$cusAddressData->id)->update(['is_default'=>1]);
+
             $this->data = $cusAddressData;
-            return $this->responseSuccessWithoutObject();
+            return $this->responseSuccessWithoutDataObject();
 
         } catch (Exception $e) {
             $this->response_json['message'] = $e->getMessage();
@@ -362,6 +365,8 @@ class CustomerApiController extends ApiController
                             ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
                             ->where('CC.id',$carCusId)
                             ->first();
+            DB::table('customer_cars')->where('customer_id',$customer_id)->update(['is_default'=>0]);
+            DB::table('customer_cars')->where('id',$cusCarsData->id)->update(['is_default'=>1]);
 
             $this->data = $cusCarsData;
             return $this->responseSuccessWithoutObject();
@@ -400,7 +405,7 @@ class CustomerApiController extends ApiController
         DB::table('customer_cars')->where('id',$customerCarId)->update(['is_default'=>1]);
 
         $this->response_json['message'] = 'Default Car set successfully.';
-        return $this->responseSuccessWithoutObject();
+        return $this->responseSuccessWithoutDataObject();
 
     }
 
