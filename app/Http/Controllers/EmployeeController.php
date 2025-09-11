@@ -53,8 +53,6 @@ class EmployeeController extends Controller
 
     public function index(Request $request, EmployeeDataTable $dataTable)
     {
-        // $this->data['department'] =  $this->common->getDepartment();
-        // $this->data['designation'] =  $this->common->getDesignation();
         $this->data['employeesData'] =  $this->common->getEmployeeWithEmpCode();
         $this->data['type'] = ($request->has('type') && in_array($request->type, ['Yes', 'No'])) ? $request->type : '';
         return $dataTable->render('employee.index', $this->data);

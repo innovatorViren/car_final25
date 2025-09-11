@@ -37,10 +37,7 @@ class EmployeeDataTable extends DataTable
                     return $row->first_name . ' ' . $row->middle_name . ' ' . $row->last_name;
                 }
             })
-            ->editColumn('left_date', function ($row) {
-                return ($row->left_date != '00-00-0000') ? $row->left_date : null;
-            })
-            ->rawColumns(['is_active', 'first_name','left_date']);
+            ->rawColumns(['is_active', 'first_name']);
     }
 
     // Currently not in use : checkrights function
@@ -56,11 +53,11 @@ class EmployeeDataTable extends DataTable
             $menu .= '<td class="text-center"><div class="dropdown dropdown-inline text-center" title="" data-placement="left" data-original-title="Quick actions"><a href="#" class="btn btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ki ki-bold-more-hor"></i></a><div class="dropdown-menu m-0 dropdown-menu-right" style=""><ul class="navi navi-hover">';
         }
 
-        if ($user->hasAnyAccess(['employee.edit', 'users.superadmin']) && ($row->left_date == '00-00-0000' || $row->left_date == null)) {
+        if ($user->hasAnyAccess(['employee.edit', 'users.superadmin'])) {
             $menu .= '<li class="navi-item"><a href="' . $editurl . '"  class="navi-link"><span class="navi-icon"><i class="fas fa-edit"></i></span><span class="navi-text">' . __('common.edit') . '</span></a></li>';
         }
 
-        if ($user->hasAnyAccess(['employee .delete', 'users.superadmin']) && ($row->left_date == '00-00-0000' || $row->left_date == null)) {
+        if ($user->hasAnyAccess(['employee .delete', 'users.superadmin'])) {
             $menu .= '<li class="navi-item"><a href="' . $deleteurl . '" data-id="' . $row->id . '" data-table="dataTableBuilder" class="delete-confrim navi-link"><span class="navi-icon"><i class="fas fa-trash-alt"></i></span><span class="navi-text">' . __('common.delete') . '</span>' .
                 '</a></li>';
         }
@@ -87,7 +84,6 @@ class EmployeeDataTable extends DataTable
                 'employees.last_name as last_name',
                 DB::raw("DATE_FORMAT(employees.birth_date, '%d-%m-%Y') as birth_date"),
                 DB::raw("DATE_FORMAT(employees.join_date, '%d-%m-%Y') as join_date"),
-                DB::raw("DATE_FORMAT(employees.left_date, '%d-%m-%Y') as left_date"),
                 'employees.employee_code as employee_code',
                 'employees.mobile as mobile1',
                 'employee_addresses.permanent_address as permanent_address',

@@ -66,17 +66,6 @@
                             </a>
                         </li>
                         <!--end::Nav Item-->
-                        <!--begin::Nav Item-->
-                        <li class="navi-item mb-2">
-                            <a class="navi-link" id="job_information-tab-10" data-toggle="tab"
-                                href="#job_information-10" aria-controls="job_information">
-                                <span class="nav-icon mr-3">
-                                    <i class="flaticon2-rocket-1"></i>
-                                </span>
-                                <span class="navi-text">{{ __('employee.job_information') }}</span>
-                            </a>
-                        </li>
-                        <!--end::Nav Item-->
                     </ul>
                     <!--end::Navigation-->
                 </div>

@@ -11,6 +11,7 @@ use URL;
 use App\Models\{Order,Wash};
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Sentinel;
 
 class OrderApiController extends ApiController
 {
@@ -212,35 +213,58 @@ class OrderApiController extends ApiController
     }
 
 
-    public function getOrderDetal($orderId)
+    public function getOrderDetail($orderId)
     {
         $user = $this->currentuser();
-     
+        $login_user = Sentinel::findById($user->id);
+        $superadmin = $login_user->hasAccess(['users.superadmin']);
+
+        $assignMainOrder = 0;
+        $order = DB::table('orders')->where('id',$orderId)->first();
+        if($superadmin)
+        {
+            if($order->employee_id != null)
+            {
+                $assignMainOrder = 1;
+            }
+        }else{
+            $assignMainOrder = 0;
+        }
+
+
         $fields = [
-            'O.id as order_id',
-            'O.code as code',
-            'O.total_washes as total_washes',
-            'O.status as status',
-            'O.pay_amount as pay_amount',
-            DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
-            DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+            'W.id as wash_id',
+            'W.status as status',
+            DB::raw("(CASE WHEN W.scheduled_date IS NOT NULL THEN DATE_FORMAT(W.scheduled_date, '%d-%m-%Y') ELSE '' END) as scheduled_date"),
+            DB::raw("(CASE WHEN W.start_time IS NOT NULL THEN DATE_FORMAT(W.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+            DB::raw("(CASE WHEN W.end_time IS NOT NULL THEN DATE_FORMAT(W.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
             DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
             DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
         ];
 
-        $orderDetail = DB::table('orders as O')
+        $washItem = DB::table('washes as W')
                 ->select($fields)
-                ->join('customers as C','C.id','O.customer_id')
                 ->leftjoin('employees as E', function ($join) {
-                    $join->on('E.id', '=', 'O.employee_id');
+                    $join->on('E.id', '=', 'W.employee_id');
                 })
-                ->where('O.id',$orderId)
-                ->whereNull('O.deleted_at')
-                ->orderBy('O.id', 'DESC')
-                ->get();
-
+                ->where('W.order_id',$orderId)
+                ->whereNull('W.deleted_at')
+                ->orderBy('W.id', 'ASC')
+                ->get()
+                ->map(function ($item) use($assignMainOrder){
+                    $assign = 1;
+                    if($assignMainOrder == 1)
+                    {   
+                        if($item->status == 'completed')
+                        {
+                            $assign = 0;
+                        }
+                    }
+                    $item->assign = $assign;
+                    return $item;
+                });
         
-            $this->data =  $orderDetail;
+            $this->data =  $washItem;
             $this->response_json['message'] = 'Success';
             return $this->responseSuccessWithoutObject();
 

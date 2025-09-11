@@ -6,41 +6,17 @@ use App\Models\ProductVariant;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
 use App\Models\{
-    Agent,
     Category,
     City,
     Country,
     Customer,
-    Department,
-    Designation,
     Employee,
-    GroupOfCompany,
     HsnCode,
-    Industry,
-    InwardChallan,
-    LeadSource,
-    LeadStatus,
-    Location,
-    Product,
-    PurchaseOrder,
     Role,
     State,
-    Unit,
     User,
-    RawMaterial,
-    Routes,
-    Variant,
-    Supplier,
-    DeleteLog,
-    EmployeeCustomers,
-    PriceList,
-    PriceListItem,
-    SalesOrder,
-    Shop,
-    OutwardChallan,
-    Branch,
-    BranchTransfer,
-    CarBrand,CarModel
+    CarBrand,
+    CarModel,
 };
 use Carbon\Carbon;
 use URL;
@@ -337,32 +313,6 @@ class CommonController extends Controller
             return $carModel;
         }
     }
-
-    public function getBanner()
-    {
-        $request = request();
-        $platform = $request->header('platform');
-        if ($platform == 1) {
-
-            $path = URL::asset('');
-            $banner = DB::table('banners as B')
-                            ->select(
-                                    'B.id',
-                                    DB::raw("(CASE WHEN B.title IS NOT NULL THEN  B.title ELSE '' END) as title"),
-                                    DB::raw("(CASE WHEN B.image !='' THEN  CONCAT('".$path."', B.image) ELSE '' END) as banner_image")
-                                )
-                            ->whereNull('B.deleted_at')
-                            ->where('is_active','Yes')
-                            ->orderBy('id','DESC')
-                            ->get();
-
-            $this->data = $banner;
-            return $this->responseSuccessWithoutObject();
-        } else {
-            return '';
-        }
-    }
-
     /**
      * [getInfoData | This method is used to get info data]
      * @param  Request $request [description]
@@ -462,137 +412,28 @@ class CommonController extends Controller
         return response()->json($employee);
     }
 
-
-    public function getDepartment($department_id = null)
+    public function getEmployeeWithEmpCode($employee_id = null)
     {
         $request = request();
         $platform = $request->header('platform');
         if ($platform == 1) {
-            $department = Department::select('id AS value', 'name AS text')->orderBy('name', 'asc')->get();
+            $employee = Employee::select('id AS value', 'name AS text')->where('is_active', 'Yes')
+                ->orderBy('name', 'asc')->get();
 
-            $toReturn = $department;
+            $toReturn = $employee;
             $this->data = $toReturn;
 
             return $this->responseSuccess();
         } else {
-            $department_id = $request->get('department_id', $department_id);
-            $department = Department::where('is_active', 'Yes')
-                ->when($department_id, function ($sql) use ($department_id) {
-                    $sql->orWhere('id', $department_id);
+            $employee_id = $request->get('employee_id', $employee_id);
+            $field = [DB::raw("CONCAT(employees.employee_code, ' - ', employees.first_name, ' ', COALESCE(employees.middle_name,''), ' ', employees.last_name) as employee_name"), 'employees.id'];
+            $employee = Employee::select($field)
+                ->when($employee_id, function ($sql) use ($employee_id) {
+                    $sql->orWhere('id', $employee_id);
                 })
-                ->orderBy('name', 'ASC')
-                ->pluck('name', 'id')->toArray();
-            return $department;
-        }
-    }
-
-
-    public function getDesignation($designation_id = null)
-    {
-        $request = request();
-        $platform = $request->header('platform');
-        if ($platform == 1) {
-            $designation = Designation::select('id AS value', 'name AS text')->orderBy('name', 'asc')->get();
-
-            $toReturn = $designation;
-            $this->data = $toReturn;
-
-            return $this->responseSuccess();
-        } else {
-            $designation_id = $request->get('designation_id', $designation_id);
-            $designation = Designation::where('is_active', 'Yes')
-                ->when($designation_id, function ($sql) use ($designation_id) {
-                    $sql->orWhere('id', $designation_id);
-                })
-                ->orderBy('name', 'ASC')
-                ->pluck('name', 'id')->toArray();
-            return $designation;
-        }
-    }
-
-    public function getHsncode($hsncode_id = null)
-    {
-        $request = request();
-        $platform = $request->header('platform');
-        if ($platform == 1) {
-            $hsncode = HsnCode::select('id AS value', 'name AS text')->orderBy('name', 'asc')->get();
-
-            $toReturn = $hsncode;
-            $this->data = $toReturn;
-
-            return $this->responseSuccess();
-        } else {
-            $hsncode_id = $request->get('hsncode_id', $hsncode_id);
-            $hsncode = HsnCode::select(DB::raw("CONCAT(hsn_code, ' - ', FLOOR(gst), '%') as hsn_code"), 'id')
-                ->where('is_active', 'Yes')
-                ->when($hsncode_id, function ($sql) use ($hsncode_id) {
-                    $sql->orWhere('id', $hsncode_id);
-                })
-                ->orderBy('hsn_code', 'ASC')
-                ->pluck('hsn_code', 'id')->toArray();
-            return $hsncode;
-        }
-    }
-
-    public function getCategory($category_id = null,$page = 1)
-    {
-        $request = request();
-        $platform = $request->header('platform');
-        $page = $request->page ?? 1;
-        $limit = config('global.pagination_records');
-        if ($platform == 1) {
-
-            $search = $request->search ?? null;
-            $path = URL::asset('');
-
-            $category = Category::select('id AS value', 'name AS text', DB::raw("(CASE WHEN category_image !='' THEN  CONCAT('" . $path . "', category_image) ELSE '' END) as category_image"),)
-                ->where('is_active', 'Yes')
-                ->where('c_type', 'product_category')
-                ->when($search, function ($query, $search) {
-                      return $query->where('name','LIKE', "%{$search}%");
-                })
-                ->orderBy('name', 'asc')
-                ->paginate($limit);
-                // ->get();
-
-            // $toReturn = $category;
-            // $this->data = $toReturn;
-            // return $this->responseSuccess();
-            $this->response_json['category'] = $category;
-            $this->response_json['status'] = 1;
-            return response()->json($this->response_json, 200);
-        } else {
-            $category_id = $request->get('category_id', $category_id);
-            $category = Category::where('is_active', 'Yes')->where('c_type', 'product_category')
-                ->when($category_id, function ($sql) use ($category_id) {
-                    $sql->orWhere('id', $category_id);
-                })
-                ->orderBy('name', 'ASC')
-                ->pluck('name', 'id')->toArray();
-            return $category;
-        }
-    }
-
-    public function getRoutes($routes_id = null)
-    {
-        $request = request();
-        $platform = $request->header('platform');
-        if ($platform == 1) {
-            $routes = Routes::select('id AS value', 'name AS text')->orderBy('name', 'asc')->get();
-
-            $toReturn = $routes;
-            $this->data = $toReturn;
-
-            return $this->responseSuccess();
-        } else {
-            $routes_id = $request->get('id', $routes_id);
-            $routes = Routes::where('is_active', 'Yes')
-                ->when($routes_id, function ($sql) use ($routes_id) {
-                    $sql->orWhere('id', $routes_id);
-                })
-                ->orderBy('name', 'ASC')
-                ->pluck('name', 'id')->toArray();
-            return $routes;
+                ->orderBy('employee_name', 'ASC')
+                ->pluck('employee_name', 'id')->toArray();
+            return $employee;
         }
     }
 
@@ -684,25 +525,6 @@ class CommonController extends Controller
         }
     }
 
-
-    public function getGstType($group_of_company_id = null)
-    {
-        $request = request();
-        $platform = $request->header('platform');
-
-        $gst = Config('project.gst_type');
-        $toReturn = [];
-        $i = 0;
-        foreach ($gst as $key => $item) {
-            $toReturn[$i]['string_value'] = $key;
-            $toReturn[$i]['text'] = $item;
-            $i++;
-        }
-        $this->data = $toReturn;
-
-        return $this->responseSuccessWithoutObject();
-    }
-
     public function changeDefault(Request $request, $id)
     {
         $table = $request->table;
@@ -724,13 +546,9 @@ class CommonController extends Controller
             if ($tableRes) {
                 $statuscode = 200;
             }
-            if ($table == 'locations') {
-                $message = $request->is_default == 'true' ? __('location.active') : __('location.deactivate');
-            } elseif($table == 'branches'){
-                $message = $request->is_default == 'true' ? __('branch.active') : __('branch.deactivate');
-            } else {
-                $message = $request->is_default == 'true' ? __('year.active') : __('year.deactivate');
-            }
+            
+            $message = $request->is_default == 'true' ? __('year.active') : __('year.deactivate');
+            
 
             return response()->json([
                 'success' => true,
@@ -738,13 +556,7 @@ class CommonController extends Controller
             ], $statuscode);
         }else{
 
-            if ($table == 'locations') {
-                $message = __('location.status_error');
-            } elseif($table == 'branches'){
-                $message = __('branch.status_error') ;
-            } else {                 
-                $message = __('year.status_error');
-            }
+            $message = __('year.status_error');
 
             return response()->json([
                 'error' => false,
@@ -752,52 +564,6 @@ class CommonController extends Controller
             ], 422);
         }
     }
-
-    public function getSalename($employee_id = null)
-    {
-        $request = request();
-        $employee_id = $request->get('employee_id', $employee_id);
-        $salesname = Employee::
-            when($employee_id, function ($sql) use ($employee_id) {
-                $sql->orWhere('id', $employee_id);
-            })
-            ->select(DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as user_full_name"), 'employees.id')
-            ->where('employees.is_active', 'Yes')
-            ->where('employees.is_salesman', 'Yes')
-            ->orderBy('employees.first_name', 'ASC')
-            ->pluck('user_full_name', 'employees.id')
-            ->toArray();
-        return $salesname;
-        
-    }
-
-    public function getGstStatus()
-    {
-
-            $gststatus = Config('project.gst_type');
-            $toReturn = [];
-            $i=0;
-            foreach($gststatus as $key=>$item){
-                $toReturn[$i]['value']=$key;
-                $toReturn[$i]['text']=$item;
-                $i++;
-            }
-            $this->data = $toReturn;
-
-            return $this->responseSuccessWithoutObject();
-    }
-
-    public function getsalesmans()
-    {
-        $department = Department::where('slug','sales')->first();
-        $department_id = $department->id;
-        $field = [DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as employee_name"), 'id'];
-        $employee = Employee::select($field)->where('department_id', $department_id)
-        ->orderBy('employee_name', 'ASC')
-        ->pluck('employee_name', 'id')->toArray();
-        return $employee;
-    }
-
 
     public function getFrequency()
     {
