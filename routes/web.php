@@ -8,7 +8,6 @@ use App\Http\Controllers\{
     CarModelController,
     BannerController,
     CommonController,
-    ReportController,
     DashboardController,
     SettingController,
     StateController,
@@ -116,21 +115,9 @@ Route::match(['get', 'post'], 'years/changeYear/{id}', [YearController::class, '
 Route::resource('car-brand', CarBrandController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
 //Car Model
 Route::resource('car-model', CarModelController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
-//Supplier module
-Route::resource('supplier', SupplierController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
-Route::get('check-supplier-duplicate-name/{id?}', [SupplierController::class, 'checkUniqueName'])->name('supplier.checkUniqueName');
-Route::get('supplier-export', [SupplierController::class, 'supplierExport'])->name('supplierExport');
-
-
-
-// Reports
-Route::get('/reports', [ReportController::class, 'index'])->name('reports');
-
 
 //Employee module routes
 Route::resource('employee', EmployeeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
-
-Route::get('employee-export', [EmployeeController::class, 'employeeExport'])->name('employeeExport');
 Route::get('/get-Appointee', [EmployeeController::class, 'getAppointee'])->name('getAppointee');
 Route::get('/get-Designation', [EmployeeController::class, 'getDesignation'])->name('getDesignation');
 // checkDuplicateAdhar
@@ -140,19 +127,6 @@ Route::get('check-employee-duplicate-mobile-no/{id?}', [EmployeeController::clas
 
 Route::get('check-employee-duplicate-email/{id?}', [EmployeeController::class, 'checkDuplicateEmail'])
     ->name('checkEmployeeDuplicateEmail');
-
-//Department module routes
-Route::post('department/employee-department', [DepartmentController::class, 'employeeDepartmentDataList'])->name('employee-department.list');
-Route::resource('department', DepartmentController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
-Route::get('check-department-duplicate-name/{id?}', [DepartmentController::class, 'checkUniqueName'])->name('department.checkUniqueName');
-
-//Designation module routes
-Route::get('designation/grade/unique', [DesignationController::class, 'checkGradeExists'])->name('grade.exits');
-Route::post('department/employee-designation', [DesignationController::class, 'employeeDesignationDataList'])->name('employee-designation.list');
-Route::resource('designation', DesignationController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
-Route::get('employee-list-export', [DesignationController::class, 'employeeListExport'])
-    ->name('employeeListExport');
-Route::get('check-designation-duplicate-name/{id?}', [DesignationController::class, 'checkUniqueName'])->name('designation.checkUniqueName');
 
 // Customer module routes
 Route::resource('customers', CustomerController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);

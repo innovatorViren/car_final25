@@ -34,22 +34,6 @@ class EmployeeRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                Rule::unique('employees')->whereNull('deleted_at')
-                    ->when($id, function ($qry) use ($id) {
-                        $qry->where(function ($query) use ($id) {
-                            return $query->where('id', '!=', $id);
-                        });
-                    }),
-
-                function ($attribute, $value, $fail) {
-                    if($this->get('id') == null && $this->get('parentId') == null){
-                        $user = User::where('email', $value)->first();
-                        // dd($user);
-                        if ($user) {
-                            $fail('You cannot create user with this email. This email is already exists in user table. Please use another email.');
-                        }
-                    }
-                }
             ],
             'gender' => 'required',
             'birth_date' => 'required',

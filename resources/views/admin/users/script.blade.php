@@ -16,36 +16,10 @@
         userID = $('#userId').val();
 
         initValidation();
-        initLeadRepeater();
 
         if (userID > 0) {
             $('.emp_type:checked').trigger('change');
         }
-
-        jQuery.validator.addMethod("require_from_group", function(value, element, options) {
-            var isvalid = false;
-            if($('#is_ip_base').is(':checked')){
-                $(".loginip").each(function() {
-                    if($(this).val() != '')
-                    {
-                        //$(this).addClass('IP4Checker');
-                        isvalid = true;
-                    }
-                });
-            }
-            return isvalid;
-        }, "Please fill out at least one of these fields.");
-
-        $.validator.addMethod('IP4Checker', function(value) {
-            if(value!=''){
-                return value.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/);
-            }
-        }, 'Invalid IP address format');
-
-        // "filone" is the class we will use for the input elements at this example
-        jQuery.validator.addClassRules("loginip", {
-            require_from_group: 'login_ip'
-        });
 
         $(document).on('change', '.cls-role', function() {
             var roleId = $(this).val();
@@ -75,19 +49,11 @@
             var permissions = $.map(permissionArr, function(value, index) {
                 if(value.text == 'Purchase'){
                     $(value.items).each(function(i,item){
-                        if(item.text == 'purchase_order'){
-                            $(item.items).each(function(i,row){
-                                if(row.text == 'edit'){
-                                    row.text = 'Edit / Edit Status';
-                                }
-                            });
-
-                        }
+                        
                     });
                 }
                 return [value];
             });
-            // if (permissionArr.length > 0) {
                 $(".cls-treeview").kendoTreeView({
                     checkboxes: {
                         checkChildren: true
@@ -96,7 +62,6 @@
                     dataSource: permissions
                 });
                 onCheck();
-            // }
         }
     });
 
@@ -163,30 +128,21 @@
                 $(".employeeData").show();
                 $("#emp_id").addClass('required');
                 $('#last_name').addClass('required');
-                $('.locationClass').removeClass('d-none');
-                $('#location_id').addClass('required');
                 $('.cls-role').removeAttr('disabled');
-                $('.processClass').removeClass('d-none');
                 $('.showTreeViewPermission').removeClass('d-none');
             } else if(emp_type == 'customer') {
                 $(".employeeData").hide();
                 $("#emp_id").removeClass('required');
                 $('#last_name').removeClass('required');
-                $('.locationClass').addClass('d-none');
-                $('#location_id').removeClass('required');
                 if (userID > 0) {
                     $('.cls-role').attr('disabled', 'disabled');
                 }
-                $('.processClass').addClass('d-none');
                 $('.showTreeViewPermission').addClass('d-none');
             } else {
                 $(".employeeData").hide();
                 $("#emp_id").removeClass('required');
                 $('#last_name').addClass('required');
-                $('.locationClass').removeClass('d-none');
-                $('#location_id').addClass('required');
                 $('.cls-role').removeAttr('disabled');
-                $('.processClass').removeClass('d-none');
                 $('.showTreeViewPermission').removeClass('d-none');
             }
         });
@@ -212,48 +168,11 @@
                     $('#last_name').addClass('form-control-solid');
                     $('#last_name').attr('readonly', true);
 
-                    // $('#email').val(response.employee_address.email);
-                    // console.log(response);
                 });
             }
         });
-
-        $('.is_ip_base').on('click', function () {
-            if($(this).is(':checked')){
-                $(".ipRepeaterData").show();
-                //$('.ipRepeaterData').find('#login_ip1').addClass('required')
-            } else {
-                $(".ipRepeaterData").hide();
-                //$('.ipRepeaterData').find('#login_ip1').removeClass('required')
-            }
-        });
     };
 
-    var initLeadRepeater = function() {
-        $('#ip_repeater').repeater({
-            initEmpty: false,
-
-            defaultValues: {
-                'text-input': 'foo'
-            },
-            show: function() {
-                $(this).find('.list-no').text($(this).index() + 1 + ' .');
-                var num_index = $(this).index()+1;
-                $(this).find('.loginip').prop('id','login_ip'+num_index);
-                $(this).slideDown();
-            },
-
-            hide: function(deleteElement) {
-                if (confirm('Are you sure you want to delete this element?')) {
-                    $(this).slideUp(deleteElement);
-                }
-            },
-            isFirstItemUndeletable: true
-        });
-
-    };
-
-    // function that gathers IDs of checked nodes
     function checkedNodeIds(nodes, checkedNodes) {
         var treeview = $(".cls-treeview").data("kendoTreeView");
         for (var i = 0; i < nodes.length; i++) {
@@ -281,14 +200,6 @@
 
         checkedNodeIds(treeView.dataSource.view(), checkedNodes);
         $('#user_permission').val(checkedNodes.join(","));
-
-        // if (checkedNodes.length > 0) {
-        //     message = "IDs of checked nodes: " + checkedNodes.join(",");
-        // } else {
-        //     message = "No nodes checked.";
-        // }
-
-        // $("#result").html(message);
     }
 </script>
 

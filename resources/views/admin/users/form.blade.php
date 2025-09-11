@@ -8,10 +8,6 @@
     <link rel="stylesheet" href="{{ asset('plugins/custom/kendotree/kendo.default.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('plugins/custom/kendotree/kendo.default.mobile.min.css') }}" />
 @endsection
-@php
-$allow_access_from_other_network = $users->allow_access_from_other_network ?? 'No';
-$acfon_checked = ($allow_access_from_other_network == 'Yes') ? true : false;
-@endphp
 <div class="row">
     <div class="form-group col-lg-4">
         {!! Form::label('emp_type', trans('users.form.user_type')) !!}
@@ -154,20 +150,6 @@ $acfon_checked = ($allow_access_from_other_network == 'Yes') ? true : false;
                 {!! Form::label('roles_id', trans('users.form.roles')) !!}<i class="text-danger">*</i>
                 {{ Form::select('roles_id', ['' => 'select'] + $roles, null, ['class' => 'form-control required cls-role', 'data-placeholder' => 'Select Roles']) }}
             </div>
-            <div class="form-group col-lg-6">
-                <div class="checkbox-inline pt-1">  
-                    <label class="checkbox checkbox-square">
-                        {!! Form::checkbox('allow_access_from_other_network', 'Yes',$acfon_checked,['id' => 'allow_access_from_other_network','class' => 'jsAllowAccessFromOtherNetwork']) !!}                
-                    <span></span>{!! Form::label('allow_access_from_other_network',trans("users.form.allow_access_from_other_network"),['class'=>'mt-2'])!!}</label>
-                </div>
-            </div>
-            {{-- <div class="form-group col-lg-6">
-                <div class="checkbox-inline pt-1">
-                    <label class="checkbox checkbox-square">
-                        {!! Form::checkbox('is_ip_base', '1', null, ['id' => 'is_ip_base', 'class' => 'is_ip_base']) !!}
-                        <span></span>{!! Form::label('is_ip_base', trans('users.form.is_ip_base'), ['class' => 'mt-2']) !!}</label>
-                </div>
-            </div> --}}
             @if ($current_user->hasAnyAccess(['users.superadmin']))
                 <div class="form-group col-lg-6">
                     <div class="checkbox-inline pt-1">
@@ -193,55 +175,6 @@ $acfon_checked = ($allow_access_from_other_network == 'Yes') ? true : false;
     </div>
 </div>
 
-{{-- <div class="row ipRepeaterData" style="display:{{ isset($users) && $users->is_ip_base == 1 ? 'block' : 'none' }}">
-    <div class="form-group col-lg-4">
-        <div id="ip_repeater">
-            <table class="table table-separate table-head-custom table-checkable" data-repeater-list="loginips">
-                <thead>
-                    <tr>
-                        <th>{{ __('common.no') }}</th>
-                        <th>{{ __('users.form.ip_address') }}</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (isset($users) && count($users->userIps) > 0)
-                        @foreach ($users->userIps as $key => $item)
-                            <tr data-repeater-item="">
-                                <td class="list-no">{{ ++$key }} . </td>
-                                <input type="hidden" name="ip_id" value="{{ $item->id }}">
-                                <td>{!! Form::text('login_ip', $item->login_ip, ['class' => 'form-control loginip', 'id' => 'login_ip' . $key]) !!}</td>
-                                <td>
-                                    <a href="javascript:;" data-repeater-delete=""
-                                        class="btn btn-sm btn-icon btn-danger mr-2">
-                                        <i class="flaticon-delete"></i></a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @else
-                        <tr data-repeater-item="">
-                            <td class="list-no">1 . </td>
-                            <td>{!! Form::text('login_ip', null, ['class' => 'form-control loginip', 'id' => 'login_ip1']) !!}</td>
-                            <td>
-                                <a href="javascript:;" data-repeater-delete=""
-                                    class="btn btn-sm btn-icon btn-danger mr-2">
-                                    <i class="flaticon-delete"></i></a>
-                            </td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
-            <div class="row">
-                <div class="col-lg-4">
-                    <a href="javascript:;" data-repeater-create=""
-                        class="btn btn-sm font-weight-bolder btn-light-primary">
-                        <i class="flaticon2-plus"></i>{{ __('common.add') }}</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> --}}
-
 <div class="card-footer">
     <div class="row">
         <div class="col-6 p-2">
@@ -249,23 +182,12 @@ $acfon_checked = ($allow_access_from_other_network == 'Yes') ? true : false;
         </div>
         <div class="col-6 text-right">
             {!! link_to(URL::full(), __('common.cancel'), ['class' => 'mr-3']) !!}
-            {{-- {!! Form::submit(__('common.save'), ['name' => 'save', 'class' => 'btn btn-primary save']) !!} --}}
              <button type="submit" class="btn btn-primary mr-2 saveBtn" name="saveBtn">{{ __('common.save') }}</button>
-            {{-- <a href="#" class="btn btn-primary font-weight-bold mr-2">{{__('common.save')}}</a> --}}
         </div>
     </div>
 </div>
 @section('scripts')
     <script src="{{ asset('plugins/custom/kendotree/kendo.all.min.js') }}"></script>
-    {{-- <script type="text/javascript">
-        jQuery(window).bind('load', function() {
-
-            shortcut.add("Alt+S", function() {
-                console.log('Alt+S');
-                jQuery('form input[name="save"],.save').click();
-            });
-        });
-    </script> --}}
     <script type="text/javascript">
         function favicon(input) {
             if (input.files && input.files[0]) {

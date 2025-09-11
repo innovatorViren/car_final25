@@ -21,7 +21,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
@@ -46,9 +45,6 @@ class EmployeeController extends Controller
         $this->middleware('permission:employee.list', ['only' => ['index', 'show']]);
         $this->middleware('permission:employee.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:employee.delete', ['only' => ['destroy']]);
-        // $deviceType = env('ATT_DEVICE_TYPE', 'BioMax');
-        // $srtpl = config('srtpl');
-        // $this->depart_id = DB::table('departments')->where('slug','sales')->whereNull('deleted_at')->first()->id ?? '';
     }
 
     public function index(Request $request, EmployeeDataTable $dataTable)
@@ -78,8 +74,8 @@ class EmployeeController extends Controller
 
     public function store(EmployeeRequest $request)
     {
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
             list($employeeData, $employeeAddress, $employeeDocument) = $this->getInput($request->all());
 
             $employee = Employee::create($employeeData);
@@ -141,13 +137,13 @@ class EmployeeController extends Controller
                 RoleUser::create($roleUser);
             }
             DB::commit();
-        // } catch (Exception $e) {
-        //     DB::rollback();
-        //     info($e);
-        //     // return false;
-        //     $this->response_json['message'] = $e->getMessage();
-        //     return $this->responseError();
-        // }
+        } catch (Exception $e) {
+            DB::rollback();
+            info($e);
+            // return false;
+            $this->response_json['message'] = $e->getMessage();
+            return $this->responseError();
+        }
         return redirect()->route('employee.index')->with('success', __('common.create_success'));
     }
 

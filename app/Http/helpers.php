@@ -681,6 +681,34 @@ if (!function_exists('getDefaultHtml')) {
     }
 }
 
+if (!function_exists('getDisplayHtml')) {
+    function getDisplayHtml($row, $permission = null)
+    {
+        $user = Sentinel::getUser();
+
+        if (isset($permission) && !$user->hasAnyAccess([$permission, 'users.superadmin'])) {
+            return $row->is_displayed == "Yes" ? "Active" : "Inactive";
+        }
+
+        $statusHtml = "";
+        $url = route('common.change-displayed', [$row->id]);
+        $table =  $row->getTable();
+        $checked = '';
+        if (strtoupper($row->is_displayed) == 'YES' && $row->is_displayed !== NULL) {
+            $checked = "checked";
+        }
+        $statusHtml = '<div class="text-center" style="padding-left:20%">
+            <span class="switch switch-icon switch-md">
+                <label>
+                    <input type="checkbox" class="change-status" id="status_' . $row->id . '" name="status_' . $row->id . '" data-url="' . $url . '" data-table="' . $table . '" value="' . $row->id . '" ' . $checked . '>
+                    <span></span>
+                </label>
+            </span>
+            </div>';
+        return $statusHtml;
+    }
+}
+
 if (!function_exists('getInfoHtml')) {
     function getInfoHtml($row)
     {

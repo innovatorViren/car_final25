@@ -26,7 +26,6 @@
 
         <!--begin::Nav-->
         <ul class="nav flex-column">
-            <!--begin::Report-->
             <li class="nav-item mb-2" data-toggle="tooltip" data-placement="right" data-container="body"
                 data-boundary="window" title="Dashboard">
                 <a href="{{ url('/dashboard') }}"
@@ -61,34 +60,6 @@
                     </span>
                 </a>
             </li>
-            <!--end::Report-->
-
-            <!--begin::Report-->
-            <li class="nav-item mb-2" data-toggle="tooltip" data-placement="right" data-container="body"
-                data-boundary="window" title="Report">
-                <a href="{{ route('reports') }}"
-                    class="btn btn-icon btn-hover-text-primary btn-lg mb-1 position-relative" id=""
-                    data-toggle="tooltip" data-placement="right" data-container="body" data-boundary="window"
-                    title="Report">
-                    <span class="svg-icon svg-icon-2x">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <rect x="0" y="0" width="24" height="24"></rect>
-                                <rect style="fill:gray;" fill="#000000" x="13" y="4" width="3" height="16"
-                                    rx="1.5"></rect>
-                                <rect style="fill:black;" fill="#000000" x="8" y="9" width="3" height="11"
-                                    rx="1.5"></rect>
-                                <rect style="fill:black;" fill="#000000" x="18" y="11" width="3" height="9"
-                                    rx="1.5"></rect>
-                                <rect style="fill:black;" fill="#000000" x="3" y="13" width="3" height="7"
-                                    rx="1.5"></rect>
-                            </g>
-                        </svg>
-                    </span>
-                </a>
-            </li>
-            <!--end::Report-->
 
             <!--begin::Master-->
             <li class="nav-item mb-2" data-toggle="tooltip" data-placement="right" data-container="body"

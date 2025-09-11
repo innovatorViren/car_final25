@@ -9,8 +9,6 @@
     'action' => route('employee.create'),
     'text' => __('common.add'),
     'filter_modal_id' => '#employeeFilter',
-    'excel_id' => '',
-    'excel_link' => route('employeeExport'),
     'permission' => $current_user->hasAnyAccess(['employee.add', 'users.superadmin']),
 ])
 @endcomponent
