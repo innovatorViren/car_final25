@@ -355,6 +355,7 @@ class CustomerApiController extends ApiController
             $cusCarsData = DB::table('customer_cars as CC')
                             ->select(
                                 'CC.id as customer_car_id',
+                                'CC.customer_id as customer_id',
                                 'CC.car_model_id as car_model_id',
                                 'CC.car_brand_id as car_brand_id',
                                 DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
@@ -365,8 +366,8 @@ class CustomerApiController extends ApiController
                             ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
                             ->where('CC.id',$carCusId)
                             ->first();
-            DB::table('customer_cars')->where('customer_id',$customer_id)->update(['is_default'=>0]);
-            DB::table('customer_cars')->where('id',$cusCarsData->id)->update(['is_default'=>1]);
+            DB::table('customer_cars')->where('customer_id',$cusCarsData->customer_id)->update(['is_default'=>0]);
+            DB::table('customer_cars')->where('id',$cusCarsData->customer_car_id)->update(['is_default'=>1]);
 
             $this->data = $cusCarsData;
             return $this->responseSuccessWithoutObject();

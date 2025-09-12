@@ -322,7 +322,8 @@ class UserController extends Controller
             $customerdata=[
                 'mobile' => $request->get('mobile', null),
                 'email' => trim($request->get('email')),
-                'person_name' => $request->get('first_name', null),
+                'first_name' => $request->get('first_name', null),
+                'last_name' => $request->get('last_name', null),
             ];           
             $customer->update($customerdata);
         }
