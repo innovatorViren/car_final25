@@ -76,8 +76,8 @@ class AuthController extends ApiController
                 foreach ($sessions as $key => $session) {
                     $user_id = $session->user_id ?? 0;
                     if ($user_id == $user->id && $session->token != Session::get('_token')) {
-                        DB::table('oauth_access_tokens')->where('user_id',$user->id)->delete();
-                        $session->delete();
+                        // DB::table('oauth_access_tokens')->where('user_id',$user->id)->delete();
+                        // $session->delete();
                     }
                 }
             }
