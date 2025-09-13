@@ -360,7 +360,8 @@ class CustomerApiController extends ApiController
                                 'CC.car_brand_id as car_brand_id',
                                 DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
                                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
-                                DB::raw("0 as selected"),
+                                'CC.is_default as selected',
+
                             )
                             ->leftjoin('car_brands as CB','CB.id','CC.car_brand_id')
                             ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
@@ -387,7 +388,7 @@ class CustomerApiController extends ApiController
                                 'CC.car_brand_id as car_brand_id',
                                 DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
                                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
-                                DB::raw("0 as selected"),
+                                'CC.is_default as selected',
                             )
                             ->leftjoin('car_brands as CB','CB.id','CC.car_brand_id')
                             ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
