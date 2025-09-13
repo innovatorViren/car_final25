@@ -171,10 +171,10 @@ class CustomerApiController extends ApiController
                             ->where('CA.id',$cuAdd)
                             ->first();
             DB::table('customer_adresses')->where('customer_id',$customer_id)->update(['is_default'=>0]);
-            DB::table('customer_adresses')->where('id',$cusAddressData->id)->update(['is_default'=>1]);
+            DB::table('customer_adresses')->where('id',$cusAddressData->customer_address_id)->update(['is_default'=>1]);
 
             $this->data = $cusAddressData;
-            return $this->responseSuccessWithoutDataObject();
+            return $this->responseSuccessWithoutObject();
 
         } catch (Exception $e) {
             $this->response_json['message'] = $e->getMessage();
@@ -417,6 +417,6 @@ class CustomerApiController extends ApiController
         $cart = DB::table('customer_cars')->where('id', $customer_car_id)->delete();
 
         $this->response_json['message'] = 'Car Deleted';
-        return response()->json($this->response_json, 200);
+        return $this->responseSuccessWithoutDataObject();
     }
 }
