@@ -14,6 +14,64 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class CustomerApiController extends ApiController
 {
 
+    public function getCustomerDashboard()
+    {
+        $user = $this->currentuser();
+        $perPage = $this->perPageCommon();
+
+        // if($user->emp_type == 'customer')
+        // {
+            
+            $cusAddressData = DB::table('customer_adresses as CA')
+                            ->select('CA.id as customer_address_id',
+                                DB::raw("(CASE WHEN CA.name IS NOT NULL THEN  CA.name ELSE '' END) as name"),
+                                DB::raw("(CASE WHEN CA.mobile IS NOT NULL THEN  CA.mobile ELSE '' END) as mobile"),
+                                DB::raw("(CASE WHEN CA.address_type IS NOT NULL THEN  CA.address_type ELSE '' END) as address_type"),
+                                DB::raw("(CASE WHEN CA.address_line1 IS NOT NULL THEN  CA.address_line1 ELSE '' END) as address_line1"),
+                                DB::raw("(CASE WHEN CA.address_line2 IS NOT NULL THEN  CA.address_line2 ELSE '' END) as address_line2"),
+                                DB::raw("(CASE WHEN CA.landmark IS NOT NULL THEN  CA.landmark ELSE '' END) as landmark"),
+                                DB::raw("(CASE WHEN CA.pincode IS NOT NULL THEN  CA.pincode ELSE '' END) as pincode"),
+                                'CA.country_id',
+                                'CA.state_id',
+                                'CA.city_id',
+                                'CA.is_default',
+                                'S.name as state',
+                                'C.name as city'
+                            )
+                            ->leftjoin('states as S','S.id','CA.state_id')
+                            ->leftjoin('cities as C','C.id','CA.city_id')
+                            ->where('CA.customer_id',$user->customer_id)
+                            ->where('CA.is_default',1)
+                            ->first();
+
+            $cusCarsData = DB::table('customer_cars as CC')
+                            ->select(
+                                'CC.id as customer_car_id',
+                                'CC.customer_id as customer_id',
+                                'CC.car_model_id as car_model_id',
+                                'CC.car_brand_id as car_brand_id',
+                                DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
+                                DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                                'CC.is_default as selected',
+
+                            )
+                            ->leftjoin('car_brands as CB','CB.id','CC.car_brand_id')
+                            ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
+                            ->where('CC.customer_id',$user->customer_id)
+                            ->where('CC.is_default',1)
+                            ->first();
+
+        $this->response_json['cusAddressData'] = $cusAddressData; 
+        $this->response_json['cusCarsData'] = $cusCarsData; 
+
+        return $this->responseSuccessWithoutDataObject();
+
+        // }else{
+        //     dd('not customer dashboard');
+        // }
+
+    }
+
     public function getCustomerList()
     {
 
