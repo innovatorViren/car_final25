@@ -303,7 +303,8 @@ class CustomerApiController extends ApiController
             $customerAdressId = $request->customer_adress_id ?? 0;
             $customer_id = $request->customer_id ?? 0;
 
-            $updateData = [
+            $cuAdd = DB::table('customer_adresses')->insertGetId([
+                
                 'customer_id'    => $customer_id,
                 'name'           => $request->name,
                 'mobile'         => $request->mobile ?? null,
@@ -316,11 +317,12 @@ class CustomerApiController extends ApiController
                 'city_id'        => $request->city_id ?? null,
                 'pincode'        => $request->pincode ?? null,
                 'is_default'     => $request->has('is_default') ? true : false,
-                'updated_by'     => loginUserDetail()->id,
+                'created_by'     => loginUserDetail()->id,
+                'created_at'     => now(),
                 'updated_at'     => now(),
-            ];
+            ]);
 
-            DB::table('customer_adresses')->where('id',$customerAdressId)->update($updateData);
+            DB::table('customer_adresses')->where('id',$customerAdressId)->update(['deleted_at'=>now()]);
 
             $this->data = $request->all();
             return $this->responseSuccessWithoutObject();

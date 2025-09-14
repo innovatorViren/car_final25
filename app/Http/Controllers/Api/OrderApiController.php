@@ -26,10 +26,9 @@ class OrderApiController extends ApiController
 
 
             $lastOrder = Order::latest()->first();
-            $lastOrderNumber = $lastOrder ? (int) str_replace('O-', '', $lastOrder->order_id) : 0;
+            $lastOrderNumber = $lastOrder ? (int) str_replace('O-', '', $lastOrder->id) : 0;
             $newOrderNumber = $lastOrderNumber + 1;
             $orderSeries = 'O-' . sprintf('%03d', $newOrderNumber);
-
 
 
             $customerId = $request->customer_id;
@@ -45,8 +44,9 @@ class OrderApiController extends ApiController
             $inputData['pay_amount'] = $request->pay_amount;
             $inputData['start_date'] = $startDate;
             $inputData['end_date'] = $request->end_date;
-            // $inputData['start_time'] = $startTime;
-            // $inputData['end_time'] = $endTime;
+            $inputData['start_time'] = $startTime;
+            $inputData['end_time'] = $endTime;
+            $inputData['customer_adress_id'] = $request->customer_adress_id;
 
             $model = Order::create($inputData);
             $order_id  = $model->id;
@@ -125,6 +125,9 @@ class OrderApiController extends ApiController
                 'O.total_washes as total_washes',
                 'O.status as status',
                 'O.pay_amount as pay_amount',
+                DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
+                DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+                DB::raw("(CASE WHEN O.end_time IS NOT NULL THEN DATE_FORMAT(O.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
                 DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
                 DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
@@ -148,6 +151,9 @@ class OrderApiController extends ApiController
                 'O.total_washes as total_washes',
                 'O.status as status',
                 'O.pay_amount as pay_amount',
+                DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
+                DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+                DB::raw("(CASE WHEN O.end_time IS NOT NULL THEN DATE_FORMAT(O.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
                 DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
                 DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
@@ -173,6 +179,9 @@ class OrderApiController extends ApiController
                 'O.total_washes as total_washes',
                 'O.status as status',
                 'O.pay_amount as pay_amount',
+                DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
+                DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+                DB::raw("(CASE WHEN O.end_time IS NOT NULL THEN DATE_FORMAT(O.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
                 DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
                 DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
@@ -221,6 +230,7 @@ class OrderApiController extends ApiController
 
         $assignMainOrder = 0;
         $order = DB::table('orders')->where('id',$orderId)->first();
+
         if($superadmin)
         {
             if($order->employee_id != null)
@@ -263,8 +273,30 @@ class OrderApiController extends ApiController
                     $item->assign = $assign;
                     return $item;
                 });
+
+            $orderAddress = DB::table('customer_adresses as CA')
+                            ->select('CA.id as customer_address_id',
+                                DB::raw("(CASE WHEN CA.name IS NOT NULL THEN  CA.name ELSE '' END) as name"),
+                                DB::raw("(CASE WHEN CA.mobile IS NOT NULL THEN  CA.mobile ELSE '' END) as mobile"),
+                                DB::raw("(CASE WHEN CA.address_type IS NOT NULL THEN  CA.address_type ELSE '' END) as address_type"),
+                                DB::raw("(CASE WHEN CA.address_line1 IS NOT NULL THEN  CA.address_line1 ELSE '' END) as address_line1"),
+                                DB::raw("(CASE WHEN CA.address_line2 IS NOT NULL THEN  CA.address_line2 ELSE '' END) as address_line2"),
+                                DB::raw("(CASE WHEN CA.landmark IS NOT NULL THEN  CA.landmark ELSE '' END) as landmark"),
+                                DB::raw("(CASE WHEN CA.pincode IS NOT NULL THEN  CA.pincode ELSE '' END) as pincode"),
+                                'CA.country_id',
+                                'CA.state_id',
+                                'CA.city_id',
+                                'CA.is_default',
+                                'S.name as state',
+                                'C.name as city'
+                            )
+                            ->leftjoin('states as S','S.id','CA.state_id')
+                            ->leftjoin('cities as C','C.id','CA.city_id')
+                            ->where('CA.id',$order->customer_adress_id)
+                            ->first();
         
             $this->data =  $washItem;
+            $this->response_json['order_address'] = $orderAddress;
             $this->response_json['message'] = 'Success';
             return $this->responseSuccessWithoutObject();
 
