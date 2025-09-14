@@ -29,6 +29,7 @@ Route::namespace('Api')->group(function () {
     Route::get('get-car-brand', [CommonController::class, 'getCarBrand']);
     Route::get('get-car-model', [CommonController::class, 'getCarModel']);
     Route::get('get-banner', [CommonController::class, 'getBanner']);
+    Route::get('get-employee', [CommonController::class, 'getEmployeeWithEmpCode']);
 
     Route::post('/get-app-info-data',[AuthController::class, 'getAppInfoData']);
 

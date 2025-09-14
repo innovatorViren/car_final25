@@ -29,7 +29,8 @@ class OrderDataTable extends DataTable
                 return $this->checkrights($row);
             })
             ->editColumn('pay_amount', function ($row) {
-                return format_amount($row->pay_amount,2);
+                return $row->pay_amount;
+                // return format_amount($row->pay_amount,2);
             })
             ->editColumn('start_date', function ($row) {
                 return custom_date_format($row->start_date, 'd-m-Y');

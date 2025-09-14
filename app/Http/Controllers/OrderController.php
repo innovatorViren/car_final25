@@ -54,9 +54,42 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+
+        $fields = [
+                'O.code as code',
+                DB::raw("(CASE WHEN O.date IS NOT NULL THEN DATE_FORMAT(O.date, '%d-%m-%Y') ELSE '' END) as date"),
+                'O.total_washes as total_washes',
+                'O.status as status',
+                'O.pay_amount as pay_amount',
+                DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
+                DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+            ];
+        $order = DB::table('orders as O')
+                 ->select($fields)
+                ->join('customers as C','C.id','O.customer_id')
+                ->leftjoin('employees as E', function ($join) {
+                    $join->on('E.id', '=', 'O.employee_id');
+                })
+                ->where('O.id',$id)
+                ->first();
+        $orderItem = DB::table('washes as W')
+                    ->select([
+                        'W.id as wash_id',
+                        'W.status as status',
+                        DB::raw("(CASE WHEN W.scheduled_date IS NOT NULL THEN DATE_FORMAT(W.scheduled_date, '%d-%m-%Y') ELSE '' END) as scheduled_date"),
+                        DB::raw("(CASE WHEN W.start_time IS NOT NULL THEN DATE_FORMAT(W.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+                        DB::raw("(CASE WHEN W.end_time IS NOT NULL THEN DATE_FORMAT(W.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
+                        DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
+                        DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+                    ])
+                    ->leftJoin('employees as E','E.id','W.employee_id')
+                    ->where('W.order_id',$id)
+                    ->get();
+        $this->data['order'] = $order;
+        $this->data['orderItem'] = $orderItem;
+        return view('orders.show', $this->data);
     }
 
     /**

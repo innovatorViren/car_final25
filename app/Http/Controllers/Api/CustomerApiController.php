@@ -42,6 +42,7 @@ class CustomerApiController extends ApiController
                             ->leftjoin('cities as C','C.id','CA.city_id')
                             ->where('CA.customer_id',$user->customer_id)
                             ->where('CA.is_default',1)
+                            ->whereNull('CA.deleted_at')
                             ->first();
 
             $cusCarsData = DB::table('customer_cars as CC')
@@ -119,49 +120,6 @@ class CustomerApiController extends ApiController
         $this->response_json['orders'] = ''; 
 
         return $this->responseSuccessWithoutObject();
-    }
-    public function getCustomerHomePage(Request $request)
-    {
-        try {   
-
-            $requestData = Validator::make($this->request->all(), [
-                'customer_id' => 'required',
-            ]);
-
-            if ($requestData->fails()) {
-                throw new Exception($requestData->messages()->first(), 1);
-            }
-
-            $customer_id = $request->customer_id;
-            $user_data = Customer::with('customerUser')->where('id', $customer_id)->first();           
-
-            $user_status = $user_data->is_active ?? 0;
-            $customer_status = $user_data->customerUser->is_active ?? 0;
-
-            $this->response_json['is_active'] = (strtolower($user_status) == 'yes' && strtolower($customer_status) == 'yes') ? 1 : 0;
-            $this->response_json['setting_info'] = $this->getSettingData(); 
-            $this->response_json['cart_summary'] = $this->getCartSummary($customer_id);           
-            $this->response_json['banner'] = $this->getBanner();
-            $this->response_json['category'] = $this->getCategory();
-            $this->response_json['product_data'] = $this->getProduct($customer_id);
-            $this->response_json['total_cart'] = Cart::where('customer_id', $customer_id)->count();
-            return $this->responseSuccessWithoutObject();
-        } catch (Exception $e) {
-            $this->response_json['message'] = $e->getMessage();
-            return $this->responseError();
-        }
-        return $this->responseSuccessWithoutObject();
-
-    }
-
-    public function getCartSummary($customer_id)
-    {
-        $cart_result = Cart::where('customer_id',$customer_id)->select('qty','price',DB::raw("(CASE WHEN qty !='' THEN qty * price ELSE 0 END) as total_price"))->get()->toArray();
-
-        return array(
-            'total_item' => array_sum(array_column($cart_result, 'qty')),
-            'total_price' => array_sum(array_column($cart_result, 'total_price')),
-        );
     }
 
     public function addCustomerAddress(Request $request)
@@ -275,6 +233,7 @@ class CustomerApiController extends ApiController
                             ->leftjoin('states as S','S.id','CA.state_id')
                             ->leftjoin('cities as C','C.id','CA.city_id')
                             ->where('customer_id',$customer_id)
+                            ->whereNull('CA.deleted_at')
                             ->get();
         $this->data = $cusAddressData;
         return $this->responseSuccessWithoutObject();

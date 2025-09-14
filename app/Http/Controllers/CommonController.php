@@ -417,8 +417,8 @@ class CommonController extends Controller
         $request = request();
         $platform = $request->header('platform');
         if ($platform == 1) {
-            $employee = Employee::select('id AS value', 'name AS text')->where('is_active', 'Yes')
-                ->orderBy('name', 'asc')->get();
+            $employee = Employee::select('id AS value', DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as text"))->where('is_active', 'Yes')
+                ->orderBy('employees.first_name', 'asc')->get();
 
             $toReturn = $employee;
             $this->data = $toReturn;
