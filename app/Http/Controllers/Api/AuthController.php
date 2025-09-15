@@ -176,12 +176,25 @@ class AuthController extends ApiController
                 'email' => str_replace(' ','',$request->email),
                 'mobile' => $request->mobile,
                 'otp' => $otp,
-                // 'password' => Hash::make($request->password),
                 'platform' => 'App',
             ];
             $customer = Customer::create($dataArray);
-            // $customer = DB::table('customers')->insert($dataArray);
             $customer_id = $customer->id;
+
+            //otp veryfyy 
+
+            
+            // $updateCusData = [
+            //         'expired_at' => Carbon::now()->addMinutes(10)
+            //     ];
+            // DB::table('customers')->where('id', $customer_id)->update($updateCusData);
+
+            // $to_mobile = $request->mobile ?? '';
+            // $this->common->send_whatsapp_otp($otp, $to_mobile);
+
+
+
+
             $role_id = Role::where('slug', 'customer')->first()->id ?? '';
 
             $userArray = [
@@ -191,7 +204,6 @@ class AuthController extends ApiController
                 'middle_name' => $request->middle_name,
                 'last_name' => $request->get('last_name', null),
                 'permissions' => json_encode(['customer.view' => true]),
-                // 'email' => trim($request->get('email')),
                 'email' => str_replace(' ','',$request->email),
                 'password' => Hash::make($request->password),
                 'mobile' => $request->mobile, 

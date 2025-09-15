@@ -229,7 +229,15 @@ class OrderApiController extends ApiController
         $superadmin = $login_user->hasAccess(['users.superadmin']);
 
         $assignMainOrder = 0;
-        $order = DB::table('orders')->where('id',$orderId)->first();
+        $order = DB::table('orders as O')
+                ->select(
+                    'O.id as order_id',
+                    'O.employee_id as employee_id',
+                    'O.customer_adress_id as customer_adress_id',
+                    'CM.name as model_name',
+                )
+                ->leftjoin('car_models as CM','CM.id','O.car_model_id')
+                ->where('O.id',$orderId)->first();
 
         if($superadmin)
         {
@@ -297,6 +305,7 @@ class OrderApiController extends ApiController
         
             $this->data =  $washItem;
             $this->response_json['order_address'] = $orderAddress;
+            $this->response_json['order_car_model'] = $order->model_name;
             $this->response_json['message'] = 'Success';
             return $this->responseSuccessWithoutObject();
 

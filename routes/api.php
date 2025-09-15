@@ -28,6 +28,7 @@ Route::namespace('Api')->group(function () {
     Route::get('get-city', [CommonController::class, 'getCity']);
     Route::get('get-car-brand', [CommonController::class, 'getCarBrand']);
     Route::get('get-car-model', [CommonController::class, 'getCarModel']);
+    Route::get('get-not-car', [CommonController::class, 'getNotCar']);
     Route::get('get-banner', [CommonController::class, 'getBanner']);
     Route::get('get-employee', [CommonController::class, 'getEmployeeWithEmpCode']);
 
@@ -96,3 +97,9 @@ Route::namespace('Api')->group(function () {
 
 
 });
+
+
+
+// UPDATE `car_models` SET `common_model` = 'Yes' WHERE `id` = '35';
+// UPDATE `car_models` SET `common_model` = 'Yes' WHERE `id` = '36';
+// UPDATE `car_models` SET `common_model` = 'Yes' WHERE `id` = '37';

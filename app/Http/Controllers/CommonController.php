@@ -290,6 +290,7 @@ class CommonController extends Controller
                             $query->where('car_brand_id', $request->car_brand_id);
                         })
                         ->where('is_active', 'Yes')
+                        ->where('common_model', 'No')
                         ->orderBy('name', 'asc')
                         ->get()
                         ->map(function ($item) use ($carSizes){
@@ -312,6 +313,28 @@ class CommonController extends Controller
                 ->pluck('name', 'id')->toArray();
             return $carModel;
         }
+    }
+
+    public function getNotCar()
+    {
+        $carSizes  = Config('global.car_sizes');
+         $path = URL::asset('');
+        $carModel = CarModel::select('id AS value', 'name AS text','car_size_id',
+                        DB::raw("(CASE WHEN model_photo !='' THEN  CONCAT('".$path."', model_photo) ELSE '' END) as model_photo")
+                    )
+                    ->where('common_model', 'Yes')
+                    ->orderBy('name', 'asc')
+                    ->get()
+                    ->map(function ($item) use ($carSizes){
+                        $item->car_size = $carSizes[$item->car_size_id];
+                        return $item;
+                    });
+
+
+            $toReturn = $carModel;
+            $this->data = $toReturn;
+
+            return $this->responseSuccess();
     }
     /**
      * [getInfoData | This method is used to get info data]
@@ -577,4 +600,36 @@ class CommonController extends Controller
             $this->data = collect($frequencyData);
             return $this->responseSuccess();
     } 
+
+     // send whatsapp otp
+    // public function send_whatsapp_otp($otp, $to_mobile = "")
+    // {
+    //     $from_mobile = "917600015215";
+    //     $to_mobile = "91".$to_mobile;
+        
+    //     $curl = curl_init();
+ 
+    //     curl_setopt_array($curl, array(
+    //     CURLOPT_URL => 'https://msg.msgclub.net/rest/services/sendSMS/v2/sendtemplate?AUTH_KEY=4afd691fc2a15e28b97e676f9876be3',
+    //     CURLOPT_RETURNTRANSFER => true,
+    //     CURLOPT_ENCODING => '',
+    //     CURLOPT_MAXREDIRS => 10,
+    //     CURLOPT_TIMEOUT => 0,
+    //     CURLOPT_FOLLOWLOCATION => true,
+    //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //     CURLOPT_CUSTOMREQUEST => 'POST',
+    //     CURLOPT_POSTFIELDS =>'{"mobileNumbers":'.$to_mobile.',"senderId":'.$from_mobile.',"component":{"messaging_product":"whatsapp","recipient_type":"individual","type":"template","template":{"name":"authotp","language":{"code":"en"},"components":[{"type":"body","index":0,"parameters":[{"type":"text","text":'.$otp.'}]},{"type":"button","sub_type":"url","index":0,"parameters":[{"type":"text","text":'.$otp.'}]}]},"qrImageUrl":false,"qrLinkUrl":false,"to":'.$to_mobile.'}}',
+    //     CURLOPT_HTTPHEADER => array(
+    //         'Content-Type: application/json',
+    //         'Cookie: JSESSIONID=23BD7D8B4F08B438F9A42E5334C2DDEB.node3'
+    //     ),
+    //     ));
+        
+    //     $response = curl_exec($curl);
+    //     dd($response);
+        
+    //     curl_close($curl);
+    //     // echo $response;
+    //     \Log::info($response);
+    // }
 }
