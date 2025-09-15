@@ -38,6 +38,7 @@ class OrderApiController extends ApiController
             $inputData['plan_id'] = $request->plan_id;
             $inputData['car_model_id'] = $request->car_model_id;
             $inputData['car_size_id'] = $request->car_size_id;
+            $inputData['vehicle_name'] = $request->vehicle_name ?? null;
             $inputData['frequency_type'] = $frequencyType;
             $inputData['total_washes'] = $request->total_washes;
             $inputData['price'] = $request->price;
@@ -234,6 +235,7 @@ class OrderApiController extends ApiController
                     'O.id as order_id',
                     'O.employee_id as employee_id',
                     'O.customer_adress_id as customer_adress_id',
+                     DB::raw("(CASE WHEN O.vehicle_name IS NOT NULL THEN  O.vehicle_name ELSE '' END) as vehicle_name"),
                     'CM.name as model_name',
                 )
                 ->leftjoin('car_models as CM','CM.id','O.car_model_id')
@@ -304,8 +306,9 @@ class OrderApiController extends ApiController
                             ->first();
         
             $this->data =  $washItem;
-            $this->response_json['order_address'] = $orderAddress;
             $this->response_json['order_car_model'] = $order->model_name;
+            $this->response_json['vehicle_name'] = $order->vehicle_name;
+            $this->response_json['order_address'] = $orderAddress;
             $this->response_json['message'] = 'Success';
             return $this->responseSuccessWithoutObject();
 
