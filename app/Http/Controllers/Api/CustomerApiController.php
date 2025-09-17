@@ -44,8 +44,24 @@ class CustomerApiController extends ApiController
                             ->where('CA.is_default',1)
                             ->whereNull('CA.deleted_at')
                             ->first();
-
             $cusCarsData = DB::table('customer_cars as CC')
+                            ->select(
+                                'CC.id as customer_car_id',
+                                'CC.customer_id as customer_id',
+                                'CC.car_model_id as car_model_id',
+                                'CC.car_brand_id as car_brand_id',
+                                DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
+                                DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                                'CC.is_default as selected',
+
+                            )
+                            ->leftjoin('car_brands as CB','CB.id','CC.car_brand_id')
+                            ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
+                            ->where('CC.customer_id',$user->customer_id)
+                            ->where('CC.is_default',1)
+                            ->first();
+
+            $customerWiseCar = DB::table('customer_cars as CC')
                             ->select(
                                 'CC.id as customer_car_id',
                                 'CC.car_model_id as car_model_id',
@@ -69,6 +85,7 @@ class CustomerApiController extends ApiController
 
         $this->response_json['cusAddressData'] = $cusAddressData; 
         $this->response_json['cusCarsData'] = $cusCarsData; 
+        $this->response_json['customerWiseCar'] = $customerWiseCar; 
         $this->response_json['frequencyData'] = collect($frequencyData); 
 
         return $this->responseSuccessWithoutDataObject();
@@ -78,7 +95,6 @@ class CustomerApiController extends ApiController
         // }
 
     }
-
     public function getCustomerList()
     {
 
