@@ -48,22 +48,28 @@ class CustomerApiController extends ApiController
             $cusCarsData = DB::table('customer_cars as CC')
                             ->select(
                                 'CC.id as customer_car_id',
-                                'CC.customer_id as customer_id',
                                 'CC.car_model_id as car_model_id',
-                                'CC.car_brand_id as car_brand_id',
+                                DB::raw("(CASE WHEN CC.car_brand_id IS NOT NULL THEN  CC.car_brand_id ELSE '' END) as car_brand_id"),
+                                'CC.vehicle_name as vehicle_name',
                                 DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
                                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
                                 'CC.is_default as selected',
-
                             )
                             ->leftjoin('car_brands as CB','CB.id','CC.car_brand_id')
                             ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
                             ->where('CC.customer_id',$user->customer_id)
-                            ->where('CC.is_default',1)
-                            ->first();
+                            ->get();
+            $frequencyData = [
+                                ['name' => 'Daily 1','value' => 'daily', 'title' => '30 days daily wash', 'description' => 'Every day for 30 days', 'washes' => 30, 'days' => 30],
+                                ['name' => 'Week 2', 'value' => 'weekly_2', 'title' => '8 washes in 2 Week', 'description' => 'Any 8 washes within 14 days', 'washes' => 8, 'days' => 14],
+                                ['name' => 'Week 1', 'value' => 'weekly_1', 'title' => '4 washes in 1 Week', 'description' => 'Any 4 washes within 7 days', 'washes' => 4, 'days' => 7],
+                                ['name' => '1 Time Wash', 'value' => 'one_time', 'title' => 'Book a single Wash', 'description' => 'One time appoinment', 'washes' => 1, 'days' => 1],
+                            ];
+                            $this->data = collect($frequencyData);
 
         $this->response_json['cusAddressData'] = $cusAddressData; 
         $this->response_json['cusCarsData'] = $cusCarsData; 
+        $this->response_json['frequencyData'] = collect($frequencyData); 
 
         return $this->responseSuccessWithoutDataObject();
 

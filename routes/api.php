@@ -55,11 +55,12 @@ Route::namespace('Api')->group(function () {
         Route::post('/default-customer-address', [CustomerApiController::class, 'defaultCustomerAddress']);
         Route::get('/get-customer-wise-address/{customer_id}', [CustomerApiController::class, 'getCustomerWiseAddress']);
         Route::post('/edit-customer-address', [CustomerApiController::class, 'editCustomerAddress']);
-        Route::get('/get-frequency', [CommonController::class, 'getFrequency']);
+        // Route::get('/get-frequency', [CommonController::class, 'getFrequency']);
         Route::get('/time-slots', [TimeApiSlotController::class, 'getSlots']);
         Route::get('/generate-slots', [TimeApiSlotController::class, 'generateSlots']);
+        
         Route::post('/add-customer-car', [CustomerApiController::class, 'addCustomerCar']);
-        Route::get('/get-customer-wise-car/{customer_id}', [CustomerApiController::class, 'getCustomerWiseCar']);
+        // Route::get('/get-customer-wise-car/{customer_id}', [CustomerApiController::class, 'getCustomerWiseCar']);
         Route::post('/customer-car-delete', [CustomerApiController::class, 'customerCardelete']);
         Route::post('/default-customer-car', [CustomerApiController::class, 'defaultCustomerCar']);
 
