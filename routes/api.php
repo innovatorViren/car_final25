@@ -97,9 +97,3 @@ Route::namespace('Api')->group(function () {
 
 
 });
-
-
-
-// UPDATE `car_models` SET `common_model` = 'Yes' WHERE `id` = '35';
-// UPDATE `car_models` SET `common_model` = 'Yes' WHERE `id` = '36';
-// UPDATE `car_models` SET `common_model` = 'Yes' WHERE `id` = '37';

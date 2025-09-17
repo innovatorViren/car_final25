@@ -437,7 +437,13 @@ class CustomerApiController extends ApiController
     {
         $customer_car_id = $request->customer_car_id;
 
-        $cart = DB::table('customer_cars')->where('id', $customer_car_id)->delete();
+        $cart = DB::table('customer_cars')->where('id', $customer_car_id)->first();
+        if($cart->is_default == 1){
+            DB::table('customer_cars')->where('customer_id', $cart->customer_id)->orderBy('id','desc')->limit(1)->update(['is_default' => 1]);
+            $cart = DB::table('customer_cars')->where('id', $customer_car_id)->delete();
+        }else{
+            $cart = DB::table('customer_cars')->where('id', $customer_car_id)->delete();
+        }
 
         $this->response_json['message'] = 'Car Deleted';
         return $this->responseSuccessWithoutDataObject();
