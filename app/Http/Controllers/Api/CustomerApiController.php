@@ -394,6 +394,8 @@ class CustomerApiController extends ApiController
             ]);
 
 
+            DB::table('customer_cars')->where('customer_id',$customer_id)->update(['is_default'=>0]);
+            DB::table('customer_cars')->where('id',$carCusId)->update(['is_default'=>1]);
             $cusCarsData = DB::table('customer_cars as CC')
                             ->select(
                                 'CC.id as customer_car_id',
@@ -410,8 +412,6 @@ class CustomerApiController extends ApiController
                             ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
                             ->where('CC.id',$carCusId)
                             ->first();
-            DB::table('customer_cars')->where('customer_id',$cusCarsData->customer_id)->update(['is_default'=>0]);
-            DB::table('customer_cars')->where('id',$cusCarsData->customer_car_id)->update(['is_default'=>1]);
 
             $this->data = $cusCarsData;
             return $this->responseSuccessWithoutObject();
@@ -459,10 +459,10 @@ class CustomerApiController extends ApiController
     {
         $customer_car_id = $request->customer_car_id;
 
-        $cart = DB::table('customer_cars')->where('id', $customer_car_id)->first();
-        if($cart->is_default == 1){
-            DB::table('customer_cars')->where('customer_id', $cart->customer_id)->orderBy('id','desc')->limit(1)->update(['is_default' => 1]);
+        $car = DB::table('customer_cars')->where('id', $customer_car_id)->first();
+        if($car->is_default == 1){
             $cart = DB::table('customer_cars')->where('id', $customer_car_id)->delete();
+            DB::table('customer_cars')->where('customer_id', $car->customer_id)->orderBy('id','desc')->limit(1)->update(['is_default' => 1]);
         }else{
             $cart = DB::table('customer_cars')->where('id', $customer_car_id)->delete();
         }
