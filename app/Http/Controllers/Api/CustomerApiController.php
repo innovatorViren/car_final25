@@ -100,6 +100,7 @@ class CustomerApiController extends ApiController
 
         $customers = DB::table('customers as C')
                     ->select(
+                        'C.id as customer_id',
                         DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as first_name"),
                         DB::raw("(CASE WHEN C.middle_name IS NOT NULL THEN  C.middle_name ELSE '' END) as middle_name"),
                         DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as last_name"),
@@ -138,8 +139,32 @@ class CustomerApiController extends ApiController
                     ->where('C.is_active','Yes')
                     ->whereNull('C.deleted_at')
                     ->first();
+
+            $fields = [
+                'O.id as order_id',
+                'O.code as code',
+                'O.total_washes as total_washes',
+                'O.status as status',
+                'O.pay_amount as pay_amount',
+                DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
+                DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+                DB::raw("(CASE WHEN O.end_time IS NOT NULL THEN DATE_FORMAT(O.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
+                DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
+                DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+            ];
+
+            $orderData = DB::table('orders as O')
+                    ->select($fields)
+                    ->join('customers as C','C.id','O.customer_id')
+                    ->leftjoin('employees as E', function ($join) {
+                        $join->on('E.id', '=', 'O.employee_id');
+                    })
+                    ->whereNull('O.deleted_at')
+                    ->where('O.customer_id',$customer_id)
+                    ->orderBy('O.id', 'DESC')
+                    ->get();
         $this->data = $customers;
-        $this->response_json['orders'] = ''; 
+        $this->response_json['orders'] = $orderData; 
 
         return $this->responseSuccessWithoutObject();
     }
