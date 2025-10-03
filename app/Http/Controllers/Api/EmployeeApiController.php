@@ -12,17 +12,24 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmployeeApiController extends ApiController
 {
-    public function getEmployeeList()
+    public function getEmployeeList(Request $request)
     {
+        $search = $request->get('search', '');
         $employees = DB::table('employees as E')
                     ->select(
-                        'E.id as employee_id'
+                        'E.id as employee_id',
                         DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as first_name"),
                         DB::raw("(CASE WHEN E.middle_name IS NOT NULL THEN  E.middle_name ELSE '' END) as middle_name"),
                         DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as last_name"),
                         DB::raw("(CASE WHEN E.email IS NOT NULL THEN  E.email ELSE '' END) as email")
                         )
                     ->where('E.is_active','Yes')
+                    ->when($search, function ($query, $search) {
+                        return $query->where(function ($q) use ($search) {
+                            $q->whereRaw("CONCAT(E.first_name, ' ', E.last_name) LIKE ?", ["%{$search}%"]);
+
+                        });
+                    })
                     ->whereNull('E.deleted_at')
                     ->groupBy('E.id')
                     ->orderBy('first_name','ASC')

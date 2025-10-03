@@ -95,8 +95,9 @@ class CustomerApiController extends ApiController
         // }
 
     }
-    public function getCustomerList()
+    public function getCustomerList(Request $request)
     {
+        $search = $request->get('search', '');
 
         $customers = DB::table('customers as C')
                     ->select(
@@ -105,10 +106,17 @@ class CustomerApiController extends ApiController
                         DB::raw("(CASE WHEN C.middle_name IS NOT NULL THEN  C.middle_name ELSE '' END) as middle_name"),
                         DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as last_name"),
                         DB::raw("(CASE WHEN C.email IS NOT NULL THEN  C.email ELSE '' END) as email"),
+                        DB::raw("(CASE WHEN C.mobile IS NOT NULL THEN  C.mobile ELSE '' END) as mobile"),
                         DB::raw("(CASE WHEN C.pincode IS NOT NULL THEN  C.pincode ELSE '' END) as pincode"),
                             DB::raw("(CASE WHEN C.address_line IS NOT NULL THEN  C.address_line ELSE '' END) as address_line"),
                         )
                     ->where('C.is_active','Yes')
+                    ->when($search, function ($query, $search) {
+                            return $query->where(function ($q) use ($search) {
+                                $q->whereRaw("CONCAT(C.first_name, ' ', C.last_name) LIKE ?", ["%{$search}%"]);
+
+                            });
+                        })
                     ->whereNull('C.deleted_at')
                     ->groupBy('C.id')
                     ->orderBy('first_name','ASC')
@@ -126,6 +134,7 @@ class CustomerApiController extends ApiController
                         DB::raw("(CASE WHEN C.middle_name IS NOT NULL THEN  C.middle_name ELSE '' END) as middle_name"),
                         DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as last_name"),
                         DB::raw("(CASE WHEN C.email IS NOT NULL THEN  C.email ELSE '' END) as email"),
+                        DB::raw("(CASE WHEN C.mobile IS NOT NULL THEN  C.mobile ELSE '' END) as mobile"),
                         DB::raw("(CASE WHEN C.pincode IS NOT NULL THEN  C.pincode ELSE '' END) as pincode"),
                         DB::raw("(CASE WHEN C.address_line IS NOT NULL THEN  C.address_line ELSE '' END) as address_line"),
                         DB::raw("(CASE WHEN C.city_id IS NOT NULL THEN  C.city_id ELSE '' END) as city_id"),
