@@ -21,7 +21,8 @@ class EmployeeApiController extends ApiController
                         DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as first_name"),
                         DB::raw("(CASE WHEN E.middle_name IS NOT NULL THEN  E.middle_name ELSE '' END) as middle_name"),
                         DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as last_name"),
-                        DB::raw("(CASE WHEN E.email IS NOT NULL THEN  E.email ELSE '' END) as email")
+                        DB::raw("(CASE WHEN E.email IS NOT NULL THEN  E.email ELSE '' END) as email"),
+                        DB::raw("(CASE WHEN E.mobile IS NOT NULL THEN  E.mobile ELSE '' END) as mobile")
                         )
                     ->where('E.is_active','Yes')
                     ->when($search, function ($query, $search) {
@@ -47,6 +48,7 @@ class EmployeeApiController extends ApiController
                         DB::raw("(CASE WHEN E.middle_name IS NOT NULL THEN  E.middle_name ELSE '' END) as middle_name"),
                         DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as last_name"),
                         DB::raw("(CASE WHEN E.email IS NOT NULL THEN  E.email ELSE '' END) as email"),
+                        DB::raw("(CASE WHEN E.mobile IS NOT NULL THEN  E.mobile ELSE '' END) as mobile")
                         )
                     ->where('E.id',$employee_id)
                     ->where('E.is_active','Yes')

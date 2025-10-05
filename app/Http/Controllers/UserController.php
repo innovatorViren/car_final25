@@ -59,6 +59,7 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
+        dd($request->all());
         $validated = $request->validated();
 
         // Assemble registration credentials and attributes

@@ -198,7 +198,7 @@ class AuthController extends ApiController
             $role_id = Role::where('slug', 'customer')->first()->id ?? '';
 
             $userArray = [
-                'user_type' => 'customer',
+                'emp_type' => 'customer',
                 'customer_id' => $customer_id ?? null,        
                 'first_name' => $request->get('first_name', null),
                 'middle_name' => $request->middle_name,
