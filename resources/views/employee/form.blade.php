@@ -20,8 +20,6 @@
                                 <span class="navi-text">{{ __('employee.employee_information') }}</span>
                             </a>
                         </li>
-                        <!--end::Nav Item-->
-                        <!--begin::Nav Item-->
                         <li class="navi-item mb-2">
                             <a class="navi-link" id="contact_information-tab-5" data-toggle="tab"
                                 href="#contact_information-5" aria-controls="contact_information">
@@ -31,8 +29,6 @@
                                 <span class="navi-text">{{ __('employee.contact_information') }}</span>
                             </a>
                         </li>
-                        <!--end::Nav Item-->
-                        <!--begin::Nav Item-->
                         <li class="navi-item mb-2">
                             <a class="navi-link" id="document_information-tab-5" data-toggle="tab"
                                 href="#document_information-5" aria-controls="document_information">
@@ -42,8 +38,6 @@
                                 <span class="navi-text">{{ __('employee.document_information') }}</span>
                             </a>
                         </li>
-                        <!--end::Nav Item-->
-                        <!--begin::Nav Item-->
                         <li class="navi-item mb-2">
                             <a class="navi-link" id="medical_information-tab-6" data-toggle="tab"
                                 href="#medical_information-6" aria-controls="medical_information">
@@ -53,9 +47,6 @@
                                 <span class="navi-text">{{ __('employee.medical_information') }}</span>
                             </a>
                         </li>
-                        <!--end::Nav Item-->
-
-                        <!--begin::Nav Item-->
                         <li class="navi-item mb-2">
                             <a class="navi-link" id="bank_information-tab-8" data-toggle="tab"
                                 href="#bank_information-8" aria-controls="bank_information">
@@ -65,15 +56,11 @@
                                 <span class="navi-text">{{ __('employee.bank_information') }}</span>
                             </a>
                         </li>
-                        <!--end::Nav Item-->
                     </ul>
-                    <!--end::Navigation-->
                 </div>
 
                 <div class="col-lg-9">
-                    <!--begin::Tab Content-->
                     <div class="tab-content">
-                        <!--begin::Accordion-->
                         <div class="tab-pane fade show active first slide active-slide" id="employee_information-5"
                             role="tabpanel" aria-labelledby="employee_information-tab-5">
                             <div class="row">
@@ -235,26 +222,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('reference', trans('employee.reference')) !!}
-                                        {!! Form::text('reference', null, [
-                                            'class' => 'form-control',
-                                            'id' => 'reference',
-                                            'placeholder' => 'Reference',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('reference_tel_no', trans('employee.reference_no')) !!}
-                                        {!! Form::text('reference_tel_no', null, [
-                                            'class' => 'form-control number',
-                                            'id' => 'reference_tel_no',
-                                            'placeholder' => 'Reference Tel No',
-                                        ]) !!}
-                                    </div>
-                                </div>
+
                                 <div class="col-lg-4">
                                     <div class="form-group">
 
