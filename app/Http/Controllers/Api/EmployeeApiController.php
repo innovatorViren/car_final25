@@ -12,6 +12,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmployeeApiController extends ApiController
 {
+    public function addEmployee(Request $request)
+    {
+        dd('ongoing');
+    }
     public function getEmployeeList(Request $request)
     {
         $search = $request->get('search', '');

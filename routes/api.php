@@ -45,7 +45,9 @@ Route::namespace('Api')->group(function () {
         //admin Api
         Route::get('/get-customer-list', [CustomerApiController::class, 'getCustomerList']);
         Route::get('/get-customer-detail/{id}', [CustomerApiController::class, 'getCustomerDetail']);
+        Route::post('/add-employee', [EmployeeApiController::class, 'addEmployee']);
         Route::get('/get-employee-list', [EmployeeApiController::class, 'getEmployeeList']);
+        // Route::post('/add-employee', [EmployeeApiController::class, 'getEmployeeList']);
         Route::get('/get-employee-detail/{id}', [EmployeeApiController::class, 'getEmployeeDetail']);
 
         //Customer Api

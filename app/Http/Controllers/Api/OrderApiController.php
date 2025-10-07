@@ -134,11 +134,13 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+                DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
             ];
 
             $orderData = DB::table('orders as O')
                     ->select($fields)
                     ->join('customers as C','C.id','O.customer_id')
+                    ->join('car_models as CM','CM.id','O.car_model_id')
                     ->leftjoin('employees as E', function ($join) {
                         $join->on('E.id', '=', 'O.employee_id');
                     })
@@ -161,11 +163,13 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+                DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
             ];
 
             $orderData = DB::table('orders as O')
                     ->select($fields)
                     ->join('customers as C','C.id','O.customer_id')
+                    ->join('car_models as CM','CM.id','O.car_model_id')
                     ->leftjoin('employees as E', function ($join) {
                         $join->on('E.id', '=', 'O.employee_id');
                     })
@@ -190,11 +194,13 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+                DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
             ];
 
             $orderData = DB::table('orders as O')
                     ->select($fields)
                     ->join('customers as C','C.id','O.customer_id')
+                    ->join('car_models as CM','CM.id','O.car_model_id')
                     ->leftjoin('employees as E', function ($join) {
                         $join->on('E.id', '=', 'O.employee_id');
                     })
