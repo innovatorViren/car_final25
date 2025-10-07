@@ -76,47 +76,27 @@ class EmployeeDataTable extends DataTable
 
     public function query(Employee $model)
     {
-        $model = Employee::leftJoin('employee_addresses', 'employees.id', '=', 'employee_addresses.employee_id')
-            ->leftJoin('employee_documents', 'employees.id', '=', 'employee_documents.employee_id')
-            ->select([
+        $model = Employee::select([
                 'employees.id as id', 
                 'employees.first_name as first_name', 
+                'employees.middle_name as middle_name',
                 'employees.last_name as last_name',
-                DB::raw("DATE_FORMAT(employees.birth_date, '%d-%m-%Y') as birth_date"),
-                DB::raw("DATE_FORMAT(employees.join_date, '%d-%m-%Y') as join_date"),
                 'employees.employee_code as employee_code',
                 'employees.mobile as mobile1',
-                'employee_addresses.permanent_address as permanent_address',
-                'employee_documents.aadhar_card_no as aadhar_card_no',
-                'employee_documents.pan_card_no as pan_card_no',
+                'employees.address as address',
+                'employees.aadhar_card_no as aadhar_card_no',
                 'employees.is_active',
-                'employees.middle_name'
             ]);
-
-        $date = (request()->get('filterjoinDate') != '') ? explode(' | ', request()->get('filterjoinDate')) : '';
-        $from_date = ($date != '') ? date('Y-m-d', strtotime($date[0])) : '';
-        $to_date = ($date != '') ? date('Y-m-d', strtotime($date[1])) : '';
-        if ($from_date != '' && $to_date != '') {
-            $model->whereBetween('employees.join_date', [$from_date, $to_date]);
-        }
-
-        if (request()->get('personNameFilter') != '') {
-            $model->where('employees.id', request()->get('personNameFilter'));
-        }
+        
         if (request()->get('statusFilter') != '') {
             $model->where('employees.is_active', [request()->get('statusFilter')]);
         }
         if (request()->get('employee_code', false)) {
             $model->where('employee_code', 'like', "%" . request()->get("employee_code") . "%");
         }
-        if (request()->get('person_name', false)) {
-            $model->whereRaw("concat(first_name, ' ',CASE WHEN middle_name IS NOT NULL THEN  middle_name ELSE '' END,' ', last_name) like '%" . request()->get("person_name") . "%' ");
-        }
+        
         if (request()->get('mobile1', false)) {
             $model->where('mobile', 'like', "%" . request()->get("mobile1") . "%");
-        }
-        if (request()->get('birth_date', false)) {
-            $model->where(DB::raw("DATE_FORMAT(birth_date,'%d-%m-%Y')"), 'like', '%' . request()->get('birth_date') . '%');
         }
         return $this->applyScopes($model);
     }

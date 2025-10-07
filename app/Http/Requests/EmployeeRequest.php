@@ -30,32 +30,13 @@ class EmployeeRequest extends FormRequest
         $validation = [
             'first_name' => 'required',
             'last_name' => 'required',
-            'person_name' => 'required',
             'email' => [
                 'required',
                 'email',
             ],
-            'gender' => 'required',
             'birth_date' => 'required',
             'age' => 'required',
-            'marital_status' => 'required',
-            'permanent_address' => 'required',
-            'present_address' => 'required',
-            'permanent_state' => 'required',
-            'present_state' => 'required',
-            'permanent_city' => 'required',
-            'present_city' => 'required',
-            'mobile1' => 'required',
-            'aadhar_card_no' => [
-                'required',
-                Rule::unique('employee_documents')->whereNull('deleted_at')
-
-                    ->when($id, function ($qry) use ($id) {
-                        $qry->where(function ($query) use ($id) {
-                            return $query->where('employee_id', '!=', $id);
-                        });
-                    })
-            ],
+            'aadhar_card_no' => 'required',
         ];
 
         if ($id) {

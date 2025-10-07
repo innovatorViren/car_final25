@@ -11,33 +11,6 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <div class="for-group">
-                        {!! Form::label('personNameFilter', trans('employee.person_name')) !!}
-                        {!! Form::select('personNameFilter', ['' => 'Select'] + $employeesData, null, [
-                            'class' => 'form-control personNameFilter jsPersonNameFilter',
-                            'id' => 'personNameFilter',
-                            'data-placeholder' => 'Select Employee',
-                        ]) !!}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>{{ __('employee.join_date') }}</label>
-                    <div class='input-group from_to_datepicker'>
-                        {!! Form::text('filterjoinDate', null, [
-                            'class' => 'form-control date jsDilterJoinDate',
-                            'id' => 'filterjoinDate',
-                            'readonly',
-                        ]) !!}
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <i class="la la-calendar-check-o"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                
-                <div class="form-group">
                     {!! Form::label('statusFilter', trans('common.status')) !!}
                     {!! Form::select('statusFilter', ['' => 'Select', 'Yes' => 'Active', 'No' => 'Inactive'], null, [
                         'class' => 'form-control statusFilter jsStatusFilter',

@@ -32,13 +32,7 @@
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_employee_code', Request::get('filter_employee_code', null), ['class' => 'form-control']) !!}</div>
                             </th>
                             <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_person_name', Request::get('filter_person_name', null), ['class' => 'form-control']) !!}</div>
-                            </th>
-                            <th>
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_mobile1', Request::get('filter_mobile1', null), ['class' => 'form-control']) !!}</div>
-                            </th>
-                            <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_birth_date', Request::get('filter_birth_date', null), ['class' => 'form-control']) !!}</div>
                             </th>
 
                             <th></th>
@@ -47,9 +41,7 @@
                             {{--  <th>{{__('common.action')}}</th> --}}
                             <th class="d-none noVis"></th>
                             <th class="noVis">{{ __('employee.emp_code') }}</th>
-                            <th width="20%">{{ __('employee.person_name') }}</th>
                             <th>{{ __('employee.mobile') }}</th>
-                            <th>{{ __('employee.birth_date') }}</th>
                             <th>{{ __('common.status') }}</th>
                         </tr>
                     </thead>
@@ -74,9 +66,7 @@
 @section('scripts')
 <script type="text/javascript">
     var employee_code = "{{ __('employee.emp_code') }}";
-    var person_name = "{{ __('employee.person_name') }}";
     var mobile1 = "{{ __('employee.mobile') }}";
-    var birth_date = "{{ __('employee.birth_date') }}";
     var action = "{{ __('common.action') }}";
     var is_active = "{{ __('common.status') }}";
     var type = "{{ $type }}";
@@ -102,14 +92,7 @@
                     d.lang = jQuery(".datatable-form-filter select[name='filter_lang']").val();
                     d.employee_code = jQuery(
                         ".datatable-form-filter input[name='filter_employee_code']").val();
-                    d.person_name = jQuery(".datatable-form-filter input[name='filter_person_name']")
-                        .val();
                     d.mobile1 = jQuery(".datatable-form-filter input[name='filter_mobile1']").val();
-                    d.birth_date = jQuery(".datatable-form-filter input[name='filter_birth_date']")
-                        .val();
-
-                    d.filterjoinDate = jQuery("input[name='filterjoinDate']").val();
-                    d.personNameFilter = jQuery("select[name='personNameFilter']").val();
                     d.statusFilter = jQuery("select[name='statusFilter']").val();
 
 
@@ -138,25 +121,15 @@
                     "title": employee_code,
                     "orderable": true,
                     "searchable": false
-                }, {
-                    "name": "person_name",
-                    "data": "first_name",
-                    "title": person_name,
-                    "orderable": true,
-                    "searchable": false
-                }, {
+                },
+                {
                     "name": "mobile1",
                     "data": "mobile1",
                     "title": mobile1,
                     "orderable": true,
                     "searchable": false
-                }, {
-                    "name": "birth_date",
-                    "data": "birth_date",
-                    "title": birth_date,
-                    "orderable": true,
-                    "searchable": false
-                }, {
+                }, 
+                {
                     "name": "is_active",
                     "data": "is_active",
                     "title": is_active,
@@ -174,12 +147,10 @@
             },
             "stateSave": true,
             stateSaveParams: function(settings, data) {
-                data.personNameFilter = $('#personNameFilter').val();
-                data.filterjoinDate = $('#filterjoinDate').val();
+               //
             },
             stateLoadParams: function(settings, data) {
-                $('#personNameFilter').val(data.personNameFilter);
-                $('#filterjoinDate').val(data.filterjoinDate);
+                //
             },
             "initComplete": function(settings, json) {
                 $('.jsBtnSearch').click();
@@ -193,16 +164,6 @@
                 [0, "desc"]
             ],
             "pageLength": page_show_entriess,
-            // dom: 'Bfrtip',//visibility
-            dom: `Bfrt<'row'<'col-sm-6 col-md-6'i><'col-sm-6 col-md-6 dataTables_pager'lp>>`, //visibility
-            buttons: [
-                //visibility
-                {
-                    extend: 'colvis',
-                    columns: ':not(.noVis)',
-                    text: 'Column visibility',
-                }
-            ],
         });
     })(window, jQuery);
 
@@ -215,9 +176,7 @@
         window.LaravelDataTables["dataTableBuilder"].draw();
         $('.close').trigger('click');
 
-        var fieldList = [
-            'jsPersonNameFilter',
-            'jsDilterJoinDate',
+        var fieldList = [,
             'jsStatusFilter',
         ];
         setFilterData(fieldList);
@@ -231,9 +190,6 @@
         window.location.reload();
     });
 
-    $('.personNameFilter').select2({
-        allowClear: true
-    });
 
     $(document).on('click', '.copy-btn', function() {
         var $obj = $(this);

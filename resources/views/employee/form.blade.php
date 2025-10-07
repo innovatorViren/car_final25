@@ -39,15 +39,6 @@
                             </a>
                         </li>
                         <li class="navi-item mb-2">
-                            <a class="navi-link" id="medical_information-tab-6" data-toggle="tab"
-                                href="#medical_information-6" aria-controls="medical_information">
-                                <span class="nav-icon mr-3">
-                                    <i class="flaticon2-rocket-1"></i>
-                                </span>
-                                <span class="navi-text">{{ __('employee.medical_information') }}</span>
-                            </a>
-                        </li>
-                        <li class="navi-item mb-2">
                             <a class="navi-link" id="bank_information-tab-8" data-toggle="tab"
                                 href="#bank_information-8" aria-controls="bank_information">
                                 <span class="nav-icon mr-3">
@@ -72,27 +63,18 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        {!! Form::label('first_name', trans('employee.middle_name')) !!}
+                                        {!! Form::label('middle_name', trans('employee.middle_name')) !!}
                                         {!! Form::text('middle_name', null, ['class' => 'form-control', 'placeholder' => 'Middle Name']) !!}
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        {!! Form::label('first_name', trans('employee.last_name')) !!} <i class="text-danger">*</i>
+                                        {!! Form::label('last_name', trans('employee.last_name')) !!} <i class="text-danger">*</i>
                                         {!! Form::text('last_name', null, ['class' => 'form-control required', 'placeholder' => 'Last Name']) !!}
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        {!! Form::label('person_name', trans('employee.full_name')) !!} <i class="text-danger">*</i>
-                                        {!! Form::text('person_name', null, [
-                                            'class' => 'form-control required',
-                                            'placeholder' => trans('employee.full_name'),
-                                        ]) !!}
-                                    </div>
-                                </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         {!! Form::checkbox('is_create_user', null, true, ['id' => 'is_create_user', 'disabled']) !!}
@@ -146,27 +128,6 @@
                                         'minlength' => 8,
                                     ]) !!}
                                 </div>
-                                <div class="form-group col-lg-4">
-                                    
-                                    
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('gender', trans('employee.gender')) !!} <i class="text-danger">*</i>
-
-                                        <div class="radio-inline">
-                                            <label class="radio">
-                                                {{ Form::radio('gender', 'Male', true, ['class' => 'form-check-input', 'id' => 'male']) }}
-                                                <span></span>{{ __('employee.male') }}
-                                            </label>
-
-                                            <label class="radio">
-                                                {{ Form::radio('gender', 'Female', '', ['class' => 'form-check-input', 'id' => 'female']) }}
-                                                <span></span>{{ __('employee.female') }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         {!! Form::label('birth_date', trans('employee.date_of_birth')) !!} <i class="text-danger">*</i>
@@ -193,43 +154,24 @@
                                         ]) !!}
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        {!! Form::label('marital_status', trans('employee.marital_status')) !!} <i class="text-danger">*</i>
-                                        {!! Form::select('marital_status', ['' => 'Select'] + $maritalstatus, null, [
-                                            'class' => 'form-control required ',
-                                            'data-placeholder' => 'Select Marital Status',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('hobbies', trans('employee.hobbies')) !!}
-                                        {!! Form::text('hobbies', null, [
+                                        {!! Form::label('reference', trans('employee.reference')) !!}
+                                        {!! Form::text('reference', null, [
                                             'class' => 'form-control',
-                                            'id' => 'hobbies',
-                                            'placeholder' => 'Hobbies',
+                                            'id' => 'reference',
+                                            'placeholder' => 'Reference',
                                         ]) !!}
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group">
-                                        {!! Form::label('photo', trans('employee.photo')) !!}
-                                        {!! Form::file('photo', null, ['id' => 'photo']) !!}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-
-                                        <img alt="Logo"
-                                            src="{{ isset($employee->photo_path) && !empty($employee->photo_path) ? asset($employee->photo_path) : asset('/media/svg/avatars/001-boy.svg') }}"
-                                            class="h-75 align-self-end pt-3" id="emp_photo_preview"
-                                            name="emp_photo_preview" style="height: 40%;width: 40%;">
+                                        {!! Form::label('reference_tel_no', trans('employee.reference_no')) !!}
+                                        {!! Form::text('reference_tel_no', null, [
+                                            'class' => 'form-control number',
+                                            'id' => 'reference_tel_no',
+                                            'placeholder' => 'Reference Tel No',
+                                        ]) !!}
                                     </div>
                                 </div>
                             </div>
@@ -237,131 +179,69 @@
 
                         <div class="tab-pane fade slide" id="contact_information-5" role="tabpanel"
                             aria-labelledby="contact_information-tab-5">
+                            
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {!! Form::label('address', trans('employee.address')) !!}<i class="text-danger">*</i>
+                                        {!! Form::textarea('address', null, [
+                                            'class' => 'form-control required',
+                                            'rows' => 5,
+                                            'placeholder' => 'Present Address',
+                                        ]) !!}
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="row">
-                                        <div class="form-group col-lg-12 pt-7">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="form-group">
-                                                {!! Form::label('present_address', trans('employee.present_address')) !!}<i class="text-danger">*</i>
-                                                {!! Form::textarea('present_address', null, [
+                                    <div class="form-group">
+                                        {!! Form::label('state', trans('common.state')) !!}<i class="text-danger">*</i>
+                                        <div>
+                                            {!! Form::select(
+                                                'state',
+                                                ['' => 'select'] + $state_id,
+                                                isset($employee) ? $employee['state_id'] : null,
+                                                [
                                                     'class' => 'form-control required',
-                                                    'rows' => 5,
-                                                    'placeholder' => 'Present Address',
-                                                ]) !!}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                {!! Form::label('present_state', trans('common.state')) !!}<i class="text-danger">*</i>
-                                                <div>
-                                                    {!! Form::select(
-                                                        'present_state',
-                                                        ['' => 'select'] + $present_state_id,
-                                                        isset($employee) ? $employee['present_state_id'] : null,
-                                                        [
-                                                            'class' => 'form-control required',
-                                                            'data-placeholder' => 'Select State',
-                                                        ],
-                                                    ) !!}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                {!! Form::label('present_city', trans('common.city')) !!}<i class="text-danger">*</i>
-                                                <div>
-                                                    {{ Form::select('present_city', ['' => 'select'] + $present_city, isset($employee) ? $employee['present_city'] : null, ['class' => 'form-control required select2', 'data-placeholder' => 'Select City']) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                {!! Form::label('present_pincode', trans('common.pincode')) !!}
-                                                {!! Form::text('present_pincode', null, [
-                                                    'class' => 'form-control number',
-                                                    'placeholder' => 'Pincode',
-                                                ]) !!}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                {!! Form::label('mobile1', 'Mobile 1') !!}<i class="text-danger">*</i>
-                                                {!! Form::text('mobile1', null, [
-                                                    'class' => 'form-control required number',
-                                                    'minlength' => 10,
-                                                    'maxlength' => 10,
-                                                    'placeholder' => '9876543210',
-                                                ]) !!}
-                                            </div>
+                                                    'data-placeholder' => 'Select State',
+                                                ],
+                                            ) !!}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-
-                                    <div class="row">
-                                        <div class="form-group col-lg-12">
-                                            <label class="checkbox checkbox-square">
-                                                {!! Form::checkbox('same_as_present', '1', null, [
-                                                    'id' => 'same_as_present',
-                                                    'class' => 'same_as_present',
-                                                ]) !!}
-                                                Same as Present Address
-                                                &nbsp;&nbsp;<span></span>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="form-group">
-                                                {!! Form::label('permanent_address', trans('employee.permanent_address')) !!}<i class="text-danger">*</i>
-                                                {!! Form::textarea('permanent_address', null, [
-                                                    'class' => 'form-control required',
-                                                    'rows' => 5,
-                                                    'placeholder' => 'Permanent Address',
-                                                ]) !!}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                {!! Form::label('permanent_state', trans('common.state')) !!}<i class="text-danger">*</i>
-                                                <div>
-                                                    {{ Form::select('permanent_state', ['' => 'select'] + $permanent_state_id, isset($employee) ? $employee['permanent_state_id'] : null, ['class' => 'form-control required', 'data-placeholder' => 'Select State']) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                {!! Form::label('permanent_city', trans('common.city')) !!}<i class="text-danger">*</i>
-                                                <div>
-                                                    {{ Form::select('permanent_city', ['' => 'select'] + $permanent_city, isset($employee) ? $employee['permanent_city'] : null, ['class' => 'form-control required', 'data-placeholder' => 'Select City']) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                {!! Form::label('permanent_pincode', trans('common.pincode')) !!}
-                                                {!! Form::text('permanent_pincode', null, [
-                                                    'class' => 'form-control number',
-                                                    'placeholder' => 'Pincode',
-                                                ]) !!}
-                                            </div>
+                                    <div class="form-group">
+                                        {!! Form::label('city', trans('common.city')) !!}<i class="text-danger">*</i>
+                                        <div>
+                                            {{ Form::select('city', ['' => 'select'] + $city, isset($employee) ? $employee['city'] : null, ['class' => 'form-control required select2', 'data-placeholder' => 'Select City']) }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        {!! Form::label('pincode', trans('common.pincode')) !!}
+                                        {!! Form::text('pincode', null, [
+                                            'class' => 'form-control number',
+                                            'placeholder' => 'Pincode',
+                                        ]) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        {!! Form::label('phone', 'Phone') !!}<i class="text-danger">*</i>
+                                        {!! Form::text('phone', null, [
+                                            'class' => 'form-control required number',
+                                            'minlength' => 10,
+                                            'maxlength' => 10,
+                                        ]) !!}
+                                    </div>
+                                </div>
+                            </div>
+                                
+                            
                         </div>
 
                         <div class="tab-pane fade slide" id="document_information-5" role="tabpanel"
@@ -403,95 +283,12 @@
                                 <div class="col-lg-2">
                                     <div class="form-group">
                                         <img alt="Logo"
-                                            src="{{ isset($employee->employeeDocument) && !empty($employee->employeeDocument->aadharcard_img_path) ? asset($employee->employeeDocument->aadharcard_img_path) : asset('default.jpg') }}"
+                                            src="{{ isset($employee) && !empty($employee->aadharcard_img_path) ? asset($employee->aadharcard_img_path) : asset('default.jpg') }}"
                                             class="h-75 align-self-end" id="aadharcard_img_preview"
                                             name="aadharcard_img_preview" style="height: 60%;width: 60%;">
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('driving_licence_no', trans('employee.driving_licence')) !!}
-                                        {!! Form::text('driving_licence_no', null, [
-                                            'class' => 'form-control',
-                                            'maxlength' => '20',
-                                            'placeholder' => 'Driving Licence No (Optional)',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group pt-8">
-                                        {!! Form::label('drivinglicence_img', trans('employee.photo')) !!} :
-                                        {!! Form::file('drivinglicence_img', ['id' => 'drivinglicence_img']) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-2">
-                                    <div class="form-group">
-                                        <img alt="Logo"
-                                            src="{{ isset($employee->employeeDocument) && !empty($employee->employeeDocument->drivinglicence_img_path) ? asset($employee->employeeDocument->drivinglicence_img_path) : asset('default.jpg') }}"
-                                            class="h-75 align-self-end" id="drivinglicence_img_preview"
-                                            name="drivinglicence_img_preview" style="height: 60%;width: 60%;">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('pan_card_no', trans('common.pan_no')) !!}
-                                        {!! Form::text('pan_card_no', null, [
-                                            'class' => 'form-control',
-                                            'placeholder' => 'Pan Card No (Optional)',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group pt-8">
-                                        {!! Form::label('pancard_img', trans('employee.photo')) !!} :
-                                        {!! Form::file('pancard_img', ['id' => 'pancard_img']) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-2">
-                                    <div class="form-group">
-                                        <img alt="Logo"
-                                            src="{{ isset($employee->employeeDocument) && !empty($employee->employeeDocument->pancard_img_path) ? asset($employee->employeeDocument->pancard_img_path) : asset('default.jpg') }}"
-                                            class="h-75 align-self-end" id="pancard_img_preview"
-                                            name="pancard_img_preview" style="height: 60%;width: 60%;">
-                                    </div>
-                                </div>
                                 
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade slide" id="medical_information-6" role="tabpanel"
-                            aria-labelledby="medical_information-tab-6">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        {!! Form::label('strengths', trans('employee.strengths')) !!}
-                                        {!! Form::text('strengths', null, [
-                                            'class' => 'form-control',
-                                            'placeholder' => 'Strengths (Optional)',
-                                        ]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        {!! Form::label('weakness', trans('employee.weakness')) !!}
-                                        {!! Form::text('weakness', null, [
-                                            'class' => 'form-control',
-                                            'placeholder' => 'Weakness (Optional)',
-                                        ]) !!}
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        {!! Form::label('blood_group', trans('employee.blood_group')) !!}
-                                        <div>
-                                            {!! Form::select('blood_group', ['' => 'Select'] + $bloodgroup, null, [
-                                                'class' => 'form-control',
-                                                'data-placeholder' => 'Select Blood Group',
-                                            ]) !!}
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
