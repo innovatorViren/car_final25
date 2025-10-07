@@ -112,13 +112,52 @@ class OrderApiController extends ApiController
         return $slots;
     }
 
+    public function assignEmployee(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $requestData = Validator::make($this->request->all(), [
+                'type'=>'required',
+                'id'=>'required',
+                'emp_id'=>'required',
+            ]);
+
+            if ($requestData->fails()) {
+                throw new Exception($requestData->messages()->first(), 1);
+            }
+
+            $type = $request->type ?? false;
+            $id = $request->id ?? null;
+            $empId = $request->emp_id ?? null;
+            if($type == 'main'){
+                DB::table('orders')->where('id',$id)->update(['employee_id'=>$empId]);
+                DB::table('washes')->where('order_id',$id)->update(['employee_id'=>$empId]);
+            }else{
+                DB::table('washes')->where('id',$id)->update(['employee_id'=>$empId]);
+
+            }
+            
+            DB::commit();
+        } catch (Exception $e) {
+
+            DB::rollback();
+            info($e);
+            $this->response_json['message'] = $e->getMessage();
+            return $this->responseError();
+        }
+
+        $this->response_json['message'] = 'Assign Employee Successfully!!';
+        return $this->responseSuccess();
+    }
+
     public function getOrderList(Request $request)
     {
         $page = $request->get('page', '');
         $user = $this->currentuser();
         $perPage = $this->perPageCommon();
 
-        if($user->emp_type == 'non-emplyee')
+        if($user->emp_type == 'non-employee')
         {
             $fields = [
                 'O.id as order_id',
@@ -135,6 +174,7 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                DB::raw("(CASE WHEN LOWER(TRIM(O.status)) = 'pending' THEN 1 ELSE 0 END) as assignfff"),
             ];
 
             $orderData = DB::table('orders as O')
@@ -164,6 +204,7 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                DB::raw(" 0  as assign"),
             ];
 
             $orderData = DB::table('orders as O')
@@ -195,6 +236,7 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                DB::raw(" 0  as assign"),
             ];
 
             $orderData = DB::table('orders as O')

@@ -8,13 +8,102 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use DB;
 use URL;
+// use App\Models\{Employee};
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmployeeApiController extends ApiController
 {
     public function addEmployee(Request $request)
     {
-        dd('ongoing');
+        DB::beginTransaction();
+        try {
+
+            $requestData = Validator::make($this->request->all(), [
+                'first_name'=>'required',
+                'last_name'=>'required',
+                'mobile'=>'required',
+                'email'=>'required',
+                'birth_date'=>'required',
+                'address'=>'required',
+                'state_id'=>'required',
+                'city'=>'required',
+                'phone'=>'nullable',
+                'aadhar_card_no'=>'nullable',
+                'account_no'=>'nullable',
+                'ifsc_code'=>'nullable',
+            ]);
+
+            if ($requestData->fails()) {
+                throw new Exception($requestData->messages()->first(), 1);
+            }
+
+            $mobRecode = DB::table('employees')->whereNull('deleted_at')->where('mobile',$request->mobile)->first();
+            $aadharRecode = DB::table('employees')->whereNull('deleted_at')->where('aadhar_card_no',$request->aadhar_card_no)->first();
+
+            
+
+            if($mobRecode)
+            {
+                $this->response_json['status'] = 0;
+                $this->response_json['message'] = 'Mobile Number already add.!';
+                return $this->responseError();
+            }
+            if($aadharRecode)
+            {
+                $this->response_json['status'] = 0;
+                $this->response_json['message'] = 'Please Enter unique Aadhar no.!';
+                return $this->responseError();
+            }
+
+
+
+            $data = [
+                'first_name' => $request->first_name ?? null,
+                'middle_name' => $request->middle_name null,
+                'last_name' => $request->last_name null,
+                'mobile' => $request->mobile null,
+                'email' => $request->email null,
+                'birth_date' => $request->birth_date null,
+                'reference' => $request->reference null,
+                'reference_tel_no' => $request->reference_tel_no null,
+                'beneficiary_name' => $request->beneficiary_name null,
+                'bank_name' => $request->bank_name null,
+                'ifsc_code' => $request->ifsc_code null,
+                'account_no' => $request->account_no null,
+                'address' => $request->address null,
+                'state_id' => $request->state_id null,
+                'city' => $request->city null,
+                'pincode' => $request->pincode null,
+                'phone' => $request->phone null,
+                'aadhar_card_no' => $request->aadhar_card_no null,
+            ];
+            
+            $employee = Employee::create($data);
+
+
+            if($request->hasfile('aadharcard_img'))
+            {
+                $file = $request->file('aadharcard_img');
+                // dd($file);
+                $extenstion = $file->getClientOriginalExtension();
+                $filename = time() . '_' . uniqid() . '.' . $extenstion;
+                $file->move('uploads/Employee/', $filename);
+                $employee->aadharcard_img = $filename;
+                $employee->aadharcard_img_path = '/uploads/Employee/' .$filename;
+            }
+
+            $employee->save();
+            
+            DB::commit();
+        } catch (Exception $e) {
+
+            DB::rollback();
+            info($e);
+            $this->response_json['message'] = $e->getMessage();
+            return $this->responseError();
+        }
+        $this->response_json['message'] = 'Employee created Successfully!!';
+        return $this->responseSuccess();
     }
     public function getEmployeeList(Request $request)
     {
