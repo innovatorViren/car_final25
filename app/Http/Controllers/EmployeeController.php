@@ -110,6 +110,7 @@ class EmployeeController extends Controller
         } catch (Exception $e) {
             DB::rollback();
             info($e);
+            dd($e);
             // return false;
             $this->response_json['message'] = $e->getMessage();
             return $this->responseError();

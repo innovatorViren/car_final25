@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use DB;
 use URL;
-// use App\Models\{Employee};
+use App\Models\{Employee};
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmployeeApiController extends ApiController
