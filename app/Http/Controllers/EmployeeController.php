@@ -283,7 +283,6 @@ class EmployeeController extends Controller
             'state_id' => $request['state'],
             'city' => $request['city'],
             'pincode' => $request['pincode'],
-            'phone' => $request['phone'],
             'aadhar_card_no' => $request['aadhar_card_no'],
         ];
 

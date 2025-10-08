@@ -229,16 +229,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        {!! Form::label('phone', 'Phone') !!}<i class="text-danger">*</i>
-                                        {!! Form::text('phone', null, [
-                                            'class' => 'form-control required number',
-                                            'minlength' => 10,
-                                            'maxlength' => 10,
-                                        ]) !!}
-                                    </div>
-                                </div>
+                                
                             </div>
                                 
                             

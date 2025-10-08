@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use DB;
 use URL;
-// use App\Models\{Employee};
+use App\Models\{Employee};
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmployeeApiController extends ApiController
@@ -27,7 +27,6 @@ class EmployeeApiController extends ApiController
                 'address'=>'required',
                 'state_id'=>'required',
                 'city'=>'required',
-                'phone'=>'nullable',
                 'aadhar_card_no'=>'nullable',
                 'account_no'=>'nullable',
                 'ifsc_code'=>'nullable',
@@ -74,7 +73,6 @@ class EmployeeApiController extends ApiController
                 'state_id' => $request->state_id null,
                 'city' => $request->city null,
                 'pincode' => $request->pincode null,
-                'phone' => $request->phone null,
                 'aadhar_card_no' => $request->aadhar_card_no null,
             ];
             
