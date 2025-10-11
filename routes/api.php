@@ -50,6 +50,7 @@ Route::namespace('Api')->group(function () {
         Route::get('/get-employee-detail/{id}', [EmployeeApiController::class, 'getEmployeeDetail']);
         Route::get('/get-employee-dashboard/{id}', [EmployeeApiController::class, 'getEmployeeDashboard']);
         Route::get('/get-employee-dashboard-detail/{id}', [EmployeeApiController::class, 'getEmployeeDashboardDetail']);
+        Route::post('/car-wash-employee', [EmployeeApiController::class, 'carWashEmployee']);
 
         //Customer Api
         Route::get('/get-car-wise-plan', [PlanApiController::class, 'getCarWisePlan']);
