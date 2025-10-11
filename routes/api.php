@@ -48,6 +48,8 @@ Route::namespace('Api')->group(function () {
         Route::post('/add-employee', [EmployeeApiController::class, 'addEmployee']);
         Route::get('/get-employee-list', [EmployeeApiController::class, 'getEmployeeList']);
         Route::get('/get-employee-detail/{id}', [EmployeeApiController::class, 'getEmployeeDetail']);
+        Route::get('/get-employee-dashboard/{id}', [EmployeeApiController::class, 'getEmployeeDashboard']);
+        Route::get('/get-employee-dashboard-detail/{id}', [EmployeeApiController::class, 'getEmployeeDashboardDetail']);
 
         //Customer Api
         Route::get('/get-car-wise-plan', [PlanApiController::class, 'getCarWisePlan']);

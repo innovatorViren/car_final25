@@ -14,9 +14,77 @@ use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class EmployeeApiController extends ApiController
 {
+    public function getEmployeeDashboard($id)
+    {
+
+        $fields = [
+            'O.id as order_id',
+            'W.id as wash_id',
+            'O.code as code',
+            'O.status as status',
+            'W.scheduled_date as scheduled_date',
+            DB::raw("(CASE WHEN W.start_time IS NOT NULL THEN DATE_FORMAT(W.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+            DB::raw("(CASE WHEN W.end_time IS NOT NULL THEN DATE_FORMAT(W.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
+            DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
+            DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+        ];
+
+        $orderData = DB::table('orders as O')
+                ->select($fields)
+                ->join('customers as C','C.id','O.customer_id')
+                ->join('washes as W','W.order_id','O.id')
+                ->whereNull('O.deleted_at')
+                ->where('W.employee_id',$id)
+                ->whereDate('W.scheduled_date', Carbon::today())
+                ->orderBy('O.id', 'DESC')
+                ->get();
+        // $this->data = '';
+        $this->response_json['today_orders'] = $orderData; 
+
+        return $this->responseSuccessWithoutObject();
+    }
+
+    public function getEmployeeDashboardDetail($wasId)
+    {
+
+        $fields = [
+            'W.id as wash_id',
+            'W.status as status',
+            'C.mobile as mobile',
+            'CM.name as car_model_name',
+            'CA.address_line1 as address_line1',
+            'CA.address_line2 as address_line2',
+            'CA.pincode as pincode',
+            'CI.name as city',
+            'S.name as state',
+            DB::raw("(CASE WHEN W.start_time IS NOT NULL THEN DATE_FORMAT(W.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+            DB::raw("(CASE WHEN W.end_time IS NOT NULL THEN DATE_FORMAT(W.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
+            DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
+            DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+        ];
+
+        $orderData = DB::table('orders as O')
+                ->select($fields)
+                ->join('customers as C','C.id','O.customer_id')
+                ->join('washes as W','W.order_id','O.id')
+                ->join('car_models as CM','CM.id','O.car_model_id')
+                ->join('customer_adresses as CA','CA.id','O.customer_adress_id')
+                ->join('cities as CI','CI.id','CA.city_id')
+                ->join('states as S','S.id','CA.state_id')
+                ->whereNull('O.deleted_at')
+                ->where('W.id',$wasId)
+                ->first();
+        $this->data = $orderData;
+        // $this->response_json['today_orders'] = $orderData; 
+
+        return $this->responseSuccessWithoutObject();
+    }
+
+
     public function addEmployee(Request $request)
     {
         DB::beginTransaction();
