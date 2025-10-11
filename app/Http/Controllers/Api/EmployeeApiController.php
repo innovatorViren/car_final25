@@ -8,8 +8,12 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use DB;
 use URL;
-use App\Models\{Employee};
+use App\Models\{Employee,Role,RoleUser,User};
 use Illuminate\Pagination\LengthAwarePaginator;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeApiController extends ApiController
 {
@@ -30,6 +34,7 @@ class EmployeeApiController extends ApiController
                 'aadhar_card_no'=>'nullable',
                 'account_no'=>'nullable',
                 'ifsc_code'=>'nullable',
+                'password'=>'nullable',
             ]);
 
             if ($requestData->fails()) {
@@ -40,6 +45,7 @@ class EmployeeApiController extends ApiController
             $aadharRecode = DB::table('employees')->whereNull('deleted_at')->where('aadhar_card_no',$request->aadhar_card_no)->first();
 
             
+            $userPassword = $request->get('password', false);
 
             if($mobRecode)
             {
@@ -54,12 +60,12 @@ class EmployeeApiController extends ApiController
                 return $this->responseError();
             }
 
-
-
+            $generateCode = $this->IDGenerator(new Employee, 'id', 4, 'E');
             $data = [
-                'first_name' => $request->first_name ?? null,
+                'first_name' => $request->first_name ??  null,
                 'middle_name' => $request->middle_name?? null,
                 'last_name' => $request->last_name?? null,
+                'employee_code' => $generateCode,
                 'mobile' => $request->mobile?? null,
                 'email' => $request->email?? null,
                 'birth_date' => $request->birth_date?? null,
@@ -82,7 +88,6 @@ class EmployeeApiController extends ApiController
             if($request->hasfile('aadharcard_img'))
             {
                 $file = $request->file('aadharcard_img');
-                // dd($file);
                 $extenstion = $file->getClientOriginalExtension();
                 $filename = time() . '_' . uniqid() . '.' . $extenstion;
                 $file->move('uploads/Employee/', $filename);
@@ -91,6 +96,38 @@ class EmployeeApiController extends ApiController
             }
 
             $employee->save();
+
+
+            $roleModal = Role::where('slug', 'employee')->first();
+            $role_id = (!empty($roleModal)) ? $roleModal->id : NULL;
+            $userData = [];
+            $userData['first_name'] = $employee['first_name'];
+            $userData['middle_name'] = $employee['middle_name'];
+            $userData['last_name'] = $employee['last_name'];
+            $userData['email'] = $employee['email'] ?? null;
+            $userData['mobile'] = $employee['mobile'] ?? null;
+            $userData['password'] = Hash::make($userPassword);
+            $regUserData = Sentinel::registerAndActivate($userData);
+            if ($regUserData) {
+                $userId = $regUserData->id;
+                $userDataUpdate = [
+                    'is_active' => 'Yes',
+                    'emp_type' => 'employee',
+                    'emp_id' => $employee['id'],
+                    'roles_id' => $role_id,
+                    'mobile' => $employee['mobile'],
+                    'first_name' => $employee['first_name'],
+                    'last_name' => $employee['last_name'],
+                    'middle_name' => $employee['middle_name'],
+                    'email' => $employee['email'],
+                ];
+                User::where('id', $userId)->update($userDataUpdate);
+
+                $roleUser = [];
+                $roleUser['user_id'] = $userId;
+                $roleUser['role_id'] = $role_id;
+                RoleUser::create($roleUser);
+            }
             
             DB::commit();
         } catch (Exception $e) {
@@ -103,6 +140,20 @@ class EmployeeApiController extends ApiController
         $this->response_json['message'] = 'Employee created Successfully!!';
         return $this->responseSuccess();
     }
+
+    public static function IDGenerator($model, $trow, $length = 4, $prefix)
+    {
+        $lastEmp = $model::orderBy('id', 'desc')->first()  ?? null;
+        $lastEmpCode = 1;
+        if ($lastEmp) {
+            $lastEmpCode = $lastEmp->employee_code;
+            $lastEmpCode = intval(str_replace($prefix . "-", "", $lastEmpCode)) + 1;
+        }
+        $empCode = $prefix . "-" . str_pad($lastEmpCode, $length, '0', STR_PAD_LEFT);
+        return $empCode;
+    }
+
+
     public function getEmployeeList(Request $request)
     {
         $search = $request->get('search', '');
