@@ -97,15 +97,28 @@ class OrderApiController extends ApiController
     private function generateAlternateDaySlots($startDate, $startTime, $endTime, $totalWashes,$order_id)
     {
         $slots = [];
-        $start = Carbon::parse($startDate)->setTimeFromTimeString($startTime);
-        $end   = Carbon::parse($endTime)->format('g:i A');
+        $start = Carbon::parse($startDate);
+
+        try {
+            $startTimeObj = Carbon::createFromFormat('g:i A', $startTime);
+        } catch (\Exception $e) {
+            $startTimeObj = Carbon::createFromFormat('H:i', $startTime);
+        }
+
+        try {
+            $endTimeObj = Carbon::createFromFormat('g:i A', $endTime);
+        } catch (\Exception $e) {
+            $endTimeObj = Carbon::createFromFormat('H:i', $endTime);
+        }
 
         for ($i = 0; $i < $totalWashes; $i++) {
+
+            $scheduledDate = $start->copy()->addDays($i * 2)->format('Y-m-d');
             $slots[] = [
                 'order_id' => $order_id,
-                'scheduled_date' => $start->copy()->addDays($i * 2)->format('Y-m-d'),
-                'start_time' => $start->format('g:i A'),
-                'end_time' => $end
+                'scheduled_date' => $scheduledDate,
+                'start_time' => $startTimeObj->format('H:i:s'),
+                'end_time' => $endTimeObj->format('H:i:s'),
             ];
         }
 
