@@ -75,6 +75,7 @@ Route::namespace('Api')->group(function () {
         Route::post('/assign-employee', [OrderApiController::class, 'assignEmployee']);
 
 
+        Route::get('/get-admin-dashboard', [OrderApiController::class, 'getAdminDashboard']);
         
 
         // add firebase token after user login

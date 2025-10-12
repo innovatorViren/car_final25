@@ -8,13 +8,64 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use DB;
 use URL;
-use App\Models\{Order,Wash};
+use App\Models\{Order,Wash,Employee,Customer};
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Sentinel;
 
 class OrderApiController extends ApiController
 {
+    public function getAdminDashboard()
+    {
+
+        $fields = [
+                'O.id as order_id',
+                'O.code as code',
+                'O.total_washes as total_washes',
+                'O.status as status',
+                'O.pay_amount as pay_amount',
+                'O.car_model_id as car_model_id',
+                DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
+                DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
+                DB::raw("(CASE WHEN O.end_time IS NOT NULL THEN DATE_FORMAT(O.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
+                DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
+                DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
+                DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
+                DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+                DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                DB::raw("(CASE WHEN LOWER(TRIM(O.status)) = 'pending' THEN 1 ELSE 0 END) as assign"),
+            ];
+
+            $orderData = DB::table('orders as O')
+                    ->select($fields)
+                    ->join('customers as C','C.id','O.customer_id')
+                    ->join('car_models as CM','CM.id','O.car_model_id')
+                    ->join('washes as W','W.order_id','O.id')
+                    ->leftjoin('employees as E', function ($join) {
+                        $join->on('E.id', '=', 'O.employee_id');
+                    })
+                    ->whereNull('O.deleted_at')
+                    ->whereDate('W.scheduled_date', Carbon::today())
+                    ->orderBy('O.id', 'DESC')
+                    ->get();
+
+            $employee = Employee::count();
+            $customer = Customer::count();
+            $order = Order::count();
+
+
+            $this->data =  $orderData;
+            $this->response_json['dashbordCard'] = [
+                'employee'=>$employee,
+                'customer'=>$customer,
+                'order'=>$order,
+                'today_order'=>$orderData->count(),
+            ];
+            $this->response_json['message'] = 'Success';
+            return $this->responseSuccessWithoutObject();
+
+
+    }
     public function addOrder(Request $request)
     {
         try {
