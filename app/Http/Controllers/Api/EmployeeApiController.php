@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use DB;
 use URL;
-use App\Models\{Employee,Role,RoleUser,User};
+use App\Models\{Employee,Role,RoleUser,User,Wash};
 use Illuminate\Pagination\LengthAwarePaginator;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Support\Facades\Auth;
@@ -348,6 +348,7 @@ class EmployeeApiController extends ApiController
                 ];
             }
             DB::table('washes')->where('id', $washId)->update($updateData);
+            DB::table('orders')->where('id', $orderId)->update(['status' => $this->getOrderStatus($orderId)]);
             DB::commit();
         } catch (Exception $e) {
 
@@ -359,4 +360,52 @@ class EmployeeApiController extends ApiController
         $this->response_json['message'] = 'Car Wash Successfully';
         return $this->responseSuccess();
     }
+
+
+    public function getOrderStatus($orderId)
+    {
+        $status_array = Wash::where('order_id', $orderId)->pluck('status')->toArray();
+
+        // Normalize case
+        $status_array = array_map('strtolower', $status_array);
+
+        // Define main order status
+        if (empty($status_array)) {
+            return 'Pending';
+        }
+
+        if (in_array('in_progress', $status_array) ||
+            (in_array('pending', $status_array) && in_array('completed', $status_array)) ||
+            (in_array('pending', $status_array) && in_array('in_progress', $status_array)) ||
+            (in_array('completed', $status_array) && in_array('in_progress', $status_array))) {
+            return 'Partial';
+        }
+
+        if (count(array_unique($status_array)) === 1) {
+            // All items same status
+            switch ($status_array[0]) {
+                case 'completed':
+                    return 'Completed';
+                case 'cancelled':
+                    return 'Cancelled';
+                case 'pending':
+                    return 'Pending';
+                case 'in_progress':
+                    return 'Partial'; // can be treated as partial progress
+            }
+        }
+
+        // Mixed statuses
+        if (in_array('completed', $status_array) && !in_array('pending', $status_array)) {
+            return 'Completed';
+        }
+
+        if (in_array('cancelled', $status_array) && count(array_unique($status_array)) === 1) {
+            return 'Cancelled';
+        }
+
+        // Default
+        return 'Pending';
+    }
+
 }
