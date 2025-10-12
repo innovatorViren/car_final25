@@ -78,9 +78,13 @@ class OrderController extends Controller
                     ->select([
                         'W.id as wash_id',
                         'W.status as status',
+                        'W.before_wash_photo as before_wash_photo',
+                        'W.after_wash_photo as after_wash_photo',
                         DB::raw("(CASE WHEN W.scheduled_date IS NOT NULL THEN DATE_FORMAT(W.scheduled_date, '%d-%m-%Y') ELSE '' END) as scheduled_date"),
                         DB::raw("(CASE WHEN W.start_time IS NOT NULL THEN DATE_FORMAT(W.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
                         DB::raw("(CASE WHEN W.end_time IS NOT NULL THEN DATE_FORMAT(W.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
+                         DB::raw("(CASE WHEN W.wash_start_time IS NOT NULL THEN DATE_FORMAT(W.wash_start_time, ' %I:%i %p') ELSE '' END) as start_wash_time"),
+                        DB::raw("(CASE WHEN W.wash_end_time IS NOT NULL THEN DATE_FORMAT(W.wash_end_time, ' %I:%i %p') ELSE '' END) as end_wash_time"),
                         DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                         DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
                     ])

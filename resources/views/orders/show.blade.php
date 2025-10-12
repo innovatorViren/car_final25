@@ -105,40 +105,75 @@
                                                     </div>
                                                 </div>
                                                 <br><br>
-                                                <table style="border-collapse: collapse; width: 100%;">
-                                                    <tr style="border-bottom: 1px solid ;border-top: 1px solid; padding: 8px;">
-                                                        <th class="p-2 w-20px">{{ __('common.no') }}</th>
-                                                        <th class="p-2 w-100px">{{ __('Date') }}</th>
-                                                        <th class="p-2 w-100px">{{ __('Start Time') }}</th>
-                                                        <th class="p-2 w-100px">{{ __('End Time') }}</th>
-                                                        <th class="p-2 w-200px">Employee</th>
-                                                        <th class="p-2 w-100px">Status</th>
-                                                    </tr>
-                                                    
-                                                    @foreach ($orderItem as $key => $item)
-
-                                                        <tr style="border-bottom: 1px dotted; padding: 8px;">
-                                                            <td class="p-2">{{ $key + 1 }}</td>
-                                                            <td class="p-2">
-                                                                {{ $item->scheduled_date ?? '' }}
-                                                            </td>
-                                                            <td class="p-2">
-                                                                {{ $item->start_time ?? '' }}
-                                                            </td>
-                                                            <td class=" p-2">
-                                                                {{ $item->end_time ?? '' }}
-                                                            </td>
-                                                            <td class=" p-2">
-                                                                {{ $item->emp_first_name ?? '' }}
-                                                                -
-                                                                {{ $item->emp_first_name ?? '' }}
-                                                            </td>
-                                                            <td class=" p-2">
-                                                                {{ $item->status ?? '' }}
-                                                            </td>
+                                                <div style="width: 100%; overflow-x: auto; white-space: nowrap;">
+                                                    <table style="border-collapse: collapse; min-width: 1200px; width: max-content; text-align: center;">
+                                                        <tr style="border-bottom: 1px solid ;border-top: 1px solid; padding: 8px;">
+                                                            <th class="p-2 w-20px">{{ __('common.no') }}</th>
+                                                            <th class="p-2 w-100px">{{ __('Date') }}</th>
+                                                            <th class="p-2 w-200px">Employee</th>
+                                                            <th class="p-2 w-100px">{{ __('Start Time') }}</th>
+                                                            <th class="p-2 w-100px">{{ __('End Time') }}</th>
+                                                            <th class="p-2 w-100px">{{ __('Start Wash Time') }}</th>
+                                                            <th class="p-2 w-100px">{{ __('End Wash Time') }}</th>
+                                                            <th class="p-2 w-100px">{{ __('Before Wash Photo') }}</th>
+                                                            <th class="p-2 w-100px">{{ __('After Wash Photo') }}</th>
+                                                            <th class="p-2 w-100px">Status</th>
                                                         </tr>
-                                                    @endforeach  
-                                                </table>
+                                                        
+                                                        @foreach ($orderItem as $key => $item)
+
+                                                            <tr style="border-bottom: 1px dotted; padding: 8px;">
+                                                                <td class="p-2">{{ $key + 1 }}</td>
+                                                                <td class="p-2">
+                                                                    {{ $item->scheduled_date ?? '' }}
+                                                                </td>
+                                                                <td class=" p-2">
+                                                                    {{ $item->emp_first_name ?? '' }}
+                                                                    -
+                                                                    {{ $item->emp_last_name ?? '' }}
+                                                                </td>
+                                                                <td class="p-2">
+                                                                    {{ $item->start_time ?? '' }}
+                                                                </td>
+                                                                <td class=" p-2">
+                                                                    {{ $item->end_time ?? '' }}
+                                                                </td>
+                                                                <td class=" p-2">
+                                                                    {{ $item->start_wash_time ?? '-' }}
+                                                                </td>
+                                                                <td class=" p-2">
+                                                                    {{ $item->end_wash_time ?? '-' }}
+                                                                </td>
+                                                                <td class=" p-2">
+                                                                     @if(!empty($item->before_wash_photo))
+                                                                        <a href="{{ asset($item->before_wash_photo) }}" target="_blank">
+                                                                            <img src="{{ asset($item->before_wash_photo) }}"
+                                                                                 alt="Before Wash"
+                                                                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
+                                                                        </a>
+                                                                    @else
+                                                                        <span class="text-muted">No Photo</span>
+                                                                    @endif
+                                                                </td>
+
+                                                                <td class=" p-2">
+                                                                     @if(!empty($item->after_wash_photo))
+                                                                        <a href="{{ asset($item->after_wash_photo) }}" target="_blank">
+                                                                            <img src="{{ asset($item->after_wash_photo) }}"
+                                                                                 alt="After Wash"
+                                                                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
+                                                                        </a>
+                                                                    @else
+                                                                        <span class="text-muted">No Photo</span>
+                                                                    @endif
+                                                                </td>
+                                                                <td class=" p-2">
+                                                                    {{ $item->status ? Str::of($item->status)->replace('_', ' ')->title() : '' }}
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach  
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
