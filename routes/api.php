@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController,TimeApiSlotController,OrderApiController};
+use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController,TimeApiSlotController,OrderApiController,UserApiController};
 use App\Http\Controllers\CommonController;
 
 /*
@@ -84,8 +84,16 @@ Route::namespace('Api')->group(function () {
         // Add Notification Remainder To User Profile
         Route::post('add-notification-remainder', [UserApiController::class, 'add_remainder']);
 
+         // Login user profile
+
+        Route::get('get-user-profile/{id}', [UserApiController::class, 'getUserProfile']);
+
         // Login user profile change password
-        Route::post('change-password', [AuthController::class, 'changePassword']);
+        Route::post('change-profile-password', [UserApiController::class, 'changeProfilePassword']);
+
+
+        // Login user profile change password
+        // Route::post('change-password', [AuthController::class, 'changePassword']);
         //Customer Api
         Route::get('/get-customer-home-page', [CustomerApiController::class, 'getCustomerHomePage']);
         Route::get('/edit-customer', [CustomerApiController::class, 'editCustomer']);
