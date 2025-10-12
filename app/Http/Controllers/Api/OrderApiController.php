@@ -70,6 +70,17 @@ class OrderApiController extends ApiController
     {
         try {
 
+            $requestData = Validator::make($this->request->all(), [
+                'customer_id'=>'required',
+                'plan_id'=>'required',
+                'car_model_id'=>'required',
+                'customer_adress_id'=>'required',
+            ]);
+
+            if ($requestData->fails()) {
+                throw new Exception($requestData->messages()->first(), 1);
+            }
+
             $startDate = $request->start_date;
             $startTime = $request->start_time;
             $endTime   = $request->end_time;
@@ -141,7 +152,8 @@ class OrderApiController extends ApiController
         } catch (Exception $e) {
             DB::rollback();
             info($e);
-            return "Exception " . $e->getMessage();
+            $this->response_json['message'] = $e->getMessage();
+            return $this->responseError();
         }
     }
 
@@ -340,11 +352,7 @@ class OrderApiController extends ApiController
 
     public function getOrderDetail($orderId)
     {
-        $user = $this->currentuser();
-        $login_user = Sentinel::findById($user->id);
-        $superadmin = $login_user->hasAccess(['users.superadmin']);
-
-        $assignMainOrder = 0;
+        $path = URL::asset('');
         $order = DB::table('orders as O')
                 ->select(
                     'O.id as order_id',
@@ -352,20 +360,14 @@ class OrderApiController extends ApiController
                     'O.customer_adress_id as customer_adress_id',
                      DB::raw("(CASE WHEN O.vehicle_name IS NOT NULL THEN  O.vehicle_name ELSE '' END) as vehicle_name"),
                     'CM.name as model_name',
+                    'P.name as plan_name',
+                    'O.total_washes as total_washes',
+                    'O.price as total_amount',
+                    'O.pay_amount as pay_amount',
                 )
-                ->leftjoin('car_models as CM','CM.id','O.car_model_id')
+                ->join('car_models as CM','CM.id','O.car_model_id')
+                ->join('plans as P','P.id','O.plan_id')
                 ->where('O.id',$orderId)->first();
-
-        if($superadmin)
-        {
-            if($order->employee_id != null)
-            {
-                $assignMainOrder = 1;
-            }
-        }else{
-            $assignMainOrder = 0;
-        }
-
 
         $fields = [
             'W.id as wash_id',
@@ -373,6 +375,10 @@ class OrderApiController extends ApiController
             DB::raw("(CASE WHEN W.scheduled_date IS NOT NULL THEN DATE_FORMAT(W.scheduled_date, '%d-%m-%Y') ELSE '' END) as scheduled_date"),
             DB::raw("(CASE WHEN W.start_time IS NOT NULL THEN DATE_FORMAT(W.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
             DB::raw("(CASE WHEN W.end_time IS NOT NULL THEN DATE_FORMAT(W.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
+            DB::raw("(CASE WHEN W.wash_start_time IS NOT NULL THEN DATE_FORMAT(W.wash_start_time, ' %I:%i %p') ELSE '' END) as wash_start_time"),
+            DB::raw("(CASE WHEN W.wash_end_time IS NOT NULL THEN DATE_FORMAT(W.wash_end_time, ' %I:%i %p') ELSE '' END) as wash_end_time"),
+            DB::raw("(CASE WHEN W.before_wash_photo !='' THEN  CONCAT('".$path."', W.before_wash_photo) ELSE '' END) as before_wash_photo"),
+            DB::raw("(CASE WHEN W.after_wash_photo !='' THEN  CONCAT('".$path."', W.after_wash_photo) ELSE '' END) as after_wash_photo"),
             DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
             DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
         ];
@@ -383,21 +389,10 @@ class OrderApiController extends ApiController
                     $join->on('E.id', '=', 'W.employee_id');
                 })
                 ->where('W.order_id',$orderId)
+                ->where('W.id',247)
                 ->whereNull('W.deleted_at')
                 ->orderBy('W.id', 'ASC')
-                ->get()
-                ->map(function ($item) use($assignMainOrder){
-                    $assign = 1;
-                    if($assignMainOrder == 1)
-                    {   
-                        if($item->status == 'completed')
-                        {
-                            $assign = 0;
-                        }
-                    }
-                    $item->assign = $assign;
-                    return $item;
-                });
+                ->get();
 
             $orderAddress = DB::table('customer_adresses as CA')
                             ->select('CA.id as customer_address_id',
@@ -423,6 +418,10 @@ class OrderApiController extends ApiController
             $this->data =  $washItem;
             $this->response_json['order_car_model'] = $order->model_name;
             $this->response_json['vehicle_name'] = $order->vehicle_name;
+            $this->response_json['total_wash'] = $order->vehicle_name;
+            $this->response_json['plan_name'] = $order->plan_name;
+            $this->response_json['total_amount'] = $order->total_amount ?? 0;
+            $this->response_json['pay_amount'] = $order->pay_amount ?? 0;
             $this->response_json['order_address'] = $orderAddress;
             $this->response_json['message'] = 'Success';
             return $this->responseSuccessWithoutObject();

@@ -115,6 +115,7 @@
                                                             <th class="p-2 w-100px">{{ __('End Time') }}</th>
                                                             <th class="p-2 w-100px">{{ __('Start Wash Time') }}</th>
                                                             <th class="p-2 w-100px">{{ __('End Wash Time') }}</th>
+                                                            <th class="p-2 w-100px">{{ __('Total Wash Time') }}</th>
                                                             <th class="p-2 w-100px">{{ __('Before Wash Photo') }}</th>
                                                             <th class="p-2 w-100px">{{ __('After Wash Photo') }}</th>
                                                             <th class="p-2 w-100px">Status</th>
@@ -143,6 +144,21 @@
                                                                 </td>
                                                                 <td class=" p-2">
                                                                     {{ $item->end_wash_time ?? '-' }}
+                                                                </td>
+                                                                <td class=" p-2">
+                                                                    @if(!empty($item->start_wash_time) && !empty($item->end_wash_time))
+                                                                        @php
+                                                                            $start = \Carbon\Carbon::parse($item->start_wash_time);
+                                                                            $end = \Carbon\Carbon::parse($item->end_wash_time);
+                                                                            $diffInMinutes = $end->diffInMinutes($start);
+                                                                            $hours = intdiv($diffInMinutes, 60);
+                                                                            $minutes = $diffInMinutes % 60;
+                                                                        @endphp
+
+                                                                        {{ $hours > 0 ? $hours . ' hr ' : '' }}{{ $minutes }} min
+                                                                    @else
+                                                                        -
+                                                                    @endif
                                                                 </td>
                                                                 <td class=" p-2">
                                                                      @if(!empty($item->before_wash_photo))
