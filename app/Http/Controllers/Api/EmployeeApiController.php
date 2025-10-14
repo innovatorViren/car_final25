@@ -191,8 +191,14 @@ class EmployeeApiController extends ApiController
                         DB::raw("(CASE WHEN E.middle_name IS NOT NULL THEN  E.middle_name ELSE '' END) as middle_name"),
                         DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as last_name"),
                         DB::raw("(CASE WHEN E.email IS NOT NULL THEN  E.email ELSE '' END) as email"),
-                        DB::raw("(CASE WHEN E.mobile IS NOT NULL THEN  E.mobile ELSE '' END) as mobile")
+                        DB::raw("(CASE WHEN E.mobile IS NOT NULL THEN  E.mobile ELSE '' END) as mobile"),
+                        DB::raw("(CASE WHEN E.address IS NOT NULL THEN  E.address ELSE '' END) as address"),
+                        DB::raw("(CASE WHEN E.pincode IS NOT NULL THEN  E.pincode ELSE '' END) as pincode"),
+                        DB::raw("(CASE WHEN S.name IS NOT NULL THEN  S.name ELSE '' END) as state_name"),
+                        DB::raw("(CASE WHEN C.name IS NOT NULL THEN  C.name ELSE '' END) as city_name")
                         )
+                    ->join('states as S','S.id','E.state_id')
+                    ->join('cities as C','C.id','E.city')
                     ->where('E.id',$employee_id)
                     ->where('E.is_active','Yes')
                     ->whereNull('E.deleted_at')
