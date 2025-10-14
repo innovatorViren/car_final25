@@ -32,7 +32,7 @@ Route::namespace('Api')->group(function () {
     Route::get('get-banner', [CommonController::class, 'getBanner']);
     Route::get('get-employee', [CommonController::class, 'getEmployeeWithEmpCode']);
 
-    Route::post('/get-app-info-data',[AuthController::class, 'getAppInfoData']);
+    Route::get('/get-app-info-data',[AuthController::class, 'getAppInfoData']);
 
 
     /**
