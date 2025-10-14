@@ -389,7 +389,6 @@ class OrderApiController extends ApiController
                     $join->on('E.id', '=', 'W.employee_id');
                 })
                 ->where('W.order_id',$orderId)
-                ->where('W.id',247)
                 ->whereNull('W.deleted_at')
                 ->orderBy('W.id', 'ASC')
                 ->get();
@@ -418,7 +417,7 @@ class OrderApiController extends ApiController
             $this->data =  $washItem;
             $this->response_json['order_car_model'] = $order->model_name;
             $this->response_json['vehicle_name'] = $order->vehicle_name;
-            $this->response_json['total_wash'] = $order->vehicle_name;
+            $this->response_json['total_wash'] = $order->total_washes;
             $this->response_json['plan_name'] = $order->plan_name;
             $this->response_json['total_amount'] = $order->total_amount ?? 0;
             $this->response_json['pay_amount'] = $order->pay_amount ?? 0;
