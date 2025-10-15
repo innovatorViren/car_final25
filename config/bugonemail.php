@@ -1,7 +1,7 @@
 <?php
 return [
 	'project_name' => env("APP_NAME", "Laravel") ." Bug",
-   	'notify_emails' => ['support@mnstechnologies.com'],
+   	'notify_emails' => [],
    	'email_template' => 'errors.notifyException',
    	'notify_environment' => ['production','localhost', 'dev', 'live'],
    	'prevent_exception' => [

@@ -13,6 +13,9 @@
         <div class="d-flex align-items-center flex-wrap">
 
             <!-- Filter -->
+            @if (isset($column_visibility) && $column_visibility == true)
+                <div id="custom-column-visibility-container" class=" mr-5"></div>
+            @endif
             @if (isset($excel_id))
                 <a href="{{ $excel_link ?? '#' }}"
                     class="btn btn-bg-white btn-icon-success btn-hover-success btn-icon mr-3 my-2 my-lg-0">

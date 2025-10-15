@@ -15,5 +15,15 @@ class Employee extends MyModel
     protected $revisionCleanup = true;
     protected $historyLimit = 500;
     protected $guarded = [];
+
+    public function stateData()
+    {
+        return $this->belongsTo(State::class, 'state_id', 'id');
+    }
+
+    public function cityData()
+    {
+        return $this->belongsTo(City::class, 'city', 'id');
+    }
     
 }

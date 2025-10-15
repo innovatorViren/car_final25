@@ -121,6 +121,7 @@ class EmployeeApiController extends ApiController
                     'last_name' => $employee['last_name'],
                     'middle_name' => $employee['middle_name'],
                     'email' => $employee['email'],
+                    'password' => Hash::make($userPassword),
                 ];
                 User::where('id', $userId)->update($userDataUpdate);
 

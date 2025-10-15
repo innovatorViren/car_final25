@@ -13,7 +13,7 @@
 
 		<!--begin::Nav-->
 		<div class="nav nav-dark order-1 order-md-2">
-			Developed by &nbsp;<a target="_blank" href="//www.mnstechnologies.com/" rel="nofollow"><strong>VedaCore Technologies</strong></a>
+			Developed by &nbsp;<a target="_blank" href="" rel="nofollow"><strong>VedaCore Technologies</strong></a>
 		</div>
 		<!--end::Nav-->
 	</div>

@@ -14,12 +14,6 @@ class ContactController extends Controller
     }
     public function index(Request $request){
         $data=$request->all();
-        /*Mail::send(['text'=>'mail'], $data, function($message) {
-            $message->to('heena@mnstechnologies.com', 'Pacmor Flexible Ltd.')->subject
-               ('Contact Message');
-            //$message->from('xyz@gmail.com','XYZ');
-         });*/
-
         return view('contactus.index');
     }
     public function sendMailContact(Request $request){

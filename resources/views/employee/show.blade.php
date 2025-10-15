@@ -112,7 +112,7 @@
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold mt-n2" style=" color : #000000;">
-                                                        {{ $employee->email }}</div>
+                                                        {{ $employee->email ?? '-' }}</div>
                                                 </h6>
                                             </th>
                                         </tr>
@@ -127,9 +127,7 @@
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold mt-n2" style=" color : #000000;">
-                                                        {{ $employee->mobile }} @if ($employee->mobile1 != '')
-                                                            ,<br>{{ $employee->mobile1 }}
-                                                        @endif
+                                                        {{ $employee->mobile  ?? '-'}}
                                                     </div>
                                                 </h6>
                                             </th>
@@ -192,14 +190,6 @@
                                             </th>
                                         </tr>
                                         <tr>
-                                            <th width="30%">
-                                                <div class="font-weight-bold" style="color:#9d9595;">
-                                                    {{ trans('employee.full_name') }}</div>
-                                            </th>
-                                            <th width="20%">
-                                                <div class="font-weight-bold " style="color:#9d9595;">
-                                                    {{ trans('employee.gender') }}</div>
-                                            </th>
                                             <th width="25%">
                                                 <div class="font-weight-bold" style=" color : #9d9595;">
                                                     {{ trans('employee.date_of_birth') }}</div>
@@ -207,47 +197,6 @@
                                             <th width="25%">
                                                 <div class="font-weight-bold " style=" color : #9d9595;">
                                                     {{ trans('employee.age_years') }}</div>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold" style="color:#000000;">
-                                                        {{ $employee->person_name }}</div>
-                                                </h6>
-                                            </th>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->gender }}</div>
-                                                </h6>
-                                            </th>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ date('d-m-Y', strtotime($employee->birth_date)) }}</div>
-                                                </h6>
-                                            </th>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold" style=" color : #000000;">
-                                                        {{ $employee->age }} Year</div>
-                                                </h6>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th>
-                                                &nbsp;
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th width="30%">
-                                                <div class="font-weight-bold" style=" color : #9d9595;">
-                                                    {{ trans('employee.marital_status') }}</div>
-                                            </th>
-                                            <th width="20%">
-                                                <div class="font-weight-bold" style=" color : #9d9595;">
-                                                    {{ trans('employee.hobbies') }}</div>
                                             </th>
                                             <th width="25%">
                                                 <div class="font-weight-bold " style=" color : #9d9595;">
@@ -258,24 +207,18 @@
                                                     {{ trans('employee.reference_no') }}</div>
                                             </th>
                                         </tr>
-
                                         <tr>
+                                            
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ ucfirst(trans($employee->marital_status)) }}</div>
+                                                        {{ date('d-m-Y', strtotime($employee->birth_date)) }}</div>
                                                 </h6>
                                             </th>
-                                            <th style="word-break: break-all;">
-                                                @php
-                                                    $hobbies =
-                                                        $employee->hobbies != ''
-                                                            ? explode(',', $employee->hobbies)
-                                                            : [];
-                                                @endphp
+                                            <th>
                                                 <h6>
-                                                    <div class="font-weight-bold " style=" color : #000000;">
-                                                        {!! implode('<br>', $hobbies) !!}</div>
+                                                    <div class="font-weight-bold" style=" color : #000000;">
+                                                        {{ $employee->age }} Year</div>
                                                 </h6>
                                             </th>
                                             <th>
@@ -310,37 +253,25 @@
                                             </th>
                                         </tr>
                                         <tr>
-                                            <th width="50%">
+                                            <th>
                                                 <div class="font-weight-bold" style=" color : #9d9595;">
-                                                    {{ trans('employee.present_address') }}</div>
-                                            </th>
-                                            <th width="50%">
-                                                <div class="font-weight-bold" style=" color : #9d9595;">
-                                                    {{ trans('employee.permanent_address') }}</div>
+                                                    {{ trans('employee.address') }}</div>
                                             </th>
 
                                         </tr>
                                         @php
-                                            $presentState = $employee->employeeAddress->presentState->name ?? '';
-                                            $permanentState = $employee->employeeAddress->permanentState->name ?? '';
-                                            $presentCity = $employee->employeeAddress->presentCity->name ?? '';
-                                            $permanentCity = $employee->employeeAddress->permanentCity->name ?? '';
+                                            $stateName = $employee->stateData->name ?? '';
+                                            $cityName = $employee->cityData->name ?? '';
                                         @endphp
                                         <tr>
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->present_address }}<br>{{ $presentCity }}-{{ $employee->present_pincode }},&nbsp;{{ $presentState ?? '' }}
+                                                        {{ $employee->address ?? '' }},&nbsp;&nbsp;{{ $cityName }}-{{ $employee->pincode }},&nbsp;{{ $stateName}}
                                                     </div>
                                                 </h6>
                                             </th>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->permanent_address }}<br>{{ $permanentCity }}-{{ $employee->permanent_pincode }},&nbsp;{{ $permanentState ?? '' }}
-                                                    </div>
-                                                </h6>
-                                            </th>
+                                           
                                         </tr>
                                         <tr>
                                             <th>
@@ -360,7 +291,6 @@
                                                 &nbsp;
                                             </th>
                                         </tr>
-
                                         <tr>
                                             <th>
                                                 <div class="font-weight-bold" style=" color : #9d9595;">
@@ -380,19 +310,19 @@
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->bank_name }}</div>
+                                                        {{ $employee->bank_name ?? '-'}}</div>
                                                 </h6>
                                             </th>
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->branch_name }}</div>
+                                                        {{ $employee->branch_name ?? '-'}}</div>
                                                 </h6>
                                             </th>
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold" style=" color : #000000;">
-                                                        {{ $employee->ifsc_code }}</div>
+                                                        {{ $employee->ifsc_code ?? '-'}}</div>
                                                 </h6>
                                             </th>
                                         </tr>
@@ -411,79 +341,23 @@
                                                 <div class="font-weight-bold" style=" color : #9d9595;">
                                                     {{ trans('employee.account_no') }}</div>
                                             </th>
-
                                         </tr>
-
                                         <tr>
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->beneficiary_name }}</div>
+                                                        {{ $employee->beneficiary_name ?? '-'}}</div>
                                                 </h6>
                                             </th>
                                             <th>
                                                 <h6>
                                                     <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->account_no }}</div>
+                                                        {{ $employee->account_no ?? '-'}}</div>
                                                 </h6>
                                             </th>
-
                                         </tr>
                                     </table>
                                     <hr>
-                                    <table style="width:100%">
-                                        <tr>
-                                            <th>
-                                                <h3>{{ __('employee.medical_information') }}</h3>
-                                            </th><br>
-                                        </tr>
-
-                                        <tr>
-                                            <th>
-                                                &nbsp;
-                                            </th>
-                                        </tr>
-
-                                        <tr>
-                                            <th>
-                                                <div class="font-weight-bold" style="color:#9d9595;">
-                                                    {{ trans('employee.strengths') }}</div>
-                                            </th>
-                                            <th>
-                                                <div class="font-weight-bold " style="color:#9d9595;">
-                                                    {{ trans('employee.weakness') }}</div>
-                                            </th>
-                                            <th>
-                                                <div class="font-weight-bold " style="color:#9d9595;">
-                                                    {{ trans('employee.blood_group') }}</div>
-                                            </th>
-
-                                        </tr>
-                                        <tr>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold" style="color:#000000;">
-                                                        {{ $employee->strengths }}</div>
-                                                </h6>
-                                            </th>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->weakness }}</div>
-                                                </h6>
-                                            </th>
-                                            <th>
-                                                <h6>
-                                                    <div class="font-weight-bold " style=" color : #000000;">
-                                                        {{ $employee->blood_group }}</div>
-                                                </h6>
-                                            </th>
-
-
-                                        </tr>
-
-
-                                    </table>
                                 </div>
                                 <div class="tab-pane fade" id="document" role="tabpanel"
                                     aria-labelledby="kt_tab_pane_4_2">

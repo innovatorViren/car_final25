@@ -10,6 +10,7 @@
     'text' => __('common.add'),
     'filter_modal_id' => '#employeeFilter',
     'permission' => $current_user->hasAnyAccess(['employee.add', 'users.superadmin']),
+    'column_visibility' => true,
 ])
 @endcomponent
 
@@ -21,7 +22,7 @@
                 <table class="table table-separate table-head-custom table-checkable" id="dataTableBuilder">
                     <thead>
                         <tr>
-                            <th colspan="10">
+                            <th colspan="7">
                                 <div class="jsFilterData"></div>
                             </th>
                         </tr>
@@ -32,16 +33,24 @@
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_employee_code', Request::get('filter_employee_code', null), ['class' => 'form-control']) !!}</div>
                             </th>
                             <th>
+                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_person_name', Request::get('filter_person_name', null), ['class' => 'form-control']) !!}</div>
+                            </th>
+                            <th></th>
+                            <th>
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_mobile1', Request::get('filter_mobile1', null), ['class' => 'form-control']) !!}</div>
                             </th>
 
+                            <th></th>
                             <th></th>
                         </tr>
                         <tr>
                             {{--  <th>{{__('common.action')}}</th> --}}
                             <th class="d-none noVis"></th>
                             <th class="noVis">{{ __('employee.emp_code') }}</th>
+                            <th width="20%">{{ __('employee.person_name') }}</th>
+                            <th width="20%">{{ __('employee.email') }}</th>
                             <th>{{ __('employee.mobile') }}</th>
+                            <th width="20%">{{ __('Aadhar No.') }}</th>
                             <th>{{ __('common.status') }}</th>
                         </tr>
                     </thead>
@@ -66,7 +75,10 @@
 @section('scripts')
 <script type="text/javascript">
     var employee_code = "{{ __('employee.emp_code') }}";
+    var person_name = "{{ __('employee.person_name') }}";
+    var email = "{{ __('employee.email') }}";
     var mobile1 = "{{ __('employee.mobile') }}";
+    var aashar_no = "{{ __('Aadhar No') }}";
     var action = "{{ __('common.action') }}";
     var is_active = "{{ __('common.status') }}";
     var type = "{{ $type }}";
@@ -89,9 +101,10 @@
             "processing": true,
             "ajax": {
                 data: function(d) {
-                    d.lang = jQuery(".datatable-form-filter select[name='filter_lang']").val();
                     d.employee_code = jQuery(
                         ".datatable-form-filter input[name='filter_employee_code']").val();
+                    d.person_name = jQuery(".datatable-form-filter input[name='filter_person_name']")
+                        .val();
                     d.mobile1 = jQuery(".datatable-form-filter input[name='filter_mobile1']").val();
                     d.statusFilter = jQuery("select[name='statusFilter']").val();
 
@@ -99,7 +112,7 @@
                 }
             },
             "columns": [
-                // {
+                {{-- // {
                 //     "name": "action",
                 //     "data": "action",
                 //     "title": action,
@@ -107,7 +120,7 @@
                 //     "orderable": false,
                 //     "searchable": false,
                 //     // "width": "80px"
-                // },
+                // }, --}}
                 {
                     "name": "id",
                     "data": "id",
@@ -123,12 +136,33 @@
                     "searchable": false
                 },
                 {
+                    "name": "person_name",
+                    "data": "first_name",
+                    "title": person_name,
+                    "orderable": true,
+                    "searchable": false
+                },
+                {
+                    "name": "email",
+                    "data": "email",
+                    "title": email,
+                    "orderable": true,
+                    "searchable": false
+                },
+                {
                     "name": "mobile1",
                     "data": "mobile1",
                     "title": mobile1,
                     "orderable": true,
                     "searchable": false
                 }, 
+                {
+                    "name": "aashar_no",
+                    "data": "aadhar_card_no",
+                    "title": aashar_no,
+                    "orderable": true,
+                    "searchable": false
+                },
                 {
                     "name": "is_active",
                     "data": "is_active",
@@ -147,10 +181,10 @@
             },
             "stateSave": true,
             stateSaveParams: function(settings, data) {
-               //
+               data.statusFilter = $('#statusFilter').val();
             },
             stateLoadParams: function(settings, data) {
-                //
+                $('#statusFilter').val(data.statusFilter);
             },
             "initComplete": function(settings, json) {
                 $('.jsBtnSearch').click();
@@ -164,7 +198,17 @@
                 [0, "desc"]
             ],
             "pageLength": page_show_entriess,
+            dom: `Bfrt<'row'<'col-sm-6 col-md-6'i><'col-sm-6 col-md-6 dataTables_pager'lp>>`, //visibility
+            buttons: [ 
+                {
+                    extend: 'colvis',
+                    columns: ':not(.noVis)',
+                    text: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><path d="M1.5,5 L4.5,5 C5.32842712,5 6,5.67157288 6,6.5 L6,17.5 C6,18.3284271 5.32842712,19 4.5,19 L1.5,19 C0.671572875,19 1.01453063e-16,18.3284271 0,17.5 L0,6.5 C-1.01453063e-16,5.67157288 0.671572875,5 1.5,5 Z M18.5,5 L22.5,5 C23.3284271,5 24,5.67157288 24,6.5 L24,17.5 C24,18.3284271 23.3284271,19 22.5,19 L18.5,19 C17.6715729,19 17,18.3284271 17,17.5 L17,6.5 C17,5.67157288 17.6715729,5 18.5,5 Z" fill="#000000"/><rect fill="#000000" opacity="0.3" x="8" y="5" width="7" height="14" rx="1.5"/></g></svg>',
+                }
+            ],
         });
+        const table = window.LaravelDataTables["dataTableBuilder"];
+        table.buttons().container().appendTo('#custom-column-visibility-container');
     })(window, jQuery);
 
     $('#dataTableBuilder').on('column-visibility.dt', function(e, settings, column, state) {
@@ -188,6 +232,10 @@
         jQuery(".datatable-form-filter select").val("");
         window.LaravelDataTables["dataTableBuilder"].state.clear();
         window.location.reload();
+    });
+
+    $('.statusFilter').select2({
+        allowClear: true
     });
 
 

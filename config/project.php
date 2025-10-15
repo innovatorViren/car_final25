@@ -55,7 +55,7 @@ return [
     'otp_valid_hours' => 2,
     /* Recharge Commission Percentage End */
     'pagination_page' => ['page' => 10],
-    'bccmail' => 'dalsukh@mnstechnologies.com',
+    'bccmail' => '',
     'expense_under_group' => [
         "Bank Account"  => "Bank Account",
         "Bank OCC A/c"  => "Bank OCC A/c",

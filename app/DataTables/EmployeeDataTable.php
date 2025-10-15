@@ -81,6 +81,7 @@ class EmployeeDataTable extends DataTable
                 'employees.first_name as first_name', 
                 'employees.middle_name as middle_name',
                 'employees.last_name as last_name',
+                'employees.email as email',
                 'employees.employee_code as employee_code',
                 'employees.mobile as mobile1',
                 'employees.address as address',
