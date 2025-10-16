@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Setting,IpWhitelist,YearWiseScope};
+use App\Models\{Setting};
 use App\Http\Requests\SettingRequest;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -95,10 +95,6 @@ class SettingController extends Controller
 
                 if ($field == 'company_favicon') {
                     $this->uploadFaviconImage($request);
-                }
-
-                if ($field == 'company_brochure') {
-                    $this->uploadPDF($request);
                 }
 
             }
@@ -232,16 +228,6 @@ class SettingController extends Controller
         $path = Str::finish($path, '/');
         if (File::isFile("{$path}index.html") === false) {
             File::put("{$path}index.html", '<html><head><title>403 Forbidden</title></head><body><p>Directory access is forbidden.</p></body></html>');
-        }
-    }
-    public function uploadPDF($request)
-    {
-        if ($request->hasFile('company_brochure')) {
-            $stored_path = 'uploads/Setting/Brochure/';
-            $logo_name = $this->getUniqueFilename($request->file('company_brochure'),  $this->getImagePath('/'.$stored_path));
-            $request->file('company_brochure')->move($this->getImagePath('/'.$stored_path), $logo_name);
-            $settings['value'] = $stored_path . $logo_name;
-            Setting::where('name', 'company_brochure')->update($settings);
         }
     }
 }

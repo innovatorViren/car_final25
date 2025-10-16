@@ -29,35 +29,10 @@ class SettingRequest extends FormRequest
                 'company_address' => 'required',
                 'company_email' => 'required',
                 'company_mobile' => 'required',
-                'gst_no' => 'required',
-                'pan_no' => 'required',
                 'country_id' => 'required',
                 'state_id' => 'required',
                 'city_id' => 'required',
                 'pincode' => 'required'
-            ];
-        } elseif ($this->get('group') == "barcode") {
-            $validation = [
-                'inward_width' => 'required|numeric',
-                'inward_height' => 'required|numeric',
-                'production_width' => 'required|numeric',
-                'production_height' => 'required|numeric',
-
-            ];
-        } elseif ($this->get('group') == "smtp_config") {
-            $validation = [
-                'driver' => 'required',
-                'display_name' => 'required',
-                'host' => 'required',
-                'user_name' => 'required',
-                'encryption' => 'required',
-                'port' => 'required',
-                'password' => 'required',
-            ];
-        } elseif ($this->get('group') == "tax") {
-            $validation = [
-                'packaging_freight' => 'required',
-                'insurance' => 'required',
             ];
         }else{
             $validation = [];

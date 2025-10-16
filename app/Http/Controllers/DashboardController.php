@@ -28,13 +28,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $customer = DB::table('customers')->where('is_active','Yes')->count();
-        $employee = DB::table('employees')->where('is_active','Yes')->count();
-        $carModel = DB::table('car_models')->where('is_active','Yes')->count();
+        $customer = DB::table('customers')->where('is_active','Yes')->whereNull('deleted_at')->count();
+        $employee = DB::table('employees')->where('is_active','Yes')->whereNull('deleted_at')->count();
+        $carModel = DB::table('car_models')->where('is_active','Yes')->whereNull('deleted_at')->count();
+        $washes = DB::table('washes')->whereDate('scheduled_date', Carbon::today())->whereNull('deleted_at')->count();
         
         $this->data['totalCustomers'] = $customer;
         $this->data['totalEmployee'] = $employee;
-        $this->data['todayOrder'] = 0;
+        $this->data['todayOrder'] = $washes;
         $this->data['totalCarModel'] = $carModel;
 
         return view('dashboard.dashboard', $this->data);

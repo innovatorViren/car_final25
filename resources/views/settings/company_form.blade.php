@@ -71,15 +71,6 @@
         {{ Form::label('pincode', __('settings.pincode')) }}<i class="text-danger">*</i>
         {{ Form::text('pincode', $settings['pincode'] ?? '', ['class' => 'form-control', 'required']) }}
     </div>
-
-    <div class="form-group col-lg-4">
-        {{ Form::label('pan_no', __('settings.pan_no')) }}<i class="text-danger">*</i>
-        {{ Form::text('pan_no', $settings['pan_no'] ?? '', ['class' => 'form-control', 'required', 'pattern' => '(^([a-zA-Z]{5})([0-9]{4})([a-zA-Z]{1})$)']) }}
-    </div>
-    <div class="form-group col-lg-4">
-        {{ Form::label('gst_no', __('settings.gst_no')) }}<i class="text-danger">*</i>
-        {{ Form::text('gst_no', $settings['gst_no'] ?? '', ['class' => 'form-control', 'required', 'pattern' => '(^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$)']) }}
-    </div>
 </div>
 <div class="row">
     <div class="col-lg-4">
@@ -114,22 +105,6 @@
                 src="{{ (isset($settings['company_favicon']) && !empty($settings['company_favicon'])) ? asset($settings['company_favicon']) : asset('default.jpg') }}"
                 class="h-75 align-self-end" id="flaticon_preview"
                 name="flaticon_preview" style="height: 30%;width: 30%;">
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="form-group">
-            {!! Form::label('company_brochure', __('settings.company_brochure')) !!}
-            {!! Form::file('company_brochure', ['id' => 'company_brochure', 'accept' => 'application/pdf',
-            'filesize' => '10485760',
-            'data-msg-accept'=>'Please Upload Valid PDF',
-            'data-msg-maxsize' => 'File size must be less than 10 MB',]) !!}
-        </div>
-        <br>
-        <div class="form-group">
-            @if((isset($settings['company_brochure']) && !empty($settings['company_brochure'])) )
-                <a href="{{ asset($settings['company_brochure']) }}", target="_blank">{{ __('settings.view_brochure') }}</a>
-            @endif
         </div>
     </div>
 </div>

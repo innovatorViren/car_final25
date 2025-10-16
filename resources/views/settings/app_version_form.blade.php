@@ -11,13 +11,6 @@
                 {{Form::text('android_version', $settings['android_version'] ?? '',['class' => 'form-control','required'])}}
             </div>
         </div>
-
-        <div class="form-group col-lg-4">
-            {{Form::label('ios_version', 'IOS Version')}}<i class="text-danger">*</i>
-            <div class="input-group">
-                {{Form::text('ios_version', $settings['ios_version'] ?? '',['class' => 'form-control','required'])}}
-            </div>
-        </div>
     </div>
 
     <div class="row">
