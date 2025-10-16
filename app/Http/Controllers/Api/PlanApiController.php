@@ -16,11 +16,21 @@ class PlanApiController extends ApiController
     {
         try {   
 
-           
-            $requestData = Validator::make($this->request->all(), [
-                'car_model_id' => 'required',
-                'frequency_type' => 'required',
-            ]);
+            if($request->type == 'bike'){
+                $requestData = Validator::make($this->request->all(), [
+                    'car_model_id' => 'required',
+                    'frequency_type' => 'required',
+                ]);
+            }elseif($request->type == 'car'){
+                $requestData = Validator::make($this->request->all(), [
+                    'frequency_type' => 'required',
+                ]);
+            }else{
+                $requestData = Validator::make($this->request->all(), [
+                    'car_model_id' => 'required',
+                    'frequency_type' => 'required',
+                ]);
+            }
 
             if ($requestData->fails()) {
 
@@ -29,7 +39,14 @@ class PlanApiController extends ApiController
                 return $this->responseError();
             }
 
-            $carModelId = $request->get('car_model_id',false);
+            if($request->type == 'bike'){
+                $carModelId = DB::table('car_models')->where('name', 'LIKE', '%bike%')->first()->id;
+            }elseif($request->type == 'car'){
+                $carModelId = $request->get('car_model_id',false);
+            }else{
+                $carModelId = $request->get('car_model_id',false);
+            }
+
             $frequencyType = $request->get('frequency_type',false);
 
             $carModel = DB::table('car_models')->where('id',$carModelId)->first();
