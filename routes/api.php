@@ -97,6 +97,9 @@ Route::namespace('Api')->group(function () {
         //Customer Api
         Route::get('/get-customer-home-page', [CustomerApiController::class, 'getCustomerHomePage']);
         Route::get('/edit-customer', [CustomerApiController::class, 'editCustomer']);
+        Route::post('/contact-us', [CustomerApiController::class, 'contactUs']);
+        Route::get('/get-contact-us-list', [CustomerApiController::class, 'getContactUsList']);
+        Route::get('/get-contact-us-detail/{id}', [CustomerApiController::class, 'getContactUsDetail']);
     });
 
 

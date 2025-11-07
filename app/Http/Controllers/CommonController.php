@@ -254,10 +254,26 @@ class CommonController extends Controller
         $path = URL::asset('');
         $request = request();
         $platform = $request->header('platform');
+        $type = $request->type;
         if ($platform == 1) {
-            $carBrand = CarBrand::select('id AS value', 'name AS text',
-                        DB::raw("(CASE WHEN brand_logo !='' THEN  CONCAT('".$path."', brand_logo) ELSE '' END) as brand_logo"))
-                        ->where('is_active', 'Yes')->orderBy('name', 'asc')->get();
+            $carbrandId = DB::table('car_models')->where('name', 'LIKE', '%bike%')->first()->car_brand_id ?? null;
+            if($type == 'car'){
+                $carBrand = CarBrand::select('id AS value', 'name AS text',
+                            DB::raw("(CASE WHEN brand_logo !='' THEN  CONCAT('".$path."', brand_logo) ELSE '' END) as brand_logo"))
+                            ->where('is_active', 'Yes')
+                            ->where('id', '!=', $carbrandId)
+                            ->orderBy('name', 'asc')
+                            ->get();
+            }else{
+
+                $carBrand = CarBrand::select('id AS value', 'name AS text',
+                            DB::raw("(CASE WHEN brand_logo !='' THEN  CONCAT('".$path."', brand_logo) ELSE '' END) as brand_logo"))
+                            ->where('is_active', 'Yes')
+                            ->where('id', '=', $carbrandId)
+                            ->orderBy('name', 'asc')
+                            ->get();
+
+            }
 
             $toReturn = $carBrand;
             $this->data = $toReturn;

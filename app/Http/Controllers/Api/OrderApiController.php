@@ -33,6 +33,7 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                 DB::raw("(CASE WHEN LOWER(TRIM(O.status)) = 'pending' THEN 1 ELSE 0 END) as assign"),
             ];
 
@@ -250,6 +251,7 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                 DB::raw("(CASE WHEN LOWER(TRIM(O.status)) = 'pending' THEN 1 ELSE 0 END) as assign"),
             ];
 
@@ -280,6 +282,7 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                 DB::raw(" 0  as assign"),
             ];
 
@@ -312,6 +315,7 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
+                DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                 DB::raw(" 0  as assign"),
             ];
 
@@ -360,6 +364,7 @@ class OrderApiController extends ApiController
                     'O.customer_adress_id as customer_adress_id',
                      DB::raw("(CASE WHEN O.vehicle_name IS NOT NULL THEN  O.vehicle_name ELSE '' END) as vehicle_name"),
                     'CM.name as model_name',
+                    DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                     'P.name as plan_name',
                     'O.total_washes as total_washes',
                     'O.price as total_amount',
@@ -421,6 +426,7 @@ class OrderApiController extends ApiController
             $this->response_json['plan_name'] = $order->plan_name;
             $this->response_json['total_amount'] = $order->total_amount ?? 0;
             $this->response_json['pay_amount'] = $order->pay_amount ?? 0;
+            $this->response_json['order_type_bike'] = $order->order_type_bike ?? 0;
             $this->response_json['order_address'] = $orderAddress;
             $this->response_json['message'] = 'Success';
             return $this->responseSuccessWithoutObject();

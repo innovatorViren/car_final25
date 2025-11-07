@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\{Customer,Cart,Product};
+use App\Models\{Customer,Cart,Product,ContactUs};
 use Exception;
 use DB;
 use URL;
@@ -504,4 +504,79 @@ class CustomerApiController extends ApiController
         $this->response_json['message'] = 'Car Deleted';
         return $this->responseSuccessWithoutDataObject();
     }
+
+    public function contactUs(Request $request)
+    {
+        try{
+            $requestData = Validator::make($this->request->all(), [
+                'customer_id' => 'required',
+                'mobile' => 'required',
+                'email' => 'required',
+            ]);
+
+            if ($requestData->fails()) {
+                $this->response_json['message'] = $requestData->messages()->first();
+                return $this->responseError();
+            }
+
+
+            $data = [
+                'customer_id' => $request->customer_id ?? null,
+                'mobile' => $request->mobile ?? null,
+                'email' => $request->email ?? null,
+                'description' => $request->description ?? null,
+            ];
+            
+            $employee = ContactUs::create($data);
+
+            $this->response_json['message'] = 'Successfully';
+            return $this->responseSuccessWithoutDataObject();
+        } catch (Exception $e) {
+            $this->response_json['message'] = $e->getMessage();
+            return $this->responseError();
+        }
+
+    }
+
+    public function getContactUsList(Request $request)
+    {
+
+        $data = DB::table('contact_us as C')
+                    ->select(
+                        'C.id',
+                        DB::raw("(CASE WHEN CC.first_name IS NOT NULL THEN  CC.first_name ELSE '' END) as cus_first_name"),
+                        DB::raw("(CASE WHEN CC.last_name IS NOT NULL THEN  CC.last_name ELSE '' END) as cus_last_name"),
+                        DB::raw("(CASE WHEN C.email IS NOT NULL THEN  C.email ELSE '' END) as email"),
+                        DB::raw("(CASE WHEN C.mobile IS NOT NULL THEN  C.mobile ELSE '' END) as mobile"),
+                        DB::raw("(CASE WHEN C.description IS NOT NULL THEN  C.description ELSE '' END) as description"),
+                        )
+                    ->leftjoin('customers as CC','CC.id','C.customer_id')
+                    ->orderBy('C.id','desc')
+                    ->get();
+        $this->data = $data;
+
+        return $this->responseSuccessWithoutObject();
+    }
+
+    public function getContactUsDetail($id)
+    {
+        $data = DB::table('contact_us as C')
+                    ->select(
+                        'C.id',
+                        DB::raw("(CASE WHEN CC.first_name IS NOT NULL THEN  CC.first_name ELSE '' END) as cus_first_name"),
+                        DB::raw("(CASE WHEN CC.last_name IS NOT NULL THEN  CC.last_name ELSE '' END) as cus_last_name"),
+                        DB::raw("(CASE WHEN C.email IS NOT NULL THEN  C.email ELSE '' END) as email"),
+                        DB::raw("(CASE WHEN C.mobile IS NOT NULL THEN  C.mobile ELSE '' END) as mobile"),
+                        DB::raw("(CASE WHEN C.description IS NOT NULL THEN  C.description ELSE '' END) as description"),
+                        )
+                    ->leftjoin('customers as CC','CC.id','C.customer_id')
+                    ->where('C.id',$id)
+                    ->first();
+
+            
+        $this->data = $data;
+
+        return $this->responseSuccessWithoutObject();
+    }
+
 }
