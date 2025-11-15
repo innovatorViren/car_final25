@@ -6,6 +6,8 @@
 
 @component('partials._subheader.subheader-v6', [
     'page_title' => $title,
+    'action' => route('orders.create'),
+    'text' => __('common.add'),
     'permission' => $current_user->hasAnyAccess(['orders.list','users.superadmin']),
     'filter_modal_id' => '#shopOrderFilter',
     'column_visibility' => true,

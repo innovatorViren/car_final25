@@ -170,4 +170,5 @@ Route::get('contact-us', [ContactController::class, 'index'])->name('contact-us'
 
 //order Module
 Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
+Route::post('/orders-status/{id}', [OrderController::class, 'orderStatus'])->name('orderStatus');
 

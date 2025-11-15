@@ -38,9 +38,17 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $this->data['customers'] = $this->common->getCustomer();
+
+        $lastOrder = Order::latest()->first();
+        $lastOrderNumber = $lastOrder ? (int) str_replace('O-', '', $lastOrder->id) : 0;
+        $newOrderNumber = $lastOrderNumber + 1;
+        $orderSeries = 'O-' . sprintf('%03d', $newOrderNumber);
+        $this->data['generateCode'] =  $orderSeries ?? '';
+
+        return view('orders.create', $this->data);
     }
 
     /**
@@ -58,6 +66,7 @@ class OrderController extends Controller
     {
 
         $fields = [
+                'O.id as id',
                 'O.code as code',
                 DB::raw("(CASE WHEN O.date IS NOT NULL THEN DATE_FORMAT(O.date, '%d-%m-%Y') ELSE '' END) as date"),
                 'O.total_washes as total_washes',
@@ -118,5 +127,62 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function orderStatus(Request $request, $id)
+    {
+        dd(12);
+        $status = $request->status;
+
+        $orderItem = OrderItem::where('order_id', $id)->get();
+
+        $notification = false;
+        foreach ($orderItem as $item) {
+        // $item->status == 'Cancel'
+            if ($item->status == 'Pending') {
+                $notification = true;
+                OrderItem::where('id', $item->id)->update(['cancel_qty'=>$item->qty,'status' => 'Cancel','status_update_date' => carbon::now()->format('Y-m-d'),]);
+            } else if ($item->status == 'Confirmed') {
+                OrderItem::where('id', $item->id)->update(['cancel_qty'=>$item->confirm_qty,'status' => 'Cancel','status_update_date' => carbon::now()->format('Y-m-d'),]);
+            
+            } else if ($item->status == 'Partial') {
+                $outQty = OutwardChallanItem::where('item_order_id', $item->order_id)->where('product_id', $item->product_id)->sum('qty');
+
+                if($item->confirm_qty == null){
+                    $cancelQty = $item->qty - $outQty;
+                }else{
+                    $cancelQty = $item->confirm_qty - $outQty;
+                }
+                OrderItem::where('id', $item->id)->update(['Cancel_qty' => $cancelQty, 'status' => 'Delivered','status_update_date' => carbon::now()->format('Y-m-d'),]);
+            }
+        }
+        // Order::where('id', $id)->update(['status' => $status]);
+        // OrderItem::where('order_id', $id)->update(['status' => $status]);
+        DB::table('orders')->where('id', $id)->update(['status' => getOrderStatus($id),'cancel_reason_id'=>$cancelReasonId,'cancel_reason'=>$reasonCancel,'status_update_date' => carbon::now()->format('Y-m-d')]);
+        if($notification)
+        {
+            if($cancelReasonId){
+                    $cancelReason = DB::table('cancel_reasons')->where('id',$cancelReasonId)->first()->name ?? '';
+                }else{
+                    $cancelReason = '';
+                }
+            $orderDataCan = DB::table('orders')->where('id',$id)->first();
+
+            $dataArray = [
+                'come_from'=>'order_item',
+                'order_id'=>(string)$orderDataCan->id,
+                'order_date'=>Carbon::parse($orderDataCan->date)->format('d-m-Y'),
+                'order_name'=>$orderDataCan->code,
+                'discount_type'=>'Pay To '.' '.($orderDataCan->pay_to ?? '') .' - '. ($orderDataCan->discount_type ?? ''),
+                'cancel_reason'=>$cancelReason,
+                'cancel_other_reason'=>$reasonCancel,
+            ];
+
+            $userId = DB::table('users')->where('customer_id',$orderDataCan->customer_id)->first()->id;
+            $body = 'Your Order No. '.$orderDataCan->code.' Cancel! '.$orderDataCan->cancel_reason;
+            $user_token = $this->common->sendFcmNotification($userId,'Order Cancel',$body,$dataArray);
+        }
+
+        return redirect()->back()->with('success', __('common.update_success'));
     }
 }

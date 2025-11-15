@@ -540,7 +540,7 @@ class CommonController extends Controller
         return $users;
     }
 
-    public function getCustomer($customer_id = null,$branch_id = null)
+    public function getCustomer($customer_id = null)
     {
         $request = request();
         $platform = $request->header('platform');

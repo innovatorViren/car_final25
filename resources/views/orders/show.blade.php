@@ -11,6 +11,17 @@
     'permission' => true,
 ]),
 @endcomponent
+@php
+    $status_array = $orderItem->pluck('status')->toArray();
+    $arrCount = array_count_values($status_array);
+    $pendingCount = $arrCount['pending'] ?? 0;
+    
+
+    $final_status = $order->status ?? '';
+    $order_items = $orderItem;
+    $hasCompleted = in_array('completed',$order_items->pluck('status')->toArray());
+    $hasInProgress = in_array('in_progress',$order_items->pluck('status')->toArray());
+@endphp
     <div class="d-flex flex-column-fluid">
         <div class="container-fluid">
             <div class="row">
@@ -88,6 +99,24 @@
                                                                 </td>
                                                             </tr>
                                                             
+                                                            @php
+                                                                $order_status = $final_status ?? '';
+                                                                $item_status_Bg_order = '';
+                                                                if (!empty($order_status)) {
+                                                                    if ($order_status == 'Pending') {
+                                                                        $item_status_Bg_order =
+                                                                            'ribbon-target text-warning btn-light-warning';
+                                                                    } elseif ($order_status == 'Partial') {
+                                                                        $item_status_Bg_order = 'text-blue';
+                                                                    } elseif ($order_status == 'Completed') {
+                                                                        $item_status_Bg_order =
+                                                                            'ribbon-target text-success btn-light-success';
+                                                                    } elseif ($order_status == 'Cancelled') {
+                                                                        $item_status_Bg_order =
+                                                                            'ribbon-target text-danger btn-light-danger';
+                                                                    }
+                                                                }
+                                                            @endphp
                                                             <tr>
                                                                 <td width="30%" class="pr-0">
                                                                     <div class="text-right"><b>{{ __('Status') }}</b>
@@ -97,7 +126,35 @@
                                                                 <td width="25%">
                                                                     <div>
                                                                         :&nbsp;
-                                                                       {{ $order->status ?? '' }}
+                                                                        @if ($current_user->hasAnyAccess(['orders.change_status', 'users.superadmin']))
+                                                                            @if ($final_status == 'Pending' || $final_status == 'Partial')
+                                                                                <a type="button"
+                                                                                    class="btn btn-light-success btn-sm font-weight-bold ribbon-target {{ $item_status_Bg_order }} call-modal"
+                                                                                    data-toggle="modal"
+                                                                                    data-target-modal="#commonModadStatus">
+                                                                                    {{ $final_status ?? '' }}
+                                                                                </a>
+                                                                            @else
+                                                                                <a type="button"
+                                                                                    class="btn btn-light-success btn-sm font-weight-bold ribbon-target {{ $item_status_Bg_order }}">
+                                                                                    {{ $final_status ?? '' }}
+                                                                                </a>
+                                                                            @endif
+                                                                        @else
+                                                                            @if ($final_status == 'Pending')
+                                                                                <a type="button"
+                                                                                    class="btn btn-light-success btn-sm font-weight-bold ribbon-target {{ $item_status_Bg_order }} call-modal"
+                                                                                    data-toggle="modal"
+                                                                                    data-target-modal="#commonModadStatus">
+                                                                                    {{ $final_status ?? '' }}
+                                                                                </a>
+                                                                            @else
+                                                                                <a type="button"
+                                                                                    class="btn btn-light-success btn-sm font-weight-bold ribbon-target {{ $item_status_Bg_order }}">
+                                                                                    {{ $final_status ?? '' }}
+                                                                                </a>
+                                                                            @endif
+                                                                        @endif
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -201,6 +258,51 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="commonModadStatus" tabindex="-1" role="dialog"
+    aria-labelledby="commonModadStatusLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commonModadStatusLabel">Status</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <form method="post" action="{{ route('orderStatus', [$order->id]) }}" id="proposalForm">
+                    @csrf
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            {!! Form::label('status', trans('orders.status')) !!}<i class="text-danger">*</i>
+                            {!! Form::select(
+                                'status',
+                                ['Cancel' => 'Cancel'],
+                                null,
+                                [
+                                    'class' => 'form-control jsStatus required',
+                                    'data-placeholder' => 'Select Status',
+                                ],
+                            ) !!}
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                        <button type="submit" id="off" class="btn btn-primary" data-toggle="modal"
+                            data-target="#offer">Save</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
     <div id="load-modal"></div>
     @include('info')
 @endsection
+@push('scripts')
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.jsStatus').select2();
+    });
+</script>
+@endpush
