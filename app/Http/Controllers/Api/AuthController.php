@@ -427,31 +427,20 @@ class AuthController extends ApiController
     public function sendPasswordMail($email, $code)
     {
 
-        // dd($code);
-        // $smtp_details = get_smtp_details('forgot_password');
-        // if (!empty($smtp_details)) {
-
             $dateTime = Carbon::now()->addMinutes(15)->format('M d, Y H:i A');
-            $html = '<p>This OTP is vaild for 15 minutes till  '.$dateTime.'</p><br> '.'Your Login OTP is :-'.' '. $code ;
-            // $smtp_details->message_body = $html;
+            $html = '<p>This OTP is valid for 15 minutes until '.$dateTime.'.</p><br>'. '<p>Your Login OTP is: <strong>'.$code.'</strong></p><br>'. '<p>Thank you,<br><strong>Clear My Car</strong></p>';
 
             $transport = (new \Swift_SmtpTransport('smtp.gmail.com', '465'))
-                ->setUsername('viren04041995@gmail.com')
-                ->setPassword('yrkt tvmu ajrp nxlk')
+                ->setUsername('virendrabutani@gmail.com')
+                ->setPassword('qwcb fnlf cpmw adkx')
                 ->setEncryption('SSl');
 
             $mailer    = new \Swift_Mailer($transport);
-            $message   = (new \Swift_Message('Password'))
+            $message   = (new \Swift_Message('Clear My Car'))
                 ->setFrom('viren04041995@gmail.com', '')
                 ->setTo($email)
                 ->setBody($html, 'text/html');
-            // $attachment = ($smtp_details->attachment != '') ? public_path($smtp_details->attachment) : '';
-
-            // if ($attachment != '' && file_exists($attachment)) {
-            //     $message->attach(\Swift_Attachment::fromPath(URL::to($smtp_details->attachment)));
-            // }
             $mailer->send($message);
-        // }
     }
 
 
@@ -468,7 +457,7 @@ class AuthController extends ApiController
 
         if($request->otp == $verifyOtp->otp)
         {
-            $message = '';
+            $message = 'Your OTP has been successfully verified';
             return response()->json(['message' => $message,'email' => $request->email,'id' => (int)$request->id,'status' => 1], 200);
         }
 
