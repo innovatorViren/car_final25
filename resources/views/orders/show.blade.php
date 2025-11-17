@@ -276,7 +276,7 @@
                             {!! Form::label('status', trans('orders.status')) !!}<i class="text-danger">*</i>
                             {!! Form::select(
                                 'status',
-                                ['Cancel' => 'Cancel'],
+                                ['Cancelled' => 'Cancelled'],
                                 null,
                                 [
                                     'class' => 'form-control jsStatus required',

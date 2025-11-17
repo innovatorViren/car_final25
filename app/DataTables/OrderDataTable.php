@@ -42,7 +42,15 @@ class OrderDataTable extends DataTable
                 return $row->code;
             })
             ->editColumn('status', function ($row) {
-                return $row->status;
+               if ($row->status == 'Pending') {
+                    return '<span class="label label-lg label-light-warning font-weight-bolder label-inline">' . $row->status . '</span>';
+                } else if ($row->status == 'Partial') {
+                    return '<span class="badge text-blue font-weight-bolder">' . $row->status . '</span>';
+                } else if ($row->status == 'Completed') {
+                    return '<span class="label label-lg label-light-success font-weight-bolder label-inline">' . $row->status . '</span>';
+                } else {
+                    return '<span class="label label-lg label-light-danger font-weight-bolder label-inline">' . $row->status . '</span>';
+                }
             })
             ->editColumn('customer_name', function ($row) {
                 return $row->customer_name ?? '-';
