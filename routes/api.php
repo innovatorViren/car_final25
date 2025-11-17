@@ -21,7 +21,11 @@ Route::namespace('Api')->group(function () {
      * Public routes can be accessed without login
      */
     Route::post('login', [AuthController::class, 'login']);
-        Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register']);
+
+    Route::post('forgot_password', [AuthController::class, 'forgotPassword']);
+    Route::get('verify-otp-app', [AuthController::class, 'verifyOtpApp']);
+    Route::post('forgot-change-password', [AuthController::class, 'forgotChangePassword']);
 
     Route::get('get-countries', [CommonController::class, 'getCountries']);
     Route::get('get-states', [CommonController::class, 'getStates']);

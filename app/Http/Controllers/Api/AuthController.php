@@ -19,6 +19,7 @@ use URL;
 use Sentinel;
 use Carbon\Carbon;
 use Centaur\AuthManager;
+use Reminder;
 
 class AuthController extends ApiController
 {
@@ -338,8 +339,6 @@ class AuthController extends ApiController
 
     }
 
-
-    // change password of login user profile
     public function changePassword(Request $request)
     {
         // dd(12);
@@ -384,4 +383,139 @@ class AuthController extends ApiController
 
         return $this->responseSuccess();
     }
+
+    public function forgotPassword(Request $request)
+    {
+        $result = $this->validate($request, [
+            'email' => 'required|email|max:255'
+        ]);
+        $user = Sentinel::findUserByCredentials(['email' => $result]);
+
+        if ($user) {
+
+            $reminder = Reminder::create($user);
+            $code = $this->generateRandumCodeEmail();
+            $email = $user->email;
+            DB::table('forgot_password_otps')->where('email',$email)->delete();
+            DB::table('forgot_password_otps')->insert([
+                    'email' => $email,
+                    'otp' => $code,  
+                    'platform' => 'app',  
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            $this->sendPasswordMail($email, $code);
+
+            $message = 'Instructions for changing your password will be sent to your email address if it is associated with a valid account.';
+            return response()->json(['message' => $message,'email' => $email,'id' => $user->id,'status' => 1], 200);
+            // Mail::to($email)->queue(new CentaurPasswordReset($code));
+        } else {
+            $this->response_json['message'] = 'The value is not a valid email address';
+            return $this->responseError();
+        }
+
+
+
+
+
+        // $this->response_json['code'] = $code;
+        // $this->response_json['message'] =  $message;
+        // return response()->json($this->response_json, 200);
+
+    }
+
+    public function sendPasswordMail($email, $code)
+    {
+
+        // dd($code);
+        // $smtp_details = get_smtp_details('forgot_password');
+        // if (!empty($smtp_details)) {
+
+            $dateTime = Carbon::now()->addMinutes(15)->format('M d, Y H:i A');
+            $html = '<p>This OTP is vaild for 15 minutes till  '.$dateTime.'</p><br> '.'Your Login OTP is :-'.' '. $code ;
+            // $smtp_details->message_body = $html;
+
+            $transport = (new \Swift_SmtpTransport('smtp.gmail.com', '465'))
+                ->setUsername('viren04041995@gmail.com')
+                ->setPassword('yrkt tvmu ajrp nxlk')
+                ->setEncryption('SSl');
+
+            $mailer    = new \Swift_Mailer($transport);
+            $message   = (new \Swift_Message('Password'))
+                ->setFrom('viren04041995@gmail.com', '')
+                ->setTo($email)
+                ->setBody($html, 'text/html');
+            // $attachment = ($smtp_details->attachment != '') ? public_path($smtp_details->attachment) : '';
+
+            // if ($attachment != '' && file_exists($attachment)) {
+            //     $message->attach(\Swift_Attachment::fromPath(URL::to($smtp_details->attachment)));
+            // }
+            $mailer->send($message);
+        // }
+    }
+
+
+    public function generateRandumCodeEmail()
+    {
+        $rand = mt_rand(1000, 9999);
+        return $rand;
+    }
+
+    public function verifyOtpApp(Request $request)
+    {
+
+        $verifyOtp = DB::table('forgot_password_otps')->where('email',$request->email)->where('platform','app')->orderByDesc('id')->first();
+
+        if($request->otp == $verifyOtp->otp)
+        {
+            $message = '';
+            return response()->json(['message' => $message,'email' => $request->email,'id' => (int)$request->id,'status' => 1], 200);
+        }
+
+            $this->response_json['message'] = 'Incorrect OTP, please try again';
+            return $this->responseError();        
+    }
+
+
+    public function forgotChangePassword(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+
+            $id = $request->id;
+
+            $login_user = User::where('id', $id)->first();
+
+            $validator = Validator::make($request->all(), [
+                'new_password' => 'required|min:6|same:password_confirmation',
+                'password_confirmation' => 'required|min:6'
+            ]);
+
+            if ($validator->fails()) {
+                $this->response_json['message'] = $validator->messages()->first();
+                return $this->responseError();
+            }
+
+            $new_password = $request->new_password;
+            $current_password = $login_user->password;
+
+            $user = User::findOrFail($login_user->id);
+
+            $user->update(['password' => Hash::make($new_password)]);
+            $this->response_json['message'] = 'Password Updated Successfully.';
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            info($e);
+
+            $this->response_json['message'] = $e->getMessage();
+            return $this->responseError();
+        }
+
+        return $this->responseSuccess();
+    }
+
+
 }
