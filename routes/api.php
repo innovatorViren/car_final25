@@ -104,6 +104,12 @@ Route::namespace('Api')->group(function () {
         Route::post('/contact-us', [CustomerApiController::class, 'contactUs']);
         Route::get('/get-contact-us-list', [CustomerApiController::class, 'getContactUsList']);
         Route::get('/get-contact-us-detail/{id}', [CustomerApiController::class, 'getContactUsDetail']);
+
+
+
+        // routes/api.php
+            Route::post('/phonepe/webhook', [PhonePeWebhookController::class, 'handle']);
+
     });
 
 

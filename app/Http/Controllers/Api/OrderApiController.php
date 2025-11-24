@@ -145,6 +145,29 @@ class OrderApiController extends ApiController
             $this->response_json['status'] = 1;
             $this->response_json['message'] = 'Your order has been placed successfully!';
 
+            // $dataArray = [
+            //     'come_from'=>'order_item',
+            //     'order_id'=>(string)$model->id,
+            //     'order_date'=>Carbon::parse($model->date)->format('d-m-Y'),
+            //     'order_name'=>$model->code,
+            //     'discount_type'=>'Pay To '.' '.($model->pay_to ?? '') .' - '. ($model->discount_type ?? ''),
+            //     'cancel_reason'=>'',
+            //     'cancel_other_reason'=>'',
+            // ];
+            $dataArray = [
+                'come_from'=>'order_item',
+                'order_id'=>'1',
+                'order_date'=>'',
+                'order_name'=>'',
+            ];
+
+            $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->where('is_app_login','1')->whereNotNull('platform')->pluck('id');
+            foreach($userIds as $user)
+            {
+                // $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '.$customerData->company_name.'! has been placed '.$model->code.' Order. ',$dataArray);
+                $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '545'! has been placed '12' Order. ',$dataArray);
+            }
+
             return $this->responseSuccessWithoutDataObject();
             
              
@@ -431,5 +454,72 @@ class OrderApiController extends ApiController
             $this->response_json['message'] = 'Success';
             return $this->responseSuccessWithoutObject();
 
+    }
+
+
+
+    public function sendFcmNotificationApplication($user,$title,$body,$dataArray)
+    {
+
+        $user = \App\Models\User::find($user);
+        $fcm = $user->fcm_token;
+
+        if (!$fcm) {
+            return response()->json(['message' => 'User does not have a device token'], 400);
+        }
+
+        $title = $title;
+        
+        $description = $body;
+        $projectId = 'test project';
+        $credentialsFilePath = Storage::path('json/notification.json');
+        $client = new GoogleClient();
+        $client->setAuthConfig($credentialsFilePath);
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+        $client->refreshTokenWithAssertion();
+        $token = $client->getAccessToken();
+
+        $access_token = $token['access_token'];
+
+        $headers = [
+            "Authorization: Bearer $access_token",
+            'Content-Type: application/json'
+        ];
+
+        $data = [
+            "message" => [
+                "token" => $fcm,
+                "notification" => [
+                    "title" => $title,
+                    "body" => $description,
+                    // "test" => 'sddsds',
+                ],
+                "data" =>$dataArray,
+            ]
+        ];
+
+        $payload = json_encode($data);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send");
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_VERBOSE, true); // Enable verbose output for debugging
+        $response = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if ($err) {
+            return response()->json([
+                'message' => 'Curl Error: ' . $err
+            ], 500);
+        } else {
+            return response()->json([
+                'message' => 'Notification has been sent',
+                'response' => json_decode($response, true)
+            ]);
+        }
     }
 }

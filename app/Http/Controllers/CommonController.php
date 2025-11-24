@@ -16,7 +16,7 @@ use App\Models\{
     State,
     User,
     CarBrand,
-    CarModel,
+    CarModel,Banner
 };
 use Carbon\Carbon;
 use URL;
@@ -616,6 +616,21 @@ class CommonController extends Controller
             $this->data = collect($frequencyData);
             return $this->responseSuccess();
     } 
+
+    public function getBanner(){
+
+        try {
+            $img_path = URL::asset('');
+            $banner_data = Banner::select('id','title', DB::raw("CONCAT('".$img_path."', image) as banner_image"))->where('is_active','Yes')->get();
+        } catch (Exception $e) {
+            $banner_data = [];
+        }
+
+        $toReturn = $banner_data;
+        $this->data = $toReturn;
+
+        return $this->responseSuccess();
+    }
 
      // send whatsapp otp
     // public function send_whatsapp_otp($otp, $to_mobile = "")
