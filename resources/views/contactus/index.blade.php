@@ -10,7 +10,7 @@
    <div class="container">
     <div class="row">
       <div class="col-sm-12" style="height: 100px;">
-        <img src="{{ asset('media/mahalaxmi-logo.png') }}" width="250" height="100"/>
+        <img src="{{ asset('media/logo.png') }}" width="250" height="100"/>
       </div>
     </div>
       <div class="row">
@@ -18,17 +18,19 @@
           <div style="height: 15px;"></div>         
             <h1 class="h2 m-0 text-capitalize text-danger font-weight-bold">Contact Us</h1>
            <div class="inews-item pt-4" style="margin-bottom: 0px;font-size: 16px !important;">
-                <p>Thank you for reaching out to MAHALAXMI FOOD AND SPICES PVT.LTD.! Please fill the form right. Our team will contact you shortly.</p>
+                <p>Thank you for reaching out to Clear My Car.! Please fill the form right. Our team will contact you shortly.</p>
                 <p><b>Address:</b></p>
-                <p><address>MAHALAXMI FOOD AND SPICES PVT.LTD.,<br/>
-                Gondal Road, N.H 8-B , Behind Galaxy Petrol Pump, Bhojapara,<br/>
-                            Rajkot 360-311, Gujarat, India.<br/>
-                            </address></p>
+                <p>
+                    <address>Clear My Car PVT.LTD.,<br/>
+                rajkot,<br/>
+                            Rajkot 360-0005, Gujarat, India.<br/>
+                            </address>
+                        </p>
                 <p><b>Email:</b></p>
-                <p>admin@mahalaxmifoodandspices.com</p>
+                <p>admin@clearmycar.com</p>
                 <p><b>Contact Detail</b></p>
                 <!-- <p>Name: Bhavin Domadiya </p> -->
-                <p>Mo.: +91 70484 81070</p>
+                <p>Mo.: +91 7016211477</p>
                 </div></div>
                 <div class="col-md-6">
                 @if ($message = Session::get('error'))
@@ -45,7 +47,7 @@
                 <div style="height: 15px;"></div>         
                 <div class="d-flex flex-column-fluid">                    
                     {!! Form::open([
-                        'route' => 'contact-mail',
+                        'route' => 'contact-store',
                         'role' => 'form',
                         'id' => 'contact_form',
                         'class' => 'form',

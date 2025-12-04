@@ -82,6 +82,19 @@
                                     <!--end::Action-->
                                 {!! Form::close() !!}
                                 <!--end::Form-->
+
+                                <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
+                                    <div class="text-left">
+                                            <a href="{{route('privacy-policy')}}"
+                                                class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5"
+                                                id="#">Privacy Policy</a>
+                                    </div>
+                                    <div class="text-right">
+                                            <a href="{{route('contact-us')}}"
+                                                class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5"
+                                                id="#">Contact Us</a>
+                                    </div>
+                                </div>
                             </div>
                             <!--end::Signin-->
                             <!--begin::Signup-->

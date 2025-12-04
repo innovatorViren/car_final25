@@ -6,6 +6,8 @@ use App\Models\MailTemplate;
 use App\Models\SmtpConfiguration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Models\{ContactUs};
+use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
@@ -16,6 +18,30 @@ class ContactController extends Controller
         $data=$request->all();
         return view('contactus.index');
     }
+    public function store(Request $request)
+    {
+        try{
+            $requestData = Validator::make($request->all(), [
+                'mobile' => 'required',
+                'email' => 'required',
+            ]);
+
+
+            $data = [
+                'customer_id' => $request->customer_id ?? null,
+                'mobile' => $request->mobile ?? null,
+                'email' => $request->email ?? null,
+                'description' => $request->description ?? null,
+            ];
+            
+            $employee = ContactUs::create($data);
+
+            return back()->with('success', 'Thanks for contacting us!');
+        } catch (Exception $e) {
+            return back()->with('danger', 'Something want wrong!');
+        }
+        
+    }
     public function sendMailContact(Request $request){
                 
         $data=array(
@@ -24,13 +50,6 @@ class ContactController extends Controller
             'contact'=>$request->contact,
             'message'=>$request->message
         );
-        /*dd($this->data);
-        $validated = $request->validate([
-            'name' => 'required|min:3|max:255',
-            'email' => 'required|email',
-            'contact'=>'required',
-            'message' => 'required|min:10',
-        ]);*/
         
         $sendMail=MailTemplate::with('smtpDetail')->where('module_name', 'contact_us')->latest()->first();//SmtpConfiguration::where('is_active','=','Yes')->first();        
         try {

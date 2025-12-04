@@ -167,6 +167,7 @@ Route::resource('banner', BannerController::class)->only(['index', 'create', 'st
 
 Route::get('privacy-policy', [PrivacypolicyController::class, 'index'])->name('privacy-policy');
 Route::get('contact-us', [ContactController::class, 'index'])->name('contact-us');
+Route::post('contact-store', [ContactController::class, 'store'])->name('contact-store');
 
 //order Module
 Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
