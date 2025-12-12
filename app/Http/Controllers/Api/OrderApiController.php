@@ -154,19 +154,19 @@ class OrderApiController extends ApiController
             //     'cancel_reason'=>'',
             //     'cancel_other_reason'=>'',
             // ];
-            $dataArray = [
-                'come_from'=>'order_item',
-                'order_id'=>'1',
-                'order_date'=>'',
-                'order_name'=>'',
-            ];
+            // $dataArray = [
+            //     'come_from'=>'order_item',
+            //     'order_id'=>'1',
+            //     'order_date'=>'',
+            //     'order_name'=>'',
+            // ];
 
-            $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->where('is_app_login','1')->whereNotNull('platform')->pluck('id');
-            foreach($userIds as $user)
-            {
-                // $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '.$customerData->company_name.'! has been placed '.$model->code.' Order. ',$dataArray);
-                $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '545'! has been placed '12' Order. ',$dataArray);
-            }
+            // $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->where('is_app_login','1')->whereNotNull('platform')->pluck('id');
+            // foreach($userIds as $user)
+            // {
+            //     // $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '.$customerData->company_name.'! has been placed '.$model->code.' Order. ',$dataArray);
+            //     $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '545'! has been placed '12' Order. ',$dataArray);
+            // }
 
             return $this->responseSuccessWithoutDataObject();
             
