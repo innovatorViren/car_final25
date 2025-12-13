@@ -173,3 +173,8 @@ Route::post('contact-store', [ContactController::class, 'store'])->name('contact
 Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
 Route::post('/orders-status/{id}', [OrderController::class, 'orderStatus'])->name('orderStatus');
 
+Route::get('/get-customer-addresses', [OrderController::class, 'getCustomerAddress'])->name('orders.getCustomerAddress');
+
+Route::get('/car-models/{carBrandId}', [CommonController::class, 'getCarModel']);
+
+

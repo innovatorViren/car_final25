@@ -1,116 +1,61 @@
 @include('partials._loginheader.login-header')
 <style>
-    .listing-header{
+    .listing-header {
         font-weight: 300 !important;
         font-size: 32px !important;
         color: #FF2A00;
     }
 </style>
 <body style="background-image: url('{{ asset('media/bg/bg-3.jpg') }}');">
-   <div class="container">
-    <div class="row">
-      <div class="col-sm-12" style="height: 100px;">
-        <img src="{{ asset('media/logo.png') }}" width="250" height="100"/>
-      </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12" style="height: 100px;">
+                <img src="{{ asset('media/logos/meera.png') }}" width="250" height="100"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div style="height: 15px;"></div>         
+                <h1 class="h2 m-0 text-capitalize text-danger font-weight-bold">PRIVACY POLICY</h1>
+                <div class="inews-item pt-4" style="margin-bottom: 0px;font-size: 16px !important;">
+                    <p><strong>ClearMyCar respects your privacy and is committed to protecting your personal information. This policy explains how we collect, use, and safeguard your data.</strong></p>
+
+                    <h3>Information We Collect</h3>
+                    <p>We may collect personal information such as name, phone number, email address, service address, vehicle details, booking details (plan, date, time), and app usage data.</p>
+
+                    <h3>How We Use Information</h3>
+                    <p>We use your information to:</p>
+                    <ul>
+                        <li>Provide and manage car wash services</li>
+                        <li>Schedule and assign service staff</li>
+                        <li>Communicate booking updates and support</li>
+                        <li>Improve app performance and user experience</li>
+                        <li>Ensure security and prevent fraud</li>
+                    </ul>
+
+                    <h3>Location Data</h3>
+                    <p>ClearMyCar collects location data only with user permission to identify service locations accurately and to help our staff reach customers. Location data is used strictly for service delivery and operational purposes.</p>
+
+                    <h3>Data Sharing</h3>
+                    <p>We do not sell your personal data. Data may be shared with trusted third-party services (such as payment or analytics providers) only as required to operate the app.</p>
+
+                    <h3>Data Security</h3>
+                    <p>We take reasonable measures to protect user data from unauthorized access or misuse.</p>
+
+                    <h3>Children’s Privacy</h3>
+                    <p>ClearMyCar does not knowingly collect personal data from children under 13 years of age.</p>
+
+                    <h3>User Rights</h3>
+                    <p>Users may request access, correction, or deletion of their personal data by contacting us.</p>
+
+                    <h3>Contact Us</h3>
+                    <p>If you have any questions about this Privacy Policy, please contact us at:</p>
+                    <p>Email: <a href="mailto:info@clearmycar.in">info@clearmycar.in</a></p>
+                    <p>Website: <a href="https://www.clearmycar.in" target="_blank">https://www.clearmycar.in</a></p>
+
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
-          
-          <div style="height: 15px;"></div>         
-          <h1>Privacy Policy</h1>
-          <div class="inews-item pt-4" style="margin-bottom: 0px;font-size: 16px !important;">
-            <p>At Clear My Car, accessible from&nbsp;<a href="https://www.clearmycar.in/">https://www.clearmycar.in</a>, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Wash Car and how we use it.</p>
-
-            <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
-
-            <p>This Privacy Policy applies only to our online activities and is valid for visitors to our website with regards to the information that they shared and/or collect in Clear Car. This policy is not applicable to any information collected offline or via channels other than this website.</p>
-
-            <h2>Consent</h2>
-
-            <p>By using our website, you hereby consent to our Privacy Policy and agree to its terms.</p>
-
-            <h2>Information we collect</h2>
-
-            <p>The personal information that you are asked to provide, and the reasons why you are asked to provide it, will be made clear to you at the point we ask you to provide your personal information.</p>
-
-            <p>If you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.</p>
-
-            <p>When you register for an Account, we may ask for your contact information, including items such as name, company name, address, email address, and telephone number.</p>
-
-            <h2>How we use your information</h2>
-
-            <p>We use the information we collect in various ways, including to:</p>
-
-            <ul>
-              <li>Provide, operate, and maintain our website</li>
-              <li>Improve, personalize, and expand our website</li>
-              <li>Understand and analyze how you use our website</li>
-              <li>Develop new products, services, features, and functionality</li>
-              <li>Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes</li>
-              <li>Send you emails</li>
-              <li>Find and prevent fraud</li>
-            </ul>
-
-            <h2>Location</h2>
-
-            <p>Claer Car is specifically built for order management. It&rsquo;s an app related to collecting orders and sending orders to the company Clear My Car. Company can get and receive day-to-day orders placed by multiple resources, weather they are dealers or sales persons. Company will assign app access based on these roles. To be exact, it&rsquo;s an smart solution that removes need of manual data entry and saves our time.</p>
-
-            <p>By Location feature, company will get the central control over their employee,  by getting their real time location detail. &nbsp;How it will work: The app will allow employee to add their customer to the particular location they are approaching, for that reason, we require location service to be ON to get exact location of the customer on car this app.</p>
-
-            <h2>Log Files</h2>
-
-            <h2>Advertising Partners Privacy Policies</h2>
-
-            <p>You may consult this list to find the Privacy Policy for each of the advertising partners of Clear my car.</p>
-
-            <p>Third-party ad servers or ad networks uses technologies like cookies, JavaScript, or Web Beacons that are used in their respective advertisements and links that appear on Clear My Car, which are sent directly to users&#39; browser. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on websites that you visit.</p>
-
-            <p>Note that Clear My Car has no access to or control over these cookies that are used by third-party advertisers.</p>
-
-            <h2>Third Party Privacy Policies</h2>
-
-            <p>Clear My Car&#39;s Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.</p>
-
-            <p>You can choose to disable cookies through your individual browser options. To know more detailed information about cookie management with specific web browsers, it can be found at the browsers&#39; respective websites.</p>
-
-            <h2>CCPA Privacy Rights (Do Not Sell My Personal Information)</h2>
-
-            <p>Under the CCPA, among other rights, California consumers have the right to:</p>
-
-            <p>Request that a business that collects a consumer&#39;s personal data disclose the categories and specific pieces of personal data that a business has collected about consumers.</p>
-
-            <p>Request that a business delete any personal data about the consumer that a business has collected.</p>
-
-            <p>Request that a business that sells a consumer&#39;s personal data, not sell the consumer&#39;s personal data.</p>
-
-            <p>If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.</p>
-
-            <p>The right to access &ndash; You have the right to request copies of your personal data. We may charge you a small fee for this service.</p>
-
-            <p>The right to rectification &ndash; You have the right to request that we correct any information you believe is inaccurate. You also have the right to request that we complete the information you believe is incomplete.</p>
-
-            <p>The right to erasure &ndash; You have the right to request that we erase your personal data, under certain conditions.</p>
-
-            <p>The right to restrict processing &ndash; You have the right to request that we restrict the processing of your personal data, under certain conditions.</p>
-
-            <p>The right to object to processing &ndash; You have the right to object to our processing of your personal data, under certain conditions.</p>
-
-            <p>The right to data portability &ndash; You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</p>
-
-            <p>If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.</p>
-
-            <h2>Children&#39;s Information</h2>
-
-            <p>Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.</p>
-
-            <p>Clear My Car does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.</p>  
-          </div>
-     
-      </div>
-   </div>
-   <div style="height: 150px;"></div>
+    <div style="height: 150px;"></div>
 </body>
-
-{{--@endsection--}}
-
-</html>

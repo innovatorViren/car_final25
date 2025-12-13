@@ -41,6 +41,9 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         $this->data['customers'] = $this->common->getCustomer();
+        $this->data['carBrands'] = $this->common->getCarBrand();
+        $this->data['frequency']  = Config('global.frequency');
+        // $this->data['carModel'] = $this->common->getCarModel();
 
         $lastOrder = Order::latest()->first();
         $lastOrderNumber = $lastOrder ? (int) str_replace('O-', '', $lastOrder->id) : 0;
@@ -146,5 +149,34 @@ class OrderController extends Controller
         DB::table('orders')->where('id', $id)->update(['status' => 'Cancelled']);
 
         return redirect()->back()->with('success', __('common.update_success'));
+    }
+
+    public function getCustomerAddress(Request $request)
+    {
+        $account = DB::table('customers')->where('id', $request->customer_id)->first();
+
+        $customerID = $request->customer_id;
+
+
+        $customerAddressData = DB::table('customer_adresses as CA')
+                // ->leftJoin('customers', 'CA.customer_id', '=', 'customers.id')
+                ->leftJoin('countries', 'CA.country_id', '=', 'countries.id')
+                ->leftJoin('states', 'CA.state_id', '=', 'states.id')
+                ->select(
+                        'CA.id as cus_add_id',
+                        DB::raw("(CASE WHEN CA.address_line1 IS NOT NULL THEN  CA.address_line1 ELSE '' END) as address_line1"),
+                        DB::raw("(CASE WHEN CA.address_line2 IS NOT NULL THEN  CA.address_line2 ELSE '' END) as address_line2"),
+                        DB::raw("(CASE WHEN CA.landmark IS NOT NULL THEN  CA.landmark ELSE '' END) as landmark"),
+                        'CA.address_type as address_type', 
+                        'CA.is_default as is_default', 
+                        'countries.name as country', 
+                        'states.name as state', 
+                        'CA.pincode')
+                ->where('CA.customer_id', $customerID)
+                ->whereNull('CA.deleted_at')
+                ->get();
+        $this->data['customerAddressData'] = $customerAddressData;
+
+        return $this->data;
     }
 }

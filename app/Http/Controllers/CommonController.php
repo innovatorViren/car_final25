@@ -320,13 +320,15 @@ class CommonController extends Controller
 
             return $this->responseSuccess();
         } else {
+
             $carBrandId = $request->get('car_brand_id', $car_brand_id);
             $carModel = CarModel::where('is_active', 'Yes')
                 ->when($carBrandId, function ($sql) use ($carBrandId) {
-                    $sql->orWhere('id', $carBrandId);
+                    $sql->where('car_brand_id', $carBrandId);
                 })
                 ->orderBy('name', 'ASC')
-                ->pluck('name', 'id')->toArray();
+                // ->pluck('name', 'id')->toArray();
+                ->get();
             return $carModel;
         }
     }
