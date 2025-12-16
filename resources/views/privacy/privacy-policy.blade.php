@@ -10,13 +10,13 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12" style="height: 100px;">
-                <img src="{{ asset('media/logos/meera.png') }}" width="250" height="100"/>
+                <img src="{{ asset('media/logos/car.png') }}" width="250" height="100"/>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12">
                 <div style="height: 15px;"></div>         
-                <h1 class="h2 m-0 text-capitalize text-danger font-weight-bold">PRIVACY POLICY</h1>
+                <h1 class="h2 m-0 text-capitalize font-weight-bold">PRIVACY POLICY</h1>
                 <div class="inews-item pt-4" style="margin-bottom: 0px;font-size: 16px !important;">
                     <p><strong>ClearMyCar respects your privacy and is committed to protecting your personal information. This policy explains how we collect, use, and safeguard your data.</strong></p>
 
