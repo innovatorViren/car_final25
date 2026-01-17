@@ -48,12 +48,12 @@ class CustomerApiController extends ApiController
                             ->select(
                                 'CC.id as customer_car_id',
                                 'CC.customer_id as customer_id',
-                                'CC.car_model_id as car_model_id',
-                                'CC.car_brand_id as car_brand_id',
+                                DB::raw("(CASE WHEN CC.car_model_id IS NOT NULL THEN  CC.car_model_id ELSE '' END) as car_model_id"),
+                                DB::raw("(CASE WHEN CC.car_brand_id IS NOT NULL THEN  CC.car_brand_id ELSE '' END) as car_brand_id"),
+                                DB::raw("(CASE WHEN CC.vehicle_name IS NOT NULL THEN  CC.vehicle_name ELSE '' END) as vehicle_name"),
                                 DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
                                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
                                 'CC.is_default as selected',
-
                             )
                             ->leftjoin('car_brands as CB','CB.id','CC.car_brand_id')
                             ->leftjoin('car_models as CM','CM.id','CC.car_model_id')
@@ -64,9 +64,9 @@ class CustomerApiController extends ApiController
             $customerWiseCar = DB::table('customer_cars as CC')
                             ->select(
                                 'CC.id as customer_car_id',
-                                'CC.car_model_id as car_model_id',
+                                DB::raw("(CASE WHEN CC.car_model_id IS NOT NULL THEN  CC.car_model_id ELSE '' END) as car_model_id"),
                                 DB::raw("(CASE WHEN CC.car_brand_id IS NOT NULL THEN  CC.car_brand_id ELSE '' END) as car_brand_id"),
-                                'CC.vehicle_name as vehicle_name',
+                                DB::raw("(CASE WHEN CC.vehicle_name IS NOT NULL THEN  CC.vehicle_name ELSE '' END) as vehicle_name"),
                                 DB::raw("(CASE WHEN CB.name IS NOT NULL THEN  CB.name ELSE '' END) as car_brand_name"),
                                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
                                 'CC.is_default as selected',
