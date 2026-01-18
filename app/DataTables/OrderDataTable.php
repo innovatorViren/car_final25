@@ -39,7 +39,9 @@ class OrderDataTable extends DataTable
                 return custom_date_format($row->end_date, 'd-m-Y');
             })
             ->editColumn('code', function ($row) {
-                return $row->code;
+                return '<a href="' .route('orders.show', [$row->id]) . '"  class="navi-link">' .
+                                '<span class="navi-text">' .$row->code . '</span>' .
+                        '</a>';
             })
             ->editColumn('status', function ($row) {
                if ($row->status == 'Pending') {

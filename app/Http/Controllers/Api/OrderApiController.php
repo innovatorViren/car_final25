@@ -23,7 +23,8 @@ class OrderApiController extends ApiController
                 'O.code as code',
                 'O.total_washes as total_washes',
                 'O.status as status',
-                'O.pay_amount as pay_amount',
+                'O.price as pay_amount',
+                // 'O.pay_amount as pay_amount',
                 'O.car_model_id as car_model_id',
                 DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
                 DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
@@ -105,7 +106,8 @@ class OrderApiController extends ApiController
             $inputData['frequency_type'] = $frequencyType;
             $inputData['total_washes'] = $request->total_washes;
             $inputData['price'] = $request->price;
-            $inputData['pay_amount'] = $request->pay_amount;
+            // $inputData['pay_amount'] = $request->pay_amount;
+            $inputData['pay_amount'] = $request->price;
             $inputData['start_date'] = $startDate;
             $inputData['end_date'] = $request->end_date;
             $inputData['start_time'] = $startTime;
@@ -264,7 +266,8 @@ class OrderApiController extends ApiController
                 'O.code as code',
                 'O.total_washes as total_washes',
                 'O.status as status',
-                'O.pay_amount as pay_amount',
+                'O.price as pay_amount',
+                // 'O.pay_amount as pay_amount',
                 'O.car_model_id as car_model_id',
                 DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
                 DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
@@ -295,7 +298,7 @@ class OrderApiController extends ApiController
                 'O.code as code',
                 'O.total_washes as total_washes',
                 'O.status as status',
-                'O.pay_amount as pay_amount',
+                'O.price as pay_amount',
                 'O.car_model_id as car_model_id',
                 DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
                 DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
@@ -328,7 +331,8 @@ class OrderApiController extends ApiController
                 'O.code as code',
                 'O.total_washes as total_washes',
                 'O.status as status',
-                'O.pay_amount as pay_amount',
+                // 'O.pay_amount as pay_amount',
+                'O.price as pay_amount',
                 'O.car_model_id as car_model_id',
                 DB::raw("(CASE WHEN O.start_date IS NOT NULL THEN DATE_FORMAT(O.start_date, '%d-%m-%Y') ELSE '' END) as start_date"),
                 DB::raw("(CASE WHEN O.start_time IS NOT NULL THEN DATE_FORMAT(O.start_time, ' %I:%i %p') ELSE '' END) as start_time"),
