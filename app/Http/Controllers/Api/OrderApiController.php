@@ -147,15 +147,16 @@ class OrderApiController extends ApiController
             $this->response_json['status'] = 1;
             $this->response_json['message'] = 'Your order has been placed successfully!';
 
-            // $dataArray = [
-            //     'come_from'=>'order_item',
-            //     'order_id'=>(string)$model->id,
-            //     'order_date'=>Carbon::parse($model->date)->format('d-m-Y'),
-            //     'order_name'=>$model->code,
-            //     'discount_type'=>'Pay To '.' '.($model->pay_to ?? '') .' - '. ($model->discount_type ?? ''),
-            //     'cancel_reason'=>'',
-            //     'cancel_other_reason'=>'',
-            // ];
+            $customerData = DB::table('customers')->where('id',$customerId)->first();
+
+            $currentUserId = DB::table('users')->where('customer_id',$customerId)->first()->id;
+
+            $dataArray = [
+                'come_from'=>'order_item',
+                'order_id'=>(string)$model->id,
+                'order_date'=>Carbon::parse($model->date)->format('d-m-Y'),
+                'order_name'=>$model->code
+            ];
             // $dataArray = [
             //     'come_from'=>'order_item',
             //     'order_id'=>'1',
@@ -163,12 +164,12 @@ class OrderApiController extends ApiController
             //     'order_name'=>'',
             // ];
 
-            // $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->where('is_app_login','1')->whereNotNull('platform')->pluck('id');
-            // foreach($userIds as $user)
-            // {
-            //     // $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '.$customerData->company_name.'! has been placed '.$model->code.' Order. ',$dataArray);
-            //     $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '545'! has been placed '12' Order. ',$dataArray);
-            // }
+            // $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->whereNotNull('platform')->pluck('id');
+            $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->pluck('id');
+            foreach($userIds as $user)
+            {
+                $user_token = $this->sendFcmNotificationApplication($user,'New Order Placed',$body = ' '.$customerData->first_name.'! has been placed '.$model->code.' Order. ',$dataArray);
+            }
 
             return $this->responseSuccessWithoutDataObject();
             
@@ -460,8 +461,7 @@ class OrderApiController extends ApiController
 
     }
 
-
-
+    // send firebase push notification for android app
     public function sendFcmNotificationApplication($user,$title,$body,$dataArray)
     {
 
@@ -472,11 +472,14 @@ class OrderApiController extends ApiController
             return response()->json(['message' => 'User does not have a device token'], 400);
         }
 
+        // $title = $request->title;
         $title = $title;
-        
+        // $description = $request->body;
         $description = $body;
-        $projectId = 'test project';
-        $credentialsFilePath = Storage::path('json/notification.json');
+        $projectId = 'clearmycar-e1d9d'; 
+        // dd($projectId);
+
+        $credentialsFilePath = Storage::path('json/clearmycar.json');
         $client = new GoogleClient();
         $client->setAuthConfig($credentialsFilePath);
         $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
