@@ -152,19 +152,12 @@ class OrderApiController extends ApiController
             $currentUserId = DB::table('users')->where('customer_id',$customerId)->first()->id;
 
             $dataArray = [
-                'come_from'=>'order_item',
+                'come_from'=>'get-order-detail',
                 'order_id'=>(string)$model->id,
                 'order_date'=>Carbon::parse($model->date)->format('d-m-Y'),
                 'order_name'=>$model->code
             ];
-            // $dataArray = [
-            //     'come_from'=>'order_item',
-            //     'order_id'=>'1',
-            //     'order_date'=>'',
-            //     'order_name'=>'',
-            // ];
 
-            // $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->whereNotNull('platform')->pluck('id');
             $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->pluck('id');
             foreach($userIds as $user)
             {
@@ -472,14 +465,11 @@ class OrderApiController extends ApiController
             return response()->json(['message' => 'User does not have a device token'], 400);
         }
 
-        // $title = $request->title;
         $title = $title;
-        // $description = $request->body;
         $description = $body;
         $projectId = 'clearmycar-e1d9d'; 
-        // dd($projectId);
 
-        $credentialsFilePath = Storage::path('json/clearmycar.json');
+        $credentialsFilePath = Storage::path('json/clearmycar-e1d9d-firebase-adminsdk-fbsvc-f02e0b791b.json');
         $client = new GoogleClient();
         $client->setAuthConfig($credentialsFilePath);
         $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
