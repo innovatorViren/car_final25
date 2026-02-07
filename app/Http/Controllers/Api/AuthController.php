@@ -71,7 +71,6 @@ class AuthController extends ApiController
             
             $curr_user = $this->currentuser();
 
-            // Multiple login are another device autometic logout strat
             $sessions = sessions::get();
             if(!empty($sessions)){
                 foreach ($sessions as $key => $session) {
@@ -96,6 +95,15 @@ class AuthController extends ApiController
 
             $rolesData = Role::where('id',$user_role_id)->first();
             $rolesData_array = Role::where('id',$user_role_id)->first()->permissions;
+
+            $is_app_login = 1;
+            if ($user) 
+            {
+                $user->is_app_login = '1'; 
+                $user->fcm_token = $request->fcm_token;
+                $user->platform = $request->Platform;
+                $user->save();
+            }
                 
 
             $this->data = $this->userCollection($user);

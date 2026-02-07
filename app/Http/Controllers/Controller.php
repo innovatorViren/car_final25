@@ -230,26 +230,34 @@ class Controller extends BaseController
     }
     public function currentuser()
     {
-        if (Auth::check()) {
+        if(Auth::check())
+        {
             $user = Auth::user();
 
-            $user->id = $user->id;
-            $user->mobile_no = $user->mobile ?? '';
-            if ($user->emp_type == 'customer') {
-                $customer = Customer::select('id','first_name','middle_name','last_name','mobile')->where('id', $user->customer_id)->first();
-                $user->login_id = (!empty($customer)) ? $customer->id : '';
-                $user->person_name = (!empty($customer)) ? ($customer->first_name .' '. $customer->middle_name .' '. $customer->last_name) : '';                  
-            }
-            if ($user->emp_type == 'employee') {
-                // $salesmen = Salesmans::select('id','first_name','middle_name','last_name','mobile_1')->where('user_id', $user->id)->first();
-                $employee = Employee::select('id','first_name','middle_name','last_name','mobile')->where('id', $user->emp_id)->first();
-                $user->login_id = (!empty($employee)) ? $employee->id : '';
-                $user->person_name = (!empty($employee)) ? ($employee->first_name .' '. $employee->middle_name .' '. $employee->last_name) : ''; 
-            }
             return $user;
         } else {
             return false;
         }
+        // if (Auth::check()) {
+        //     $user = Auth::user();
+
+        //     $user->id = $user->id;
+        //     $user->mobile = $user->mobile ?? '';
+        //     if ($user->emp_type == 'customer') {
+        //         $customer = Customer::select('id','first_name','middle_name','last_name','mobile')->where('id', $user->customer_id)->first();
+        //         $user->login_id = (!empty($customer)) ? $customer->id : '';
+        //         $user->person_name = (!empty($customer)) ? ($customer->first_name .' '. $customer->middle_name .' '. $customer->last_name) : '';                  
+        //     }
+        //     if ($user->emp_type == 'employee') {
+        //         // $salesmen = Salesmans::select('id','first_name','middle_name','last_name','mobile_1')->where('user_id', $user->id)->first();
+        //         $employee = Employee::select('id','first_name','middle_name','last_name','mobile')->where('id', $user->emp_id)->first();
+        //         $user->login_id = (!empty($employee)) ? $employee->id : '';
+        //         $user->person_name = (!empty($employee)) ? ($employee->first_name .' '. $employee->middle_name .' '. $employee->last_name) : ''; 
+        //     }
+        //     return $user;
+        // } else {
+        //     return false;
+        // }
     }
     public function userCollection($user)
     {
