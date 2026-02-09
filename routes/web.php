@@ -177,4 +177,6 @@ Route::get('/get-customer-addresses', [OrderController::class, 'getCustomerAddre
 
 Route::get('/car-models/{carBrandId}', [CommonController::class, 'getCarModel']);
 
+Route::get('/run-car-model-excel-import', [CarModelController::class, 'importCarModelsFromExcel']);
+
 

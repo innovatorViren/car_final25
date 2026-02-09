@@ -12,6 +12,12 @@ use App\Models\{Order,Wash,Employee,Customer};
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Sentinel;
+use Google\Client as GoogleClient;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
+use Firebase;
+
+
 
 class OrderApiController extends ApiController
 {
@@ -453,6 +459,67 @@ class OrderApiController extends ApiController
             return $this->responseSuccessWithoutObject();
 
     }
+
+    // send firebase push notification for android app
+    // public function sendFcmNotificationApplication($user, $title, $body, $dataArray)
+    // {
+    //     $user = \App\Models\User::find($user);
+    
+    //     if (!$user || !$user->fcm_token) {
+    //         return response()->json(['message' => 'User does not have a device token'], 400);
+    //     }
+    
+    //     $fcm = $user->fcm_token;
+    //     $projectId = 'clearmycar-e1d9d';
+    
+    //     $credentialsFilePath = Storage::path(
+    //         'json/clearmycar-e1d9d-firebase-adminsdk-fbsvc-f02e0b791b.json'
+    //     );
+    
+    //     $client = new \Google\Client();
+    //     $client->setAuthConfig($credentialsFilePath);
+    //     $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+    //     $client->fetchAccessTokenWithAssertion();
+    
+    //     $token = $client->getAccessToken();
+    //     $access_token = $token['access_token'];
+    
+    //     $headers = [
+    //         "Authorization: Bearer {$access_token}",
+    //         "Content-Type: application/json"
+    //     ];
+    
+    //     $data = [
+    //         "message" => [
+    //             "token" => $fcm,
+    //             "notification" => [
+    //                 "title" => $title,
+    //                 "body"  => $body,
+    //             ],
+    //             "data" => $dataArray,
+    //         ]
+    //     ];
+    
+    //     $ch = curl_init();
+    //     curl_setopt($ch, CURLOPT_URL, "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send");
+    //     curl_setopt($ch, CURLOPT_POST, true);
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    
+    //     $response = curl_exec($ch);
+    //     $err = curl_error($ch);
+    //     curl_close($ch);
+    
+    //     if ($err) {
+    //         return response()->json(['message' => 'Curl Error: ' . $err], 500);
+    //     }
+    
+    //     return response()->json([
+    //         'message' => 'Notification sent successfully',
+    //         'response' => json_decode($response, true)
+    //     ]);
+    // }
 
     // send firebase push notification for android app
     public function sendFcmNotificationApplication($user,$title,$body,$dataArray)
