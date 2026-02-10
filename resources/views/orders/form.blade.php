@@ -1,18 +1,11 @@
 @php
 
     if (!empty($order)) {
-        $po_date = null;
-        $type_btn_disabled = 'disabled';
         $disabled = 'disabled';
         $accDisabled = 'disabled';
-        $price_list = $order->price_list_id ?? null;
     } else {
-        $po_date = now();
-        $type_btn_disabled = '';
         $disabled = '';
-        $totalGst = 0;
         $accDisabled = '';
-        $price_list = null;
     }
 
     $date = now();
@@ -59,18 +52,18 @@
                 <!-- Car Brand Dropdown -->
                     <div class="form-group col-lg-4"><span class="text-danger">*</span>
                         {!! Form::label('car_brand', 'Select Car Brand') !!}
-                        {!! Form::select('car_brand', ['' => 'Select'] + $carBrands, null, ['id' => 'car_brand', 'class' => 'form-control']) !!}
+                        {!! Form::select('car_brand', ['' => 'Select'] + $carBrands, null, ['id' => 'car_brand', 'class' => 'form-control jsCarBrand','data-placeholder' => 'Select Car Brand',]) !!}
                     </div>
 
                     <!-- Car Model Dropdown (Initially empty) -->
                     <div class="form-group col-lg-4"><span class="text-danger">*</span>
                         {!! Form::label('car_model', 'Select Car Model') !!}
-                        {!! Form::select('car_model', [], null, ['id' => 'car_model', 'class' => 'form-control']) !!}
+                        {!! Form::select('car_model', [], null, ['id' => 'car_model', 'class' => 'form-control jsCarModel','data-placeholder' => 'Select Car Model']) !!}
                     </div>
                     <div class="form-group col-lg-4">
                         {!! Form::label('frequency', 'Wash Frequency') !!}<span class="text-danger">*</span>
                         {!! Form::select('frequency',  ['' => 'Select Frequency'] + $frequency, null, [
-                            'class' => 'form-control required', 
+                            'class' => 'form-control jsFrequency required', 
                             'id' => 'frequency',
                             'style' => 'width: 100%;',
                             'data-placeholder' => 'Select Frequency'
@@ -95,6 +88,50 @@
                 
             </div>
         </div>
+
+        <div class="row">
+            <div class="form-group col-lg-6">
+                {!! Form::label('start_date', 'Start Date') !!}<span class="text-danger">*</span>
+                {!! Form::date('start_date', null, [
+                    'class' => 'form-control',
+                    'id' => 'start_date',
+                    'min' => \Carbon\Carbon::now()->format('Y-m-d')
+                ]) !!}
+            </div>
+
+            <div class="form-group col-lg-6">
+                {!! Form::label('start_time', 'Start Time') !!}<span class="text-danger">*</span>
+                {!! Form::time('start_time', null, [
+                    'class' => 'form-control',
+                    'id' => 'start_time'
+                ]) !!}
+            </div>
+            <div class="form-group col-lg-6">
+                {!! Form::label('end_time', 'End Time') !!}<span class="text-danger">*</span>
+                {!! Form::time('end_time', null, [
+                    'class' => 'form-control',
+                    'id' => 'end_time',
+                    'readonly'
+                ]) !!}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="mt-4">Scheduled Slots</h5>
+                <table class="table table-bordered" id="slotsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
 
     </div>
 </div>

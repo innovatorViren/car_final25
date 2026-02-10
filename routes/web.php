@@ -175,6 +175,10 @@ Route::post('/orders-status/{id}', [OrderController::class, 'orderStatus'])->nam
 
 Route::get('/get-customer-addresses', [OrderController::class, 'getCustomerAddress'])->name('orders.getCustomerAddress');
 
+Route::post('/orders/generate-slots', [OrderController::class, 'generateSlots'])
+    ->name('orders.generate.slots');
+
+
 Route::get('/car-models/{carBrandId}', [CommonController::class, 'getCarModel']);
 
 Route::get('/run-car-model-excel-import', [CarModelController::class, 'importCarModelsFromExcel']);

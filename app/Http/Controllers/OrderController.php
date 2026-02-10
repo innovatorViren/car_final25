@@ -54,6 +54,112 @@ class OrderController extends Controller
         return view('orders.create', $this->data);
     }
 
+    // public function generateSlots(Request $request)
+    // {
+    //     $frequencyType = $request->frequency;
+    //     $startDate = $request->start_date;
+    //     $startTime = $request->start_time;
+    //     $endTime = Carbon::parse($startTime)->addHour()->format('H:i');
+    //     $order_id = null;
+
+    //     $slots = [];
+
+    //     switch ($frequencyType) {
+    //         case 'daily':
+    //             $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 30, $order_id);
+    //             break;
+
+    //         case 'weekly_2':
+    //             $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 8, $order_id);
+    //             break;
+
+    //         case 'weekly_1':
+    //             $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 4, $order_id);
+    //             break;
+
+    //         case 'one_time':
+    //             $slots[] = [
+    //                 'order_id' => $order_id,
+    //                 'scheduled_date' => Carbon::parse($startDate)->format('Y-m-d'),
+    //                 'start_time' => $startTime,
+    //                 'end_time' => $endTime,
+    //             ];
+    //             break;
+    //     }
+
+    //     return response()->json($slots);
+    // }
+
+
+    public function generateSlots(Request $request)
+    {
+        $frequencyType = $request->frequency;
+        $startDate = $request->start_date;
+        $startTime = $request->start_time;
+        $endTime = $request->end_time; // already +1 hour
+        $order_id = null;
+
+        $slots = [];
+
+        switch ($frequencyType) {
+            case 'daily':
+                $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 30, $order_id);
+                break;
+
+            case 'weekly_2':
+                $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 8, $order_id);
+                break;
+
+            case 'weekly_1':
+                $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 4, $order_id);
+                break;
+
+            case 'one_time':
+                $slots[] = [
+                    'order_id' => $order_id,
+                    'scheduled_date' => $startDate,
+                    'start_time' => $startTime,
+                    'end_time' => $endTime,
+                ];
+                break;
+        }
+
+        return response()->json($slots);
+    }
+
+    private function generateAlternateDaySlots($startDate, $startTime, $endTime, $totalWashes,$order_id)
+    {
+        $slots = [];
+        $start = Carbon::parse($startDate);
+
+        try {
+            $startTimeObj = Carbon::createFromFormat('g:i A', $startTime);
+        } catch (\Exception $e) {
+            $startTimeObj = Carbon::createFromFormat('H:i', $startTime);
+        }
+
+        try {
+            $endTimeObj = Carbon::createFromFormat('g:i A', $endTime);
+        } catch (\Exception $e) {
+            $endTimeObj = Carbon::createFromFormat('H:i', $endTime);
+        }
+
+        for ($i = 0; $i < $totalWashes; $i++) {
+
+            $scheduledDate = $start->copy()->addDays($i * 2)->format('Y-m-d');
+            $slots[] = [
+                'order_id' => $order_id,
+                'scheduled_date' => $scheduledDate,
+                'start_time' => $startTimeObj->format('H:i:s'),
+                'end_time' => $endTimeObj->format('H:i:s'),
+            ];
+        }
+
+        return $slots;
+    }
+
+
+
     /**
      * Store a newly created resource in storage.
      */

@@ -6,9 +6,10 @@
             allowClear: true
         });
 
-        $('.jsCustomerAddress').select2({
-            allowClear: true
-        });
+        $('.jsCustomerAddress').select2({allowClear: true});
+        $('.jsCarBrand').select2({allowClear: true});
+        $('.jsCarModel').select2({allowClear: true});
+        $('.jsFrequency').select2({allowClear: true});
 
 
         var id = $('#id').val();
@@ -141,5 +142,71 @@
     //     // $('.jsCutDate').val(pickdate);
     //     $(".jsDoDate").attr('min', $('.jsDate').val());
     // });
+    $(document).on('change', '#start_date', function () {
+        let selectedDate = $(this).val();
+        let today = new Date().toISOString().split('T')[0];
+
+        if (selectedDate === today) {
+            let now = new Date();
+            let hours = String(now.getHours()).padStart(2, '0');
+            let minutes = String(now.getMinutes()).padStart(2, '0');
+            $('#start_time').attr('min', hours + ':' + minutes);
+        } else {
+            $('#start_time').removeAttr('min');
+        }
+    });
+
+    $('#start_time').on('change', function () {
+        let startTime = $(this).val(); // HH:MM
+
+        if (!startTime) return;
+
+        let parts = startTime.split(':');
+        let date = new Date();
+        date.setHours(parts[0], parts[1], 0);
+        date.setHours(date.getHours() + 1);
+
+        let endHour = String(date.getHours()).padStart(2, '0');
+        let endMinute = String(date.getMinutes()).padStart(2, '0');
+
+        $('#end_time').val(endHour + ':' + endMinute);
+    });
+
+    function loadSlots() {
+        let frequency = $('#frequency').val();
+        let startDate = $('#start_date').val();
+        let startTime = $('#start_time').val();
+        let endTime = $('#end_time').val();
+
+        if (!frequency || !startDate || !startTime) return;
+
+        $.ajax({
+            url: "{{ route('orders.generate.slots') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                frequency: frequency,
+                start_date: startDate,
+                start_time: startTime,
+                end_time: endTime
+            },
+            success: function (response) {
+                let rows = '';
+                response.forEach(slot => {
+                    rows += `
+                        <tr>
+                            <td>${slot.scheduled_date}</td>
+                            <td>${slot.start_time}</td>
+                            <td>${slot.end_time}</td>
+                        </tr>
+                    `;
+                });
+                $('#slotsTable tbody').html(rows);
+            }
+        });
+    }
+
+    $('#frequency, #start_date, #start_time').on('change', loadSlots);
+
 
 </script>
