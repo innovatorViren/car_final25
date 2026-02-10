@@ -119,7 +119,6 @@ class OrderApiController extends ApiController
             $inputData['start_time'] = $startTime;
             $inputData['end_time'] = $endTime;
             $inputData['customer_adress_id'] = $request->customer_adress_id;
-
             $model = Order::create($inputData);
             $order_id  = $model->id;
 
@@ -167,7 +166,7 @@ class OrderApiController extends ApiController
             $userIds = \DB::table('users')->where('is_active','Yes')->where('roles_id',1)->pluck('id');
             foreach($userIds as $user)
             {
-                $user_token = $this->sendFcmNotificationApplication($user,'New Order Received <br>',$body = ' '.$customerData->first_name.' placed a new order '.$model->code.' ',$dataArray);
+                $user_token = $this->sendFcmNotificationApplication($user,'New Order Received',$body = ' '.$customerData->first_name.' placed a new order. '.$model->code.' at '.date('h:i A', strtotime($startTime)).' .',$dataArray);
             }
 
             return $this->responseSuccessWithoutDataObject();
