@@ -81,18 +81,22 @@
     var aashar_no = "{{ __('Aadhar No') }}";
     var action = "{{ __('common.action') }}";
     var is_active = "{{ __('common.status') }}";
-    var type = "{{ $type }}";
+    {{-- var type = "{{ $type }}"; --}}
+    let type = @json($type ?? null);
 
 
     (function(window, $) {
-        if (type != '') {
+
+        if (type != null) {
             jQuery("select[name='statusFilter']").val(type);
+
             var fieldName = (type == "Yes") ? "Active" : "Inactive";
+
             var htmlData =
                 '<span class="btn btn-light-dark font-weight-bold mr-2 remove-filter jsRemoveFilter" data-field-name="jsStatusFilter"> <i class="ki ki-bold-close icon-sm"></i> ' +
                 fieldName + '</span>';
-            $('.jsFilterData').append(htmlData);
 
+            $('.jsFilterData').append(htmlData);
         }
 
         window.LaravelDataTables = window.LaravelDataTables || {};
@@ -173,7 +177,6 @@
                 }
             ],
             "searching": false,
-            //"dom": "<\"wrapper\">rtilfp",
             "dom": `<'row'<'col-sm-12'tr>>
             <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
             "oLanguage": {
@@ -181,10 +184,10 @@
             },
             "stateSave": true,
             stateSaveParams: function(settings, data) {
-               data.statusFilter = $('#statusFilter').val();
+               {{-- data.statusFilter = $('#statusFilter').val(); --}}
             },
             stateLoadParams: function(settings, data) {
-                $('#statusFilter').val(data.statusFilter);
+                {{-- $('#statusFilter').val(data.statusFilter); --}}
             },
             "initComplete": function(settings, json) {
                 $('.jsBtnSearch').click();

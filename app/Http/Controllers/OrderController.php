@@ -54,42 +54,6 @@ class OrderController extends Controller
         return view('orders.create', $this->data);
     }
 
-    // public function generateSlots(Request $request)
-    // {
-    //     $frequencyType = $request->frequency;
-    //     $startDate = $request->start_date;
-    //     $startTime = $request->start_time;
-    //     $endTime = Carbon::parse($startTime)->addHour()->format('H:i');
-    //     $order_id = null;
-
-    //     $slots = [];
-
-    //     switch ($frequencyType) {
-    //         case 'daily':
-    //             $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 30, $order_id);
-    //             break;
-
-    //         case 'weekly_2':
-    //             $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 8, $order_id);
-    //             break;
-
-    //         case 'weekly_1':
-    //             $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 4, $order_id);
-    //             break;
-
-    //         case 'one_time':
-    //             $slots[] = [
-    //                 'order_id' => $order_id,
-    //                 'scheduled_date' => Carbon::parse($startDate)->format('Y-m-d'),
-    //                 'start_time' => $startTime,
-    //                 'end_time' => $endTime,
-    //             ];
-    //             break;
-    //     }
-
-    //     return response()->json($slots);
-    // }
-
 
     public function generateSlots(Request $request)
     {
@@ -165,7 +129,66 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $frequencyType = $request->frequency ?? null;
+        $carModel = DB::table('car_models')->where('id',$request->car_model_id)->first();
+        $planData = DB::table('plans')->where('car_size_id',$carModel->car_size_id)->where('frequency', $frequencyType)->whereNull('deleted_at')->first();
+        $startDate = $request->start_date;
+        $startTime = $request->start_time;
+        $endTime   = $request->end_time;
+        $totalWash = count($request->slots);
+        $lastOrder = Order::latest()->first();
+        $lastOrderNumber = $lastOrder ? (int) str_replace('O-', '', $lastOrder->id) : 0;
+        $newOrderNumber = $lastOrderNumber + 1;
+        $orderSeries = 'O-' . sprintf('%03d', $newOrderNumber);
+
+        $customerId = $request->customer_id ?? null;
+        $inputData['code'] = $orderSeries;
+        $inputData['date'] = Carbon::now()->format('Y-m-d');
+        $inputData['customer_id'] = $customerId;
+        $inputData['plan_id'] = $planData->id;
+        $inputData['car_model_id'] = $request->car_model_id;
+        $inputData['car_size_id'] = $carModel->car_size_id;
+        $inputData['vehicle_name'] = null;
+        $inputData['frequency_type'] = $frequencyType;
+        $inputData['total_washes'] = $totalWash ?? null;
+        $inputData['price'] = $planData->price ?? null;
+        $inputData['pay_amount'] = null;
+        $inputData['start_date'] = $startDate;
+        $inputData['start_time'] = $startTime;
+        $inputData['end_time'] = $endTime;
+        $inputData['customer_adress_id'] = $request->customer_adress_id ?? null;
+
+        $model = Order::create($inputData);
+        $order_id  = $model->id;
+
+        $slots = [];
+        switch ($frequencyType) {
+            case 'daily':
+                $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 30,$order_id);
+                break;
+
+            case 'weekly_2':
+                $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 8,$order_id);
+                break;
+
+            case 'weekly_1':
+                $slots = $this->generateAlternateDaySlots($startDate, $startTime, $endTime, 4,$order_id);
+                break;
+
+            case 'one_time':
+                $slots[] = [
+                    'order_id' => $order_id,
+                    'scheduled_date' => Carbon::parse($startDate)->format('Y-m-d'),
+                    'start_time' => $startTime,
+                    'end_time' => $endTime,
+                ];
+                break;
+        }
+
+        Wash::insert($slots);
+
+        return redirect()->route('orders.index')->with('success', __('common.create_success'));
+        
     }
 
     /**

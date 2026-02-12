@@ -85,6 +85,13 @@ class PlanDataTable extends DataTable
         $fields = ['plans.*'];
         $models = Plan::select($fields);
 
+        if (request()->get('filter_name') != '') {
+            $models->where('plans.name', 'like', "%" . request()->get("filter_name") . "%");
+        }
+        if (request()->get('filter_frequency', false)) {
+            $models->where('frequency', 'like', "%" . request()->get("filter_frequency") . "%");
+        }
+        
         return $this->applyScopes($models);
     }
 

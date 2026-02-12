@@ -28,7 +28,7 @@
                                         <div class="datatable-form-filter no-padding">{!! Form::text('filter_name',Request::get('filter_name',null),array('class' => 'form-control')) !!}</div>
                                     </th>
                                     <th>
-                                        <div class="datatable-form-filter no-padding">{!! Form::text('filter_car_size',Request::get('filter_car_size',null),array('class' => 'form-control')) !!}</div>
+                                        
                                     </th>
                                     <th>
                                         <div class="datatable-form-filter no-padding">{!! Form::text('filter_frequency',Request::get('filter_frequency',null),array('class' => 'form-control')) !!}</div>
@@ -83,7 +83,7 @@
             "ajax": {
                 data: function(d) {
                     d.filter_name = jQuery(".datatable-form-filter input[name='filter_name']").val();
-                    d.filter_car_size = jQuery(".datatable-form-filter input[name='filter_car_size']").val();
+                    {{-- d.filter_car_size = jQuery(".datatable-form-filter input[name='filter_car_size']").val(); --}}
                     d.filter_frequency = jQuery(".datatable-form-filter input[name='filter_frequency']").val();
                 }
             },
@@ -156,6 +156,8 @@
             //dom: 'Bfrtip',//visibility
             dom: `Bfrt<'row'<'col-sm-6 col-md-6'i><'col-sm-6 col-md-6 dataTables_pager'lp>>`, //
         });
+        const table = window.LaravelDataTables["dataTableBuilder"];
+        table.buttons().container().appendTo('#custom-column-visibility-container');
     })(window, jQuery);
 
     $('#dataTableBuilder').on('column-visibility.dt', function(e, settings, column, state) {

@@ -136,12 +136,7 @@
         });
 
 
-    // $('.jsDate').change(function() {
-
-    //     var date = $(this).val();
-    //     // $('.jsCutDate').val(pickdate);
-    //     $(".jsDoDate").attr('min', $('.jsDate').val());
-    // });
+   
     $(document).on('change', '#start_date', function () {
         let selectedDate = $(this).val();
         let today = new Date().toISOString().split('T')[0];
@@ -192,15 +187,26 @@
             },
             success: function (response) {
                 let rows = '';
-                response.forEach(slot => {
+
+                response.forEach((slot, index) => {
                     rows += `
                         <tr>
-                            <td>${slot.scheduled_date}</td>
-                            <td>${slot.start_time}</td>
-                            <td>${slot.end_time}</td>
+                            <td>
+                                ${slot.scheduled_date}
+                                <input type="hidden" name="slots[${index}][date]" value="${slot.scheduled_date}">
+                            </td>
+                            <td>
+                                ${slot.start_time}
+                                <input type="hidden" name="slots[${index}][start_time]" value="${slot.start_time}">
+                            </td>
+                            <td>
+                                ${slot.end_time}
+                                <input type="hidden" name="slots[${index}][end_time]" value="${slot.end_time}">
+                            </td>
                         </tr>
                     `;
                 });
+
                 $('#slotsTable tbody').html(rows);
             }
         });

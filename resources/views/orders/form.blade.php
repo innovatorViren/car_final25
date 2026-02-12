@@ -52,13 +52,13 @@
                 <!-- Car Brand Dropdown -->
                     <div class="form-group col-lg-4"><span class="text-danger">*</span>
                         {!! Form::label('car_brand', 'Select Car Brand') !!}
-                        {!! Form::select('car_brand', ['' => 'Select'] + $carBrands, null, ['id' => 'car_brand', 'class' => 'form-control jsCarBrand','data-placeholder' => 'Select Car Brand',]) !!}
+                        {!! Form::select('car_brand_id', ['' => 'Select'] + $carBrands, null, ['id' => 'car_brand', 'class' => 'form-control jsCarBrand','data-placeholder' => 'Select Car Brand',]) !!}
                     </div>
 
                     <!-- Car Model Dropdown (Initially empty) -->
                     <div class="form-group col-lg-4"><span class="text-danger">*</span>
                         {!! Form::label('car_model', 'Select Car Model') !!}
-                        {!! Form::select('car_model', [], null, ['id' => 'car_model', 'class' => 'form-control jsCarModel','data-placeholder' => 'Select Car Model']) !!}
+                        {!! Form::select('car_model_id', [], null, ['id' => 'car_model', 'class' => 'form-control jsCarModel','data-placeholder' => 'Select Car Model']) !!}
                     </div>
                     <div class="form-group col-lg-4">
                         {!! Form::label('frequency', 'Wash Frequency') !!}<span class="text-danger">*</span>
