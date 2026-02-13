@@ -421,7 +421,7 @@ class AuthController extends ApiController
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ]);
-            $this->sendPasswordMail($email, $code);
+            $this->sendPasswordMail($email, $code,$user->first_name);
 
             $message = 'Instructions for changing your password will be sent to your email address if it is associated with a valid account.';
             return response()->json(['message' => $message,'email' => $email,'id' => $user->id,'status' => 1], 200);
@@ -436,25 +436,77 @@ class AuthController extends ApiController
         // return response()->json($this->response_json, 200);
 
     }
-
-    public function sendPasswordMail($email, $code)
+    public function sendPasswordMail($email, $code, $customerName)
     {
+        $dateTime = Carbon::now()->addMinutes(5)->format('M d, Y h:i A');
 
-            $dateTime = Carbon::now()->addMinutes(15)->format('M d, Y H:i A');
-            $html = '<p>This OTP is valid for 15 minutes until '.$dateTime.'.</p><br>'. '<p>Your Login OTP is: <strong>'.$code.'</strong></p><br>'. '<p>Thank you,<br><strong>Clear My Car</strong></p>';
+        $subject = $customerName . ", here's your OTP to verify your email address on Clear My Car";
 
-            $transport = (new \Swift_SmtpTransport('smtp.gmail.com', '465'))
-                ->setUsername('virendrabutani@gmail.com')
-                ->setPassword('qwcb fnlf cpmw adkx')
-                ->setEncryption('SSl');
+        $html = '
+        <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:20px;">
+            
+            <h2 style="color:#333;">Confirm verification code</h2>
 
-            $mailer    = new \Swift_Mailer($transport);
-            $message   = (new \Swift_Message('Clear My Car'))
-                ->setFrom('viren04041995@gmail.com', '')
-                ->setTo($email)
-                ->setBody($html, 'text/html');
-            $mailer->send($message);
+            <p>Hey, ' . $customerName . '</p>
+
+            <div style="margin:30px 0; text-align:center;">
+                <span style="
+                    font-size:36px;
+                    font-weight:bold;
+                    letter-spacing:5px;
+                    color:#000;
+                    display:inline-block;
+                    padding:10px 20px;
+                    border:2px solid #000;
+                    border-radius:8px;
+                ">
+                    ' . $code . '
+                </span>
+            </div>
+
+            <p>Please use this code to complete your verification process.</p>
+            <p><strong>This code is valid for 5 minutes (until ' . $dateTime . ').</strong></p>
+
+            <p>If you did not request this code, please ignore this email.</p>
+
+            <br>
+            <p>Thank you,<br><strong>Clear My Car</strong></p>
+
+        </div>';
+
+        $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 465, 'ssl'))
+            ->setUsername('virendrabutani@gmail.com')
+            ->setPassword('qwcb fnlf cpmw adkx');
+
+        $mailer = new \Swift_Mailer($transport);
+
+        $message = (new \Swift_Message($subject))
+            ->setFrom(['virendrabutani@gmail.com' => 'Clear My Car'])
+            ->setTo($email)
+            ->setBody($html, 'text/html');
+
+        $mailer->send($message);
     }
+
+
+    // public function sendPasswordMail($email, $code)
+    // {
+
+    //         $dateTime = Carbon::now()->addMinutes(15)->format('M d, Y H:i A');
+    //         $html = '<p>This OTP is valid for 15 minutes until '.$dateTime.'.</p><br>'. '<p>Your Login OTP is: <strong>'.$code.'</strong></p><br>'. '<p>Thank you,<br><strong>Clear My Car</strong></p>';
+
+    //         $transport = (new \Swift_SmtpTransport('smtp.gmail.com', '465'))
+    //             ->setUsername('virendrabutani@gmail.com')
+    //             ->setPassword('qwcb fnlf cpmw adkx')
+    //             ->setEncryption('SSl');
+
+    //         $mailer    = new \Swift_Mailer($transport);
+    //         $message   = (new \Swift_Message('Clear My Car'))
+    //             ->setFrom('viren04041995@gmail.com', '')
+    //             ->setTo($email)
+    //             ->setBody($html, 'text/html');
+    //         $mailer->send($message);
+    // }
 
 
     public function generateRandumCodeEmail()
