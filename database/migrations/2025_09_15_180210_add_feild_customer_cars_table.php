@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('customer_cars', function (Blueprint $table) {
             $table->string('vehicle_name')->nullable()->after('customer_id');
+            $table->string('vehicle_no')->nullable()->after('customer_id');
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('customer_cars', function (Blueprint $table) {
             $table->dropColumn('vehicle_name');
+            $table->dropColumn('vehicle_no');
         });
     }
 };

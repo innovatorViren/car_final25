@@ -489,24 +489,77 @@ class AuthController extends ApiController
     }
 
 
-    // public function sendPasswordMail($email, $code)
-    // {
+    public function veryfyOtpEmail(Request $request)
+    {
+        $result = $this->validate($request, [
+            'email' => 'required|email|max:255'
+        ]);
 
-    //         $dateTime = Carbon::now()->addMinutes(15)->format('M d, Y H:i A');
-    //         $html = '<p>This OTP is valid for 15 minutes until '.$dateTime.'.</p><br>'. '<p>Your Login OTP is: <strong>'.$code.'</strong></p><br>'. '<p>Thank you,<br><strong>Clear My Car</strong></p>';
+            $code = $this->generateRandumCodeEmail();
+            $email = $request->email;
+            DB::table('forgot_password_otps')->where('email',$email)->delete();
+            DB::table('forgot_password_otps')->insert([
+                    'email' => $email,
+                    'otp' => $code,  
+                    'platform' => 'app',  
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            $this->sendOtpMail($email, $code);
 
-    //         $transport = (new \Swift_SmtpTransport('smtp.gmail.com', '465'))
-    //             ->setUsername('virendrabutani@gmail.com')
-    //             ->setPassword('qwcb fnlf cpmw adkx')
-    //             ->setEncryption('SSl');
+            $message = 'Instructions for OTP will be sent to your email address if it is associated with a valid account.';
+            return response()->json(['message' => $message,'email' => $email,'code' => $code,'status' => 1], 200);
+    }
 
-    //         $mailer    = new \Swift_Mailer($transport);
-    //         $message   = (new \Swift_Message('Clear My Car'))
-    //             ->setFrom('viren04041995@gmail.com', '')
-    //             ->setTo($email)
-    //             ->setBody($html, 'text/html');
-    //         $mailer->send($message);
-    // }
+    public function sendOtpMail($email, $code)
+    {
+        $dateTime = Carbon::now()->addMinutes(5)->format('M d, Y h:i A');
+
+        $subject = "Here's your OTP to verify your email address on Clear My Car";
+
+        $html = '
+        <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:20px;">
+            
+            <h2 style="color:#333;">Confirm verification code</h2>
+
+            <div style="margin:30px 0; text-align:center;">
+                <span style="
+                    font-size:36px;
+                    font-weight:bold;
+                    letter-spacing:5px;
+                    color:#000;
+                    display:inline-block;
+                    padding:10px 20px;
+                    border:2px solid #000;
+                    border-radius:8px;
+                ">
+                    ' . $code . '
+                </span>
+            </div>
+
+            <p>Please use this code to complete your verification process.</p>
+            <p><strong>This code is valid for 5 minutes (until ' . $dateTime . ').</strong></p>
+
+            <p>If you did not request this code, please ignore this email.</p>
+
+            <br>
+            <p>Thank you,<br><strong>Clear My Car</strong></p>
+
+        </div>';
+
+        $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 465, 'ssl'))
+            ->setUsername('virendrabutani@gmail.com')
+            ->setPassword('qwcb fnlf cpmw adkx');
+
+        $mailer = new \Swift_Mailer($transport);
+
+        $message = (new \Swift_Message($subject))
+            ->setFrom(['virendrabutani@gmail.com' => 'Clear My Car'])
+            ->setTo($email)
+            ->setBody($html, 'text/html');
+
+        $mailer->send($message);
+    }
 
 
     public function generateRandumCodeEmail()
@@ -523,7 +576,7 @@ class AuthController extends ApiController
         if($request->otp == $verifyOtp->otp)
         {
             $message = 'Your OTP has been successfully verified';
-            return response()->json(['message' => $message,'email' => $request->email,'id' => (int)$request->id,'status' => 1], 200);
+            return response()->json(['message' => $message,'email' => $request->email,'id' => (int)$request->id ?? '','status' => 1], 200);
         }
 
             $this->response_json['message'] = 'Incorrect OTP, please try again';

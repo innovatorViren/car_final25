@@ -24,6 +24,7 @@ Route::namespace('Api')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 
     Route::post('forgot_password', [AuthController::class, 'forgotPassword']);
+    Route::post('verify-otp-send', [AuthController::class, 'veryfyOtpEmail']);
     Route::get('verify-otp-app', [AuthController::class, 'verifyOtpApp']);
     Route::post('forgot-change-password', [AuthController::class, 'forgotChangePassword']);
 
