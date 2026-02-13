@@ -282,7 +282,7 @@ class AuthController extends ApiController
 
         $id = $this->currentuser()->id;
         $user = User::findorfail($id);
-
+        $bearerToken = $request->bearerToken();
         if ($user) 
         {
             $user->is_app_login = '0';
@@ -290,8 +290,10 @@ class AuthController extends ApiController
             $user->fcm_token = Null; 
             $user->save();
         }
-        
         $this->currentuser()->token()->revoke();
+        
+
+        DB::table('sessions')->where('platform','App')->where('token',$bearerToken)->delete();
         $this->response_json['message'] = 'logged out successfully';
         return $this->responseSuccess();
     }

@@ -11,4 +11,16 @@ class PrivacypolicyController extends Controller
         $this->data['title']= 'Privacy-Policy';
         return view('privacy.privacy-policy');
     }
+
+    public function termsConditions() 
+    {
+        $this->data['title']= 'Terms & Conditions';
+        return view('privacy.terms-conditions');
+    }
+
+    public function refund() 
+    {
+        $this->data['title']= 'Refund and Cancellation policy';
+        return view('privacy.refund');
+    }
 }

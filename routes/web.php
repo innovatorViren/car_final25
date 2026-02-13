@@ -166,6 +166,8 @@ Route::resource('mail-template', MailTemplateController::class)
 Route::resource('banner', BannerController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
 
 Route::get('privacy-policy', [PrivacypolicyController::class, 'index'])->name('privacy-policy');
+Route::get('terms-conditions', [PrivacypolicyController::class, 'termsConditions'])->name('terms-conditions');
+Route::get('refund-policy', [PrivacypolicyController::class, 'refund'])->name('refund-policy');
 Route::get('contact-us', [ContactController::class, 'index'])->name('contact-us');
 Route::post('contact-store', [ContactController::class, 'store'])->name('contact-store');
 
