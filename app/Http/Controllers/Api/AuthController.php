@@ -172,6 +172,14 @@ class AuthController extends ApiController
                 return $this->responseError();
             }
 
+            if(!$this->checkDuplicateEmail($request->email))
+            {
+                // return re
+                $this->response_json['status'] = 0;
+                $this->response_json['message'] = 'Email Already Exit';
+                return $this->responseError();
+            }
+
             if ($validatedData->fails()) {
                 throw new Exception($validatedData->messages()->first(), 1);
             }
@@ -189,20 +197,6 @@ class AuthController extends ApiController
             ];
             $customer = Customer::create($dataArray);
             $customer_id = $customer->id;
-
-            //otp veryfyy 
-
-            
-            // $updateCusData = [
-            //         'expired_at' => Carbon::now()->addMinutes(10)
-            //     ];
-            // DB::table('customers')->where('id', $customer_id)->update($updateCusData);
-
-            // $to_mobile = $request->mobile ?? '';
-            // $this->common->send_whatsapp_otp($otp, $to_mobile);
-
-
-
 
             $role_id = Role::where('slug', 'customer')->first()->id ?? '';
 
@@ -255,6 +249,19 @@ class AuthController extends ApiController
         $mobile = str_replace(' ','',$mobile);
         $customer = Customer::where('mobile', $mobile)->first();
         $user = User::where('mobile', $mobile)->first();
+
+
+        if ($customer || $user) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public function checkDuplicateEmail($email)
+    {
+        $email = str_replace(' ','',$email);
+        $customer = Customer::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
 
 
         if ($customer || $user) {
@@ -420,13 +427,9 @@ class AuthController extends ApiController
             return response()->json(['message' => $message,'email' => $email,'id' => $user->id,'status' => 1], 200);
             // Mail::to($email)->queue(new CentaurPasswordReset($code));
         } else {
-            $this->response_json['message'] = 'The value is not a valid email address';
+            $this->response_json['message'] = 'Please enter valid email address';
             return $this->responseError();
         }
-
-
-
-
 
         // $this->response_json['code'] = $code;
         // $this->response_json['message'] =  $message;
