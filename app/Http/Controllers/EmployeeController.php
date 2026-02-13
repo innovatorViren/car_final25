@@ -314,7 +314,7 @@ class EmployeeController extends Controller
         }
     }
 
-    // getUniqueFilename() Imported from Mahalaxmi/Helper/AppHelper.php -> error occured AppHelper class not found
+    
     public function getUniqueFilename($fileInput, $destination)
     {
         $filename = $fileInput->getClientOriginalName();
@@ -328,7 +328,7 @@ class EmployeeController extends Controller
         }
         return time() . '_' . $filename . '.' . $path_parts['extension'];
     }
-    // getImagePath() Imported from Mahalaxmi/Helper/AppHelper.php -> error occured AppHelper class not found
+   
     public function getImagePath($file_name = '')
     {
         if ($this->is_public) {

@@ -7,7 +7,7 @@
     <base href="../../../">
     <meta charset="utf-8" />
     <title>{{$project_title ?? ''}}</title>
-    <meta name="description" content="Mahalaxmi Masala." />
+    <meta name="description" content="Clear My Car." />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="canonical" href="https://keenthemes.com/metronic" />
     <!--begin::Fonts-->
