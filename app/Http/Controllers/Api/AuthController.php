@@ -184,49 +184,60 @@ class AuthController extends ApiController
                 throw new Exception($validatedData->messages()->first(), 1);
             }
 
-            $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            // $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
-            $dataArray = [
-                'first_name' => $request->first_name,
-                'middle_name' => $request->middle_name,
-                'last_name' => $request->last_name,
-                'email' => str_replace(' ','',$request->email),
-                'mobile' => $request->mobile,
-                'otp' => $otp,
-                'platform' => 'App',
-            ];
-            $customer = Customer::create($dataArray);
-            $customer_id = $customer->id;
+            // $dataArray = [
+            //     'first_name' => $request->first_name,
+            //     'middle_name' => $request->middle_name,
+            //     'last_name' => $request->last_name,
+            //     'email' => str_replace(' ','',$request->email),
+            //     'mobile' => $request->mobile,
+            //     'otp' => $otp,
+            //     'platform' => 'App',
+            // ];
+            // $customer = Customer::create($dataArray);
+            DB::table('registers')->insert([
+                    'first_name' => $request->first_name,
+                    'middle_name' => $request->middle_name,
+                    'last_name' => $request->last_name,
+                    'email' => str_replace(' ','',$request->email),
+                    'mobile' => $request->mobile,
+                    'password' => $request->password,
+                    // 'otp' => $code,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            // $customer_id = $customer->id;
 
-            $role_id = Role::where('slug', 'customer')->first()->id ?? '';
+            // $role_id = Role::where('slug', 'customer')->first()->id ?? '';
 
-            $userArray = [
-                'emp_type' => 'customer',
-                'customer_id' => $customer_id ?? null,        
-                'first_name' => $request->get('first_name', null),
-                'middle_name' => $request->middle_name,
-                'last_name' => $request->get('last_name', null),
-                'permissions' => json_encode(['customer.view' => true]),
-                'email' => str_replace(' ','',$request->email),
-                'password' => Hash::make($request->password),
-                'mobile' => $request->mobile, 
-                'is_active' => 'Yes',
-                'roles_id' => $role_id,
-            ];
-            $credentials = [
-                'first_name' => $request->get('first_name', null),
-                'last_name' => $request->get('last_name', null),
-                'email' => str_replace(' ','',$request->email),
-                'password' => $request->get('password'),
-            ];
-            $activate = true;
-            $result = $this->authManager->register($credentials,$activate);
-            $user_id = $result->user->id;
+            // $userArray = [
+            //     'emp_type' => 'customer',
+            //     'customer_id' => $customer_id ?? null,        
+            //     'first_name' => $request->get('first_name', null),
+            //     'middle_name' => $request->middle_name,
+            //     'last_name' => $request->get('last_name', null),
+            //     'permissions' => json_encode(['customer.view' => true]),
+            //     'email' => str_replace(' ','',$request->email),
+            //     'password' => Hash::make($request->password),
+            //     'mobile' => $request->mobile, 
+            //     'is_active' => 'Yes',
+            //     'roles_id' => $role_id,
+            // ];
+            // $credentials = [
+            //     'first_name' => $request->get('first_name', null),
+            //     'last_name' => $request->get('last_name', null),
+            //     'email' => str_replace(' ','',$request->email),
+            //     'password' => $request->get('password'),
+            // ];
+            // $activate = true;
+            // $result = $this->authManager->register($credentials,$activate);
+            // $user_id = $result->user->id;
 
-            $user = User::findOrFail($user_id);
-            $user->update($userArray);
+            // $user = User::findOrFail($user_id);
+            // $user->update($userArray);
             
-            $result->user->roles()->sync(array($role_id));
+            // $result->user->roles()->sync(array($role_id));
 
             DB::commit();
         } catch (Exception $e) {
@@ -238,9 +249,10 @@ class AuthController extends ApiController
             return $this->responseError();
         }
         $this->response_json['status'] = 1;
-        $this->response_json['customer_id'] = $customer_id;
-        $this->response_json['otp'] = $otp;
-        $this->response_json['message'] = 'Customer and User Created SuccessFully';
+        // $this->response_json['customer_id'] = $customer_id;
+        // $this->response_json['otp'] = $code;
+        // $this->response_json['message'] = 'Customer and User Created SuccessFully';
+        $this->response_json['message'] = 'Register Created SuccessFully';
         return response()->json($this->response_json, 200);
     }
 
@@ -497,12 +509,10 @@ class AuthController extends ApiController
 
             $code = $this->generateRandumCodeEmail();
             $email = $request->email;
-            DB::table('forgot_password_otps')->where('email',$email)->delete();
-            DB::table('forgot_password_otps')->insert([
+            DB::table('registers')->where('email',$email)->delete();
+            DB::table('registers')->insert([
                     'email' => $email,
-                    'otp' => $code,  
-                    'platform' => 'app',  
-                    'created_at' => Carbon::now(),
+                    'otp' => $code,
                     'updated_at' => Carbon::now(),
                 ]);
             $this->sendOtpMail($email, $code);
@@ -570,17 +580,78 @@ class AuthController extends ApiController
 
     public function verifyOtpApp(Request $request)
     {
+        // dd($request->bearerToken());
 
-        $verifyOtp = DB::table('forgot_password_otps')->where('email',$request->email)->where('platform','app')->orderByDesc('id')->first();
+        if($request->id){
 
-        if($request->otp == $verifyOtp->otp)
-        {
-            $message = 'Your OTP has been successfully verified';
-            return response()->json(['message' => $message,'email' => $request->email,'id' => (int)$request->id ?? '','status' => 1], 200);
+            $verifyOtp = DB::table('forgot_password_otps')->where('email',$request->email)->where('platform','app')->orderByDesc('id')->first();
+
+            if($request->otp == $verifyOtp->otp)
+            {
+                $message = 'Your OTP has been successfully verified';
+                return response()->json(['message' => $message,'email' => $request->email,'id' => (int)$request->id ?? '','status' => 1], 200);
+            }
+
+                $this->response_json['message'] = 'Incorrect OTP, please try again';
+                return $this->responseError();        
+        }else{
+            $verifyOtp = DB::table('registers')->where('email',$request->email)->orderByDesc('id')->first();
+            // dd($verifyOtp);
+
+            if($request->otp == $verifyOtp->otp)
+            {
+
+                $dataArray = [
+                    'first_name' => $verifyOtp->first_name,
+                    'middle_name' => $verifyOtp->middle_name,
+                    'last_name' => $verifyOtp->last_name,
+                    'email' => str_replace(' ','',$verifyOtp->email),
+                    'mobile' => $verifyOtp->mobile,
+                    // 'otp' => $otp,
+                    'platform' => 'App',
+                ];
+                $customer = Customer::create($dataArray);
+
+
+                $customer_id = $customer->id;
+
+                $role_id = Role::where('slug', 'customer')->first()->id ?? '';
+
+                $userArray = [
+                    'emp_type' => 'customer',
+                    'customer_id' => $customer_id ?? null,        
+                    'first_name' => $verifyOtp->first_name ?? null,
+                    'middle_name' => $verifyOtp->middle_name,
+                    'last_name' => $verifyOtp->last_name ?? null,
+                    'permissions' => json_encode(['customer.view' => true]),
+                    'email' => str_replace(' ','',$verifyOtp->email),
+                    'password' => Hash::make($verifyOtp->password),
+                    'mobile' => $verifyOtp->mobile, 
+                    'is_active' => 'Yes',
+                    'roles_id' => $role_id,
+                ];
+                $credentials = [
+                    'first_name' => $verifyOtp->first_name ?? null,
+                    'last_name' => $verifyOtp->last_name ?? null,
+                    'email' => str_replace(' ','',$verifyOtp->email),
+                    'password' => $verifyOtp->password ?? null,
+                ];
+                $activate = true;
+                $result = $this->authManager->register($credentials,$activate);
+                $user_id = $result->user->id;
+
+                $user = User::findOrFail($user_id);
+                $user->update($userArray);
+                
+                $result->user->roles()->sync(array($role_id));
+                    $message = 'Your OTP has been successfully verified';
+                    return response()->json(['message' => $message,'email' => $verifyOtp->email,'id' => '','token'=>'','status' => 1], 200);
+            }
+
+                $this->response_json['message'] = 'Incorrect OTP, please try again';
+                return $this->responseError();
+
         }
-
-            $this->response_json['message'] = 'Incorrect OTP, please try again';
-            return $this->responseError();        
     }
 
 
