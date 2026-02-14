@@ -10,5 +10,6 @@ return [
 
     'update_success' => 'Car Model updated successfully',
     'create_success' => 'Car Model added successfully',
+    'delete_success' => 'Car Model deleted successfully',
     'dependency_error' => "This Car Model is used in :dependency.",
 ];

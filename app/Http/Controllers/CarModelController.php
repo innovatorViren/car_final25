@@ -119,7 +119,7 @@ class CarModelController extends Controller
             $dependency = $carModel->deleteValidate($id);
             if (!$dependency) {
                 $image_path = public_path($carModel->model_photo);
-                if (File::exists($image_path)) {
+                if (File::exists($image_path) && ($carModel->model_photo != null)) {
                     unlink(public_path($carModel->model_photo));
                     // File::delete($image_path);
                 }
