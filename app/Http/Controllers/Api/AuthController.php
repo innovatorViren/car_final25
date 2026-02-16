@@ -509,11 +509,17 @@ class AuthController extends ApiController
 
             $code = $this->generateRandumCodeEmail();
             $email = $request->email;
-            DB::table('registers')->where('email',$email)->delete();
-            DB::table('registers')->insert([
-                    'email' => $email,
+            DB::table('registers')
+                ->where('id', function ($query) use ($email) {
+                    $query->select('id')
+                          ->from('registers')
+                          ->where('email', $email)
+                          ->orderByDesc('id')
+                          ->limit(1);
+                })
+                ->update([
                     'otp' => $code,
-                    'updated_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
                 ]);
             $this->sendOtpMail($email, $code);
 
