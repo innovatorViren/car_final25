@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Exception;
 use App\Models\User;
 use App\Models\Setting;
-use App\Models\{Employee,Role,sessions,Customer};
+use App\Models\{Employee,Role,sessions,Customer,RoleUser};
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
