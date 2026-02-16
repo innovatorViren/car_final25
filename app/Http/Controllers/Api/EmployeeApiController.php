@@ -272,6 +272,7 @@ class EmployeeApiController extends ApiController
             'W.status as status',
             'C.mobile as mobile',
             'CM.name as car_model_name',
+            DB::raw("(CASE WHEN O.vehicle_no IS NOT NULL THEN  O.vehicle_no ELSE '' END) as vehicle_no"),
             'CA.address_line1 as address_line1',
             'CA.address_line2 as address_line2',
             'CA.pincode as pincode',

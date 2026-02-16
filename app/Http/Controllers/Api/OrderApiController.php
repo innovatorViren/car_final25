@@ -109,6 +109,7 @@ class OrderApiController extends ApiController
             $inputData['car_model_id'] = $request->car_model_id;
             $inputData['car_size_id'] = $request->car_size_id;
             $inputData['vehicle_name'] = $request->vehicle_name ?? null;
+            $inputData['vehicle_no'] = $request->vehicle_no ?? null;
             $inputData['frequency_type'] = $frequencyType;
             $inputData['total_washes'] = $request->total_washes;
             $inputData['price'] = $request->price;
@@ -389,6 +390,7 @@ class OrderApiController extends ApiController
                     'O.employee_id as employee_id',
                     'O.customer_adress_id as customer_adress_id',
                      DB::raw("(CASE WHEN O.vehicle_name IS NOT NULL THEN  O.vehicle_name ELSE '' END) as vehicle_name"),
+                     DB::raw("(CASE WHEN O.vehicle_no IS NOT NULL THEN  O.vehicle_no ELSE '' END) as vehicle_no"),
                     'CM.name as model_name',
                     DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                     'P.name as plan_name',
@@ -448,6 +450,7 @@ class OrderApiController extends ApiController
             $this->data =  $washItem;
             $this->response_json['order_car_model'] = $order->model_name;
             $this->response_json['vehicle_name'] = $order->vehicle_name;
+            $this->response_json['vehicle_no'] = $order->vehicle_no;
             $this->response_json['total_wash'] = $order->total_washes;
             $this->response_json['plan_name'] = $order->plan_name;
             $this->response_json['total_amount'] = $order->total_amount ?? 0;

@@ -662,8 +662,8 @@ class AuthController extends ApiController
                     $android_version = $settings->where('name', 'android_version')->first();
                     $ios_version = $settings->where('name', 'ios_version')->first();
 
-                    $this->data['android_version'] = (int) (!empty($android_version)) ? $android_version->value : 0;
-                    $this->data['ios_version'] = (int) (!empty($ios_version)) ? $ios_version->value : 0;
+                    // $this->data['android_version'] = (int) (!empty($android_version)) ? $android_version->value : 0;
+                    // $this->data['ios_version'] = (int) (!empty($ios_version)) ? $ios_version->value : 0;
 
                     $payload = ''; 
                     $platform = $request->get('Platform', '');
