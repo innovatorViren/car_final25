@@ -586,6 +586,7 @@ class AuthController extends ApiController
 
     public function verifyOtpApp(Request $request)
     {
+        // $fcm_token = $request->fcm_token ?? '';
         // dd($request->bearerToken());
 
         if($request->id){
@@ -635,6 +636,7 @@ class AuthController extends ApiController
                     'mobile' => $verifyOtp->mobile, 
                     'is_active' => 'Yes',
                     'roles_id' => $role_id,
+                    'fcm_token' => $request->fcm_token ?? '',
                 ];
                 $credentials = [
                     'first_name' => $verifyOtp->first_name ?? null,
@@ -648,53 +650,54 @@ class AuthController extends ApiController
                 $user = User::findOrFail($user_id);
                 $user->update($userArray);
                 
-                if ($user_id > 0) {
-                        RoleUser::create([
-                            'user_id' => $user_id,
-                            'role_id' => $role_id
-                        ]);
+                if ($user_id > 0) 
+                {
+                    RoleUser::create([
+                        'user_id' => $user_id,
+                        'role_id' => $role_id
+                    ]);
 
-                        $this->data = $this->userCollection($user);
-                        $settings = new Setting;
-                        $android_version = $settings->where('name', 'android_version')->first();
-                        $ios_version = $settings->where('name', 'ios_version')->first();
+                    $this->data = $this->userCollection($user);
+                    $settings = new Setting;
+                    $android_version = $settings->where('name', 'android_version')->first();
+                    $ios_version = $settings->where('name', 'ios_version')->first();
 
-                        $this->data['android_version'] = (int) (!empty($android_version)) ? $android_version->value : 0;
-                        $this->data['ios_version'] = (int) (!empty($ios_version)) ? $ios_version->value : 0;
+                    $this->data['android_version'] = (int) (!empty($android_version)) ? $android_version->value : 0;
+                    $this->data['ios_version'] = (int) (!empty($ios_version)) ? $ios_version->value : 0;
 
-                        $payload = ''; 
-                        $platform = $request->get('Platform', '');
-                        $deviceModel = $request->get('DeviceModel', '');
-                        $deviceId = $request->get('DeviceId', '');
-                        $deviceVersion = $request->get('DeviceVersion', '');
-                        $payload = json_encode([
-                            "platform" => $platform,
-                            "device_model" => $deviceModel,
-                            "device_id" => $deviceId,
-                            "device_version" => $deviceVersion,
-                        ]);
-                            
-                        $session_data = array(
-                            'id' => Session::getId(),
-                            'user_id' => $user->id,
-                            'ip_address' => $request->ip(),
-                            'user_agent' => $request->userAgent(),
-                            'payload' => $payload,
-                            'last_activity' => Carbon::now()->addMonth()->timestamp,
-                            'platform' => 'App',
-                            'token' => $this->data['access_token'] ?? '',
-                        );
-                        DB::table('sessions')->insert($session_data);
-                    }
-                    // $result->user->roles()->sync(array($role_id));
-                    // $message = 'Your OTP has been successfully verified';
-                    // return response()->json(['message' => $message,'email' => $verifyOtp->email,'id' => '','token'=>'','status' => 1], 200);
-                    $this->data = $this->data;
-                    $this->response_json['message'] = 'OTP Verified Successfully';
-            }
-
+                    $payload = ''; 
+                    $platform = $request->get('Platform', '');
+                    $deviceModel = $request->get('DeviceModel', '');
+                    $deviceId = $request->get('DeviceId', '');
+                    $deviceVersion = $request->get('DeviceVersion', '');
+                    $payload = json_encode([
+                        "platform" => $platform,
+                        "device_model" => $deviceModel,
+                        "device_id" => $deviceId,
+                        "device_version" => $deviceVersion,
+                    ]);
+                        
+                    $session_data = array(
+                        'id' => Session::getId(),
+                        'user_id' => $user->id,
+                        'ip_address' => $request->ip(),
+                        'user_agent' => $request->userAgent(),
+                        'payload' => $payload,
+                        'last_activity' => Carbon::now()->addMonth()->timestamp,
+                        'platform' => 'App',
+                        'token' => $this->data['access_token'] ?? '',
+                    );
+                    DB::table('sessions')->insert($session_data);
+                }
+                // $result->user->roles()->sync(array($role_id));
+                // $message = 'Your OTP has been successfully verified';
+                // return response()->json(['message' => $message,'email' => $verifyOtp->email,'id' => '','token'=>'','status' => 1], 200);
+                $this->data = $this->data;
+                $this->response_json['message'] = 'OTP Verified Successfully';
+            }else{
                 $this->response_json['message'] = 'Incorrect OTP, please try again';
                 return $this->responseError();
+            }
 
         }
         return $this->responseSuccess();
