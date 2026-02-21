@@ -52,6 +52,11 @@ Route::get('/clear-cache', function () {
     echo 'All clear done successfully.';
 });
 
+Route::get('set-notification', function () {
+    Artisan::call('command:SetNotification');
+    echo 'Set Notification Command Run successfully!.';
+});
+
 
 Route::get('/', [SessionController::class, 'getLogin'])->name('auth.login.form');
 Route::post('/', function () {
