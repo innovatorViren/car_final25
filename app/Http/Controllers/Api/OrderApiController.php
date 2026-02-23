@@ -232,10 +232,40 @@ class OrderApiController extends ApiController
             $id = $request->id ?? null;
             $empId = $request->emp_id ?? null;
             if($type == 'main'){
+                $order = DB::table('orders')->where('id', $id)->first();
                 DB::table('orders')->where('id',$id)->update(['employee_id'=>$empId]);
                 DB::table('washes')->where('order_id',$id)->update(['employee_id'=>$empId]);
+
+                $currentUserId = DB::table('users')->where('emp_id',$empId)->first()->id;
+
+                $dataArray = [
+                    'come_from'  => 'admin-customer-order',
+                    'order_id'   => (string) $order->id,
+                    'order_name' => $order ? $order->code : null,
+                ];
+
+                $userData = \DB::table('users')->where('is_active','Yes')->where('id',$currentUserId)->first();
+                if($userData){
+                    $user_token = $this->sendFcmNotificationApplication($userData->id,'New Order Received',$body = 'tttttt',$dataArray);
+                }
+                
             }else{
                 DB::table('washes')->where('id',$id)->update(['employee_id'=>$empId]);
+                $washOrdId = DB::table('washes')->where('id', $id)->first()->order_id;
+                $order = DB::table('orders')->where('id', $washOrdId)->first();
+
+                $currentUserId = DB::table('users')->where('emp_id',$empId)->first()->id;
+
+                $dataArray = [
+                    'come_from'  => 'admin-customer-order',
+                    'order_id'   => (string) $order->id,
+                    'order_name' => $order ? $order->code : null,
+                ];
+
+                $userData = \DB::table('users')->where('is_active','Yes')->where('id',$currentUserId)->first();
+                if($userData){
+                    $user_token = $this->sendFcmNotificationApplication($userData->id,'New Order Received',$body = 'tttttt',$dataArray);
+                }
 
             }
             
