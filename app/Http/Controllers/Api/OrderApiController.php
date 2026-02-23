@@ -158,7 +158,7 @@ class OrderApiController extends ApiController
             $currentUserId = DB::table('users')->where('customer_id',$customerId)->first()->id;
 
             $dataArray = [
-                'come_from'=>'get-order-detail',
+                'come_from'=>'admin-customer-order',
                 'order_id'=>(string)$model->id,
                 // 'order_date'=>Carbon::parse($model->date)->format('d-m-Y'),
                 'order_name'=>$model->code
