@@ -66,7 +66,12 @@ class SetNotification extends Command
                 $userData = DB::table('users')->where('emp_id',$item->employee_id)->first();
 
 
-                $body = "Today's Order\nAt {$formattedTime} - {$customerName}'s Car service is scheduled.";
+                // $body = "Todays Order\nAt {$formattedTime} - {$customerName} Car service is scheduled.";
+                // $body = 'Todays Order\nAt '.$formattedTime.' - '.$customerName.' Car service is scheduled.';
+                // $body = "Todays Order {$formattedTime} - {$customerName}s Car service is scheduled.";
+                // $body = "Today's Order\nAt {$formattedTime} - {$customerName}'s car service is scheduled.";
+                $body = "Today's Order\nAt {$formattedTime} - {$customerName}'s car service is scheduled.";
+                // $body = "Todays Order\nAt {$formattedTime} - {$customerName} car service is scheduled.";
 
 
                 $user_token = $this->sendFcmNotificationApplication(
@@ -79,9 +84,6 @@ class SetNotification extends Command
             }
         }else{
         }
-
-Today's Order
-At 07:00($item->start_time) AM - Krishita($customerName)'s Car service is sheduaels
 
 
         info('SetNotification Command Run successfully!');

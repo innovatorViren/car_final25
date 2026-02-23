@@ -139,7 +139,7 @@
             colReorder: true,
             "buttons": [],
             "order": [
-                [0, "desc"]
+                [1, "desc"]
             ],
             "pageLength": page_show_entriess,
             dom: `Bfrt<'row'<'col-sm-6 col-md-6'i><'col-sm-6 col-md-6 dataTables_pager'lp>>`, //visibility

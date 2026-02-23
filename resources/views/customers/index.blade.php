@@ -34,10 +34,7 @@
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_first_name', Request::get('filter_first_name', null), ['class' => 'form-control']) !!}</div>
                             </th>
                             <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_middle_name', Request::get('filter_middle_name', null), ['class' => 'form-control']) !!}</div>
-                            </th>
-                            <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_last_name', Request::get('filter_last_name', null), ['class' => 'form-control']) !!}</div>
+                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_email', Request::get('filter_email', null), ['class' => 'form-control']) !!}</div>
                             </th>
                             <th>
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_mobile', Request::get('filter_mobile', null), ['class' => 'form-control']) !!}</div>
@@ -51,8 +48,7 @@
                             <th class="noVis">{{__('common.action')}}</th>
                             <th class="d-none noVis"></th>
                             <th class="noVis">{{ __('customers.first_name') }}</th>
-                            <th>{{ __('customers.middle_name') }}</th>
-                            <th>{{ __('customers.last_name') }}</th>
+                            <th>{{ __('customers.email') }}</th>
                             <th>{{ __('common.mobile') }}</th>
                             <th>{{ __('customers.email') }}</th>
                             <th>{{ __('common.status') }}</th>
@@ -77,8 +73,7 @@
 <script type="text/javascript">
     var id = "{{ __('common.no') }}";
     var first_name = "{{ __('customers.first_name') }}";
-    var middle_name = "{{ __('customers.middle_name') }}";
-    var last_name = "{{ __('customers.last_name') }}";
+    var email = "{{ __('customers.email') }}";
     var mobile = "{{ __('common.mobile') }}";
     var email = "{{ __('customers.email') }}";
     var action = "{{ __('common.action') }}";
@@ -93,8 +88,7 @@
                 data: function(d) {
                     d.first_name = jQuery(".datatable-form-filter input[name='filter_first_name']")
                         .val();
-                    d.middle_name = jQuery(".datatable-form-filter input[name='filter_middle_name']").val();
-                    d.last_name = jQuery(".datatable-form-filter input[name='filter_last_name']").val();
+                    d.email = jQuery(".datatable-form-filter input[name='filter_email']").val();
                     d.mobile = jQuery(".datatable-form-filter input[name='filter_mobile']").val();
                     d.email = jQuery(".datatable-form-filter input[name='filter_email']").val();
                 }
@@ -120,16 +114,9 @@
                 "orderable": true,
                 "searchable": false,
             }, {
-                "name": "middle_name",
-                "data": "middle_name",
-                "title": middle_name,
-                "orderable": false,
-                "searchable": false,
-                "visible": true, //visibility
-            },{
-                "name": "last_name",
-                "data": "last_name",
-                "title": last_name,
+                "name": "email",
+                "data": "email",
+                "title": email,
                 "orderable": false,
                 "searchable": false,
                 "visible": true, //visibility

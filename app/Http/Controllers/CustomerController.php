@@ -52,7 +52,7 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customers = Customer::findOrFail($id);
+        $customers = Customer::with('customerAddress','customerCar')->findOrFail($id);
         $this->data['countries'] =  $this->common->getCountries();
         $this->data['states'] =  $this->common->getStates();
         $this->data['customers'] = $customers;

@@ -38,9 +38,9 @@ class CustomerDataTable extends DataTable
                 $user = Sentinel::getUser();
                 if ($user->hasAnyAccess(['customers.view', 'users.superadmin'])) {
                     return '<a href="' . route('customers.show', [$row->id]) . '"  class="navi-link" target="_blank">' .
-                        '  <span class="navi-text cust-text">' . $row->first_name . '</span></a> ' . $copyHtml;
+                        '  <span class="navi-text cust-text">' . $row->first_name . ' ' . $row->middle_name . ' ' . $row->last_name . '</span></a> ' . $copyHtml;
                 } else {
-                    return $row->first_name;
+                    return $row->first_name . ' ' . $row->middle_name . ' ' . $row->last_name;
 
                 }
             })
@@ -101,15 +101,9 @@ class CustomerDataTable extends DataTable
             'customers.is_active'
         ];
         $model = Customer::select($fields);
-
+        
         if (request()->get('first_name', false)) {
-            $model->where('first_name', 'like', "%" . request()->get("first_name") . "%");
-        }
-        if (request()->get('middle_name', false)) {
-            $model->where('customers.middle_name', 'like', "%" . request()->get("middle_name") . "%");
-        }
-        if (request()->get('last_name', false)) {
-            $model->where('customers.last_name', 'like', "%" . request()->get("last_name") . "%");
+            $model->whereRaw("concat(first_name, ' ',CASE WHEN middle_name IS NOT NULL THEN  middle_name ELSE '' END,' ', last_name) like '%" . request()->get("first_name") . "%' ");
         }
         if (request()->get('email', false)) {
             $model->where('customers.email', 'like', "%" . request()->get("email") . "%");

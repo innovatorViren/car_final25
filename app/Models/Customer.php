@@ -17,4 +17,14 @@ class Customer extends MyModel
     protected $historyLimit = 500;
 
     protected $guarded = [];  
+
+    public function customerAddress()
+    {
+        return $this->hasMany(CustomerAddress::class)->with('city', 'state', 'country');
+    }
+
+    public function customerCar()
+    {
+        return $this->hasMany(CustomerCar::class)->with('carBrand', 'carModel');
+    }
 }
