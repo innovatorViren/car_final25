@@ -160,7 +160,6 @@ class OrderApiController extends ApiController
             $dataArray = [
                 'come_from'=>'admin-customer-order',
                 'order_id'=>(string)$model->id,
-                // 'order_date'=>Carbon::parse($model->date)->format('d-m-Y'),
                 'order_name'=>$model->code
             ];
 
@@ -498,7 +497,7 @@ class OrderApiController extends ApiController
                     "body" => $description,
                     // "test" => 'sddsds',
                 ],
-                // "data" =>$dataArray,
+                "data" =>$dataArray,
             ]
         ];
 
