@@ -4,7 +4,7 @@
 
 <div class="form-group">
     {{Form::label(__('car_brand.name'), __('car_brand.name'))}}<i class="text-danger">*</i>
-    {{Form::text('name', null,['class' => 'form-control', 'data-rule-remote' => route('country.checkUniqueName', [$country['id'] ?? '']), 'data-msg-remote' => 'The name has already been taken.']);}}
+    {{Form::text('name', null,['class' => 'form-control required', 'data-rule-remote' => route('country.checkUniqueName', [$carBrand->id ?? '']), 'data-msg-remote' => 'The name has already been taken.']);}}
 </div>
 <div class="row">
     <div class="form-group col-lg-12">
@@ -17,6 +17,12 @@
             'data-msg-accept' => 'Please upload file in these format only (jpg, jpeg, png).',
             'data-msg-maxsize' => 'File size must be less than 1 MB',
         ]) !!}
+    </div>
+    <div class="form-group col-lg-12">
+        {!! Form::label('sequence', trans('Sequence')) !!}<i class="text-danger">*</i>
+        {!! Form::number('sequence', null, ['class' => 'form-control required',
+                        'data-rule-remote' => route('brand.checkUniqueSequence', [$carBrand->id ?? '']),
+                        'data-msg-remote' => 'The Sequence has already been taken.',]) !!}
     </div>
     <div class="form-group col-lg-12">
         <img src="{{(isset($carBrand->brand_logo) && !empty($carBrand->brand_logo)) ? asset($carBrand->brand_logo)  : asset('default.jpg')}}" 

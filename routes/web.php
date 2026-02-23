@@ -118,6 +118,8 @@ Route::match(['get', 'post'], 'years/changeYear/{id}', [YearController::class, '
 
 //Car Brand
 Route::resource('car-brand', CarBrandController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
+Route::get('check-brand-sequence/{id?}', [CarBrandController::class, 'checkUniqueSequence'])->name('brand.checkUniqueSequence');
+ Route::post('brand-reorder', [CarBrandController::class, 'reorder'])->name('brand-reorder');
 //Car Model
 Route::resource('car-model', CarModelController::class)->only(['index', 'create', 'store', 'show', 'update', 'destroy', 'edit']);
 

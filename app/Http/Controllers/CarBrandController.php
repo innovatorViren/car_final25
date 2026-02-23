@@ -158,4 +158,50 @@ class CarBrandController extends Controller
             return ($checkName > 0) ? 'false' : 'true';
         }        
     }
+
+    public function checkUniqueSequence(Request $request, $id = '')
+    {
+        // dd($request);
+        $sequence = $request->sequence;
+        if ($sequence != '') {
+            $checkBrandName = CarBrand::where(['sequence' => $sequence])
+                ->whereNull('deleted_at')
+                ->when($id, function ($q) use ($id) {
+                    $q->where('id', '!=', $id);
+                })
+                ->count();
+
+            
+
+            if ($checkBrandName > 0) {
+                return 'false';
+            }
+
+            return 'true';
+        }
+    }
+
+    public function reorder(Request $request)
+    {
+        $count = 0;
+         if (count($request->json()->all())) {
+            $ids = $request->json()->all();
+            foreach($ids as $i => $key)
+            {
+                $id = $key['id'];
+                $sequence = $key['position'];
+                $mymodel = CarBrand::find($id);
+                $mymodel->sequence = $sequence;
+                if($mymodel->save())
+                {
+                    $count++;
+                }
+            }
+            $response = 'send response records updated goes here';
+            return response()->json( $response );
+        } else {
+            $response = 'send nothing to sort response goes here';
+            return response()->json( $response );
+        } 
+    }
 }

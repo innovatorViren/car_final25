@@ -262,7 +262,7 @@ class CommonController extends Controller
                             DB::raw("(CASE WHEN brand_logo !='' THEN  CONCAT('".$path."', brand_logo) ELSE '' END) as brand_logo"))
                             ->where('is_active', 'Yes')
                             ->where('id', '!=', $carbrandId)
-                            ->orderBy('name', 'asc')
+                            ->orderBy('sequence', 'asc')
                             ->get();
             }else{
 

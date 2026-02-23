@@ -33,6 +33,7 @@
                             </th>
                             <th></th>
                             <th></th>
+                            <th></th>
                         </tr>
                         <tr>
                             <th>{{__('common.action')}}</th>
@@ -40,6 +41,7 @@
                             <th>{{__('car_brand.table.car_brand')}}</th>
                             <th>{{__('car_brand.logo')}}</th>
                             <th>{{__('car_brand.no_of_model')}}</th>
+                            <th>{{__('Sequence')}}</th>
                             <th>{{__('common.status')}}</th>
 
                         </tr>
@@ -62,6 +64,7 @@
     var no_of_model = "{{__('car_brand.no_of_model')}}";
     var status = "{{__('common.status')}}";
     var logo = "{{__('car_brand.logo')}}";
+    var sequence = "Sequence";
 
     var action = "{{__('common.action')}}";
 
@@ -108,7 +111,15 @@
                 "orderable": true,
                 "searchable": false,
                 "width": "100px"
-            }, {
+            }, 
+            {
+                    "name": "sequence",
+                    "data": "sequence",
+                    "title": sequence,
+                    "orderable": true,
+                    "searchable": false
+                },
+            {
                 "name": "is_active",
                 "data": "is_active",
                 "title": status,
@@ -128,11 +139,44 @@
             colReorder: true,
             "buttons": [],
             "order": [
-                [1, "desc"]
+                [5, "desc"]
             ],
+            "rowReorder": {
+                //'selector' : 'tr>td:not(:last-child)', // I allow all columns for dragdrop except the last
+                'dataSrc' : 'sequence',
+                "selector" : "td:nth-child(5)"
+                //'update' : false // this is key to prevent DT auto update
+            },
             "pageLength": page_show_entriess,
         });
     })(window, jQuery);
+    $(document).ready(function(){ 
+        var table = $('#dataTableBuilder').DataTable();
+        table.on( 'row-reorder', function ( e, diff, edit ) {
+            var myArray = [];
+            for ( var i=0, ien=diff.length ; i<ien ; i++ ) {
+                var rowData = table.row( diff[i].node ).data();
+                myArray.push({
+                    id: rowData.id,   // record id from datatable
+                    position: diff[i].newData  // new position
+                });
+            }
+            var jsonString = JSON.stringify(myArray);
+            // alert(jsonString);
+            //console.log(jsonString);
+             $.ajax({
+                url     : "{{ route('brand-reorder') }}",
+                type    : 'POST',
+                data    : jsonString,
+                dataType: 'json',
+                success : function ( json ) 
+                {
+                     $('#dataTableBuilder').DataTable().ajax.reload(); // now refresh datatable
+                   
+                }
+            }); 
+        });
+    });
 </script>
 @include('comman.datatable_filter')
 @include('info')
