@@ -263,8 +263,12 @@ class OrderApiController extends ApiController
                 ];
 
                 $userData = \DB::table('users')->where('is_active','Yes')->where('id',$currentUserId)->first();
+                $employeeName = $userData->first_name ?? 'Employee';
+                $body = "Dear {$employeeName},\n\n"
+                      . "You have been assigned a new order #{$order->code} "
+                      . "Thank you.";
                 if($userData){
-                    $user_token = $this->sendFcmNotificationApplication($userData->id,'New Order Received',$body = 'tttttt',$dataArray);
+                    $user_token = $this->sendFcmNotificationApplication($userData->id,'New Order Assigned',$body,$dataArray);
                 }
                 
             }else{
@@ -272,7 +276,8 @@ class OrderApiController extends ApiController
                 $washOrdId = DB::table('washes')->where('id', $id)->first()->order_id;
                 $order = DB::table('orders')->where('id', $washOrdId)->first();
 
-                $currentUserId = DB::table('users')->where('emp_id',$empId)->first()->id;
+                $currentUser = DB::table('users')->where('emp_id',$empId)->first();
+                $employeeName = $currentUser->first_name ?? 'Employee';
 
                 $dataArray = [
                     'come_from'  => 'emp-asign-cus-order',
@@ -280,9 +285,16 @@ class OrderApiController extends ApiController
                     'order_name' => $order ? $order->code : null,
                 ];
 
-                $userData = \DB::table('users')->where('is_active','Yes')->where('id',$currentUserId)->first();
+                // $body = "Today's Order\nAt {$formattedTime} - {$customerName}'s car service is scheduled.";
+                $body = "Dear {$employeeName},\n\n"
+                      . "You have been assigned a new order #{$order->code} "
+                      // . "for customer {$customerName}.\n\n"
+                      . "Scheduled Time: {$formattedTime}\n\n"
+                      . "Thank you.";
+
+                $userData = \DB::table('users')->where('is_active','Yes')->where('id',$currentUser->id)->first();
                 if($userData){
-                    $user_token = $this->sendFcmNotificationApplication($userData->id,'New Order Received',$body = 'tttttt',$dataArray);
+                    $user_token = $this->sendFcmNotificationApplication($userData->id,'New Order Assigned',$body,$dataArray);
                 }
 
             }
