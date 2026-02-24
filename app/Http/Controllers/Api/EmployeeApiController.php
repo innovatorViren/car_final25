@@ -73,6 +73,7 @@ class EmployeeApiController extends ApiController
                 'reference' => $request->reference?? null,
                 'reference_tel_no' => $request->reference_tel_no?? null,
                 'beneficiary_name' => $request->beneficiary_name?? null,
+                'branch_name' => $request->branch_name ?? null,
                 'bank_name' => $request->bank_name?? null,
                 'ifsc_code' => $request->ifsc_code?? null,
                 'account_no' => $request->account_no?? null,

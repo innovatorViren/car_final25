@@ -585,6 +585,7 @@ class OrderApiController extends ApiController
             $this->response_json['total_amount'] = $order->total_amount ?? 0;
             $this->response_json['pay_amount'] = $order->pay_amount ?? 0;
             $this->response_json['order_type_bike'] = $order->order_type_bike ?? 0;
+            $this->response_json['assign'] = $order->assign ?? 0;
             $this->response_json['order_address'] = $orderAddress;
             $this->response_json['message'] = 'Success';
             return $this->responseSuccessWithoutObject();
