@@ -4,10 +4,14 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Http\Controllers\CommonController;
-use App\Models\{Attendance,Setting};
+use App\Models\{Setting};
 use DB;
 use Carbon\Carbon;
 use Mail;
+use Google\Client as GoogleClient;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
+use Firebase;
 
 class SetNotification extends Command
 {
@@ -54,25 +58,13 @@ class SetNotification extends Command
                 $orderData = DB::table('orders')->where('id',$item->order_id)->first();
                 $orderCode = $orderData->code;
                 $customerName = DB::table('customers')->where('id',$orderData->customer_id)->first()->first_name;
-                $dataArray = [];
-                // $dataArray = [
-                //     'come_from'=>'get-order-detail',
-                //     'order_id'=>(string)$model->id,
-                //     'order_date'=>Carbon::parse($model->date)->format('d-m-Y'),
-                //     'order_name'=>$model->code
-                // ];
-
-                // $customerData = DB::table('customers')->where('id',$customerId)->first();
+                $dataArray = [
+                    'come_from'=>'emp-order',
+                    'order_id'=>(string)$orderData->id,
+                    'order_name'=>$orderData->code
+                ];
                 $userData = DB::table('users')->where('emp_id',$item->employee_id)->first();
-
-
-                // $body = "Todays Order\nAt {$formattedTime} - {$customerName} Car service is scheduled.";
-                // $body = 'Todays Order\nAt '.$formattedTime.' - '.$customerName.' Car service is scheduled.';
-                // $body = "Todays Order {$formattedTime} - {$customerName}s Car service is scheduled.";
-                // $body = "Today's Order\nAt {$formattedTime} - {$customerName}'s car service is scheduled.";
                 $body = "Today's Order\nAt {$formattedTime} - {$customerName}'s car service is scheduled.";
-                // $body = "Todays Order\nAt {$formattedTime} - {$customerName} car service is scheduled.";
-
 
                 $user_token = $this->sendFcmNotificationApplication(
                                 $userData->id,
@@ -127,7 +119,7 @@ class SetNotification extends Command
                     "body" => $description,
                     // "test" => 'sddsds',
                 ],
-                // "data" =>$dataArray,
+                "data" =>$dataArray,
             ]
         ];
 

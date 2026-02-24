@@ -42,6 +42,15 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
                 DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                 DB::raw("(CASE WHEN LOWER(TRIM(O.status)) = 'pending' THEN 1 ELSE 0 END) as assign"),
+                DB::raw("
+                    (CASE 
+                        WHEN LOWER(TRIM(O.status)) = 'pending' THEN '#fff4de'
+                        WHEN LOWER(TRIM(O.status)) = 'partial' THEN '#e0f1fb'
+                        WHEN LOWER(TRIM(O.status)) = 'completed' THEN '#c9f7f5'
+                        WHEN LOWER(TRIM(O.status)) = 'cancelled' THEN '#ffe2e5'
+                        ELSE ''
+                    END) as status_color
+                "),
             ];
 
             $orderData = DB::table('orders as O')
@@ -239,7 +248,7 @@ class OrderApiController extends ApiController
                 $currentUserId = DB::table('users')->where('emp_id',$empId)->first()->id;
 
                 $dataArray = [
-                    'come_from'  => 'admin-customer-order',
+                    'come_from'  => 'emp-asign-cus-order',
                     'order_id'   => (string) $order->id,
                     'order_name' => $order ? $order->code : null,
                 ];
@@ -257,7 +266,7 @@ class OrderApiController extends ApiController
                 $currentUserId = DB::table('users')->where('emp_id',$empId)->first()->id;
 
                 $dataArray = [
-                    'come_from'  => 'admin-customer-order',
+                    'come_from'  => 'emp-asign-cus-order',
                     'order_id'   => (string) $order->id,
                     'order_name' => $order ? $order->code : null,
                 ];
@@ -308,6 +317,15 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
                 DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                 DB::raw("(CASE WHEN LOWER(TRIM(O.status)) = 'pending' THEN 1 ELSE 0 END) as assign"),
+                DB::raw("
+                    (CASE 
+                        WHEN LOWER(TRIM(O.status)) = 'pending' THEN '#fff4de'
+                        WHEN LOWER(TRIM(O.status)) = 'partial' THEN '#e0f1fb'
+                        WHEN LOWER(TRIM(O.status)) = 'completed' THEN '#c9f7f5'
+                        WHEN LOWER(TRIM(O.status)) = 'cancelled' THEN '#ffe2e5'
+                        ELSE ''
+                    END) as status_color
+                "),
             ];
 
             $orderData = DB::table('orders as O')
@@ -339,6 +357,15 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
                 DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                 DB::raw(" 0  as assign"),
+                DB::raw("
+                    (CASE 
+                        WHEN LOWER(TRIM(O.status)) = 'pending' THEN '#fff4de'
+                        WHEN LOWER(TRIM(O.status)) = 'partial' THEN '#e0f1fb'
+                        WHEN LOWER(TRIM(O.status)) = 'completed' THEN '#c9f7f5'
+                        WHEN LOWER(TRIM(O.status)) = 'cancelled' THEN '#ffe2e5'
+                        ELSE ''
+                    END) as status_color
+                "),
             ];
 
             $orderData = DB::table('orders as O')
@@ -373,6 +400,15 @@ class OrderApiController extends ApiController
                 DB::raw("(CASE WHEN CM.name IS NOT NULL THEN  CM.name ELSE '' END) as car_model_name"),
                 DB::raw("(CASE WHEN LOWER(CM.name) = 'bike' THEN 1 ELSE 0 END) as order_type_bike"),
                 DB::raw(" 0  as assign"),
+                DB::raw("
+                    (CASE 
+                        WHEN LOWER(TRIM(O.status)) = 'pending' THEN '#fff4de'
+                        WHEN LOWER(TRIM(O.status)) = 'partial' THEN '#e0f1fb'
+                        WHEN LOWER(TRIM(O.status)) = 'completed' THEN '#c9f7f5'
+                        WHEN LOWER(TRIM(O.status)) = 'cancelled' THEN '#ffe2e5'
+                        ELSE ''
+                    END) as status_color
+                "),
             ];
 
             $orderData = DB::table('orders as O')
@@ -426,6 +462,16 @@ class OrderApiController extends ApiController
                     'O.total_washes as total_washes',
                     'O.price as total_amount',
                     'O.pay_amount as pay_amount',
+                    DB::raw("(CASE WHEN LOWER(TRIM(O.status)) = 'pending' THEN 1 ELSE 0 END) as assign"),
+                    DB::raw("
+                    (CASE 
+                        WHEN LOWER(TRIM(O.status)) = 'pending' THEN '#fff4de'
+                        WHEN LOWER(TRIM(O.status)) = 'partial' THEN '#e0f1fb'
+                        WHEN LOWER(TRIM(O.status)) = 'completed' THEN '#c9f7f5'
+                        WHEN LOWER(TRIM(O.status)) = 'cancelled' THEN '#ffe2e5'
+                        ELSE ''
+                    END) as status_color
+                "),
                 )
                 ->join('car_models as CM','CM.id','O.car_model_id')
                 ->join('plans as P','P.id','O.plan_id')
@@ -443,6 +489,15 @@ class OrderApiController extends ApiController
             DB::raw("(CASE WHEN W.after_wash_photo !='' THEN  CONCAT('".$path."', W.after_wash_photo) ELSE '' END) as after_wash_photo"),
             DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
             DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+            DB::raw("
+                (CASE 
+                    WHEN LOWER(TRIM(W.status)) = 'pending' THEN '#fff4de'
+                    WHEN LOWER(TRIM(W.status)) = 'in_progress' THEN '#e0f1fb'
+                    WHEN LOWER(TRIM(W.status)) = 'completed' THEN '#c9f7f5'
+                    WHEN LOWER(TRIM(W.status)) = 'cancelled' THEN '#ffe2e5'
+                    ELSE ''
+                END) as status_color
+            "),
         ];
 
         $washItem = DB::table('washes as W')
