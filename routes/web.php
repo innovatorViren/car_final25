@@ -22,7 +22,7 @@ use App\Http\Controllers\{
     UserController,
     SmtpConfigurationController,
     ProfileController, 
-    PrivacypolicyController,ContactController,PlanController,OrderController
+    PrivacypolicyController,ContactController,PlanController,OrderController,WebHookController
 };
 use App\Http\Controllers\Auth\PasswordController;
 use Database\Seeders\SeriesSeeder;
@@ -189,6 +189,7 @@ Route::post('/orders/generate-slots', [OrderController::class, 'generateSlots'])
 
 
 Route::get('/car-models/{carBrandId}', [CommonController::class, 'getCarModel']);
+Route::get('webhook-order', [WebHookController::class, 'create']);
 
 Route::get('/run-car-model-excel-import', [CarModelController::class, 'importCarModelsFromExcel']);
 
