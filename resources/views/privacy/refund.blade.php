@@ -2,59 +2,68 @@
 
 <style>
     body {
-        background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
-                    url('{{ asset('media/bg/bg-3.jpg') }}') no-repeat center center fixed;
-        background-size: cover;
+        margin: 0;
+        padding: 0;
+        background: #ffffff;   /* Remove dark overlay background */
         font-family: 'Segoe UI', sans-serif;
+        color: #444;
     }
 
     .policy-wrapper {
-        margin-top: 40px;
-        margin-bottom: 60px;
-    }
-
-    .policy-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        padding: 40px;
+        width: 100%;
+        padding: 60px 10%;
+        background: rgba(255, 255, 255, 0.95);
+        color: #444;
+        min-height: 100vh;
     }
 
     .policy-title {
         font-weight: 600;
-        font-size: 28px;
+        font-size: 32px;
         color: #FF2A00;
-        border-bottom: 2px solid #f1f1f1;
+        border-bottom: 2px solid #eee;
         padding-bottom: 15px;
-        margin-bottom: 25px;
+        margin-bottom: 15px;
+    }
+
+    .effective-date {
+        font-size: 14px;
+        margin-bottom: 30px;
+        color: #777;
     }
 
     .policy-content {
-        font-size: 15px;
-        line-height: 1.8;
-        color: #444;
+        font-size: 16px;
+        line-height: 1.9;
     }
 
     .policy-content h3 {
         font-size: 20px;
         font-weight: 600;
-        margin-top: 25px;
+        margin-top: 35px;
         margin-bottom: 15px;
         color: #222;
     }
 
-    .policy-content ol {
+    .policy-content ul {
         padding-left: 20px;
     }
 
     .policy-content li {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
+    }
+
+    .contact-box {
+        background: #f8f9fa;
+        padding: 20px;
+        margin-top: 20px;
+        border-left: 4px solid #FF2A00;
     }
 
     .logo-section {
         text-align: center;
-        margin-top: 30px;
-        margin-bottom: 20px;
+        padding: 40px 0 20px;
+        background: transparent;
     }
 
     .logo-section img {
@@ -62,72 +71,69 @@
     }
 
     @media (max-width: 768px) {
-        .policy-card {
-            padding: 25px;
+        .policy-wrapper {
+            padding: 40px 20px;
         }
 
         .policy-title {
-            font-size: 22px;
+            font-size: 24px;
         }
     }
 </style>
 
 <body>
-    <div class="container policy-wrapper">
-        
-        <div class="logo-section">
-            <img src="{{ asset('media/logos/car.png') }}" alt="Logo"/>
+
+<div class="logo-section">
+    <img src="{{ asset('media/logos/car.png') }}" alt="Logo"/>
+</div>
+
+<div class="policy-wrapper">
+
+    <h1 class="policy-title">Refund Policy</h1>
+    <p class="effective-date"><strong>Effective Date:</strong> 27 February 2026</p>
+
+    <div class="policy-content">
+
+        <h3>1. Eligible Refunds</h3>
+        <p>Refunds may be granted if:</p>
+        <ul>
+            <li>Service was not delivered</li>
+            <li>Payment was deducted but booking not confirmed</li>
+            <li>Verified major service deficiency</li>
+        </ul>
+
+        <h3>2. Non-Refundable Cases</h3>
+        <p>Refunds will not be provided for:</p>
+        <ul>
+            <li>Customer no-show</li>
+            <li>Cancellation after service provider arrival</li>
+            <li>Minor dissatisfaction without valid proof</li>
+        </ul>
+
+        <h3>3. Refund Process</h3>
+        <ul>
+            <li>Refund requests must be submitted within 24 hours of service.</li>
+            <li>Include booking ID and reason.</li>
+            <li>Approved refunds will be processed within 5–7 business days.</li>
+        </ul>
+        <p>Refunds will be credited to the original payment method.</p>
+
+        <h3>4. Subscription Plans</h3>
+        <ul>
+            <li>Subscription fees are non-refundable once activated.</li>
+            <li>Unused services may expire as per plan terms.</li>
+        </ul>
+
+        <h3>Contact Information</h3>
+        <div class="contact-box">
+            <p><strong>Business Name:</strong> KK META SERVICES</p>
+            <p><strong>Address:</strong> 252,253/2, Ground Floor, Shop No-1, Devratna Apartment, Pune</p>
+            <p><strong>Email:</strong> sales.kkmetaservices@gmail.com</p>
+            <p><strong>Phone:</strong> 9765602932</p>
         </div>
 
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="policy-card">
-                    
-                    <h1 class="policy-title">Refund & Cancellation Policy</h1>
-
-                    <div class="policy-content">
-
-                        <h3>Introduction</h3>
-                        <p>
-                            This Refund and Cancellation Policy outlines how you can cancel or seek a refund 
-                            for a product or service purchased through our Platform.
-                        </p>
-
-                        <ol>
-                            <li>
-                                Cancellation requests will only be considered if made within 
-                                <strong>7 days</strong> of placing the order. However, cancellation may not 
-                                be accepted if the order has already been processed, shipped, or is out for delivery. 
-                                In such cases, you may reject the product at the time of delivery.
-                            </li>
-
-                            <li>
-                                We do not accept cancellation requests for perishable items such as flowers, 
-                                eatables, etc. However, refunds or replacements may be provided if the delivered 
-                                product quality is proven to be unsatisfactory.
-                            </li>
-
-                            <li>
-                                In case of damaged or defective items, please report the issue to our customer 
-                                service team within <strong>7 days</strong> of receipt. The seller/merchant will 
-                                verify the complaint before approving any refund or replacement.
-                            </li>
-
-                            <li>
-                                For products covered under manufacturer warranty, please contact the 
-                                respective manufacturer directly for support and resolution.
-                            </li>
-
-                            <li>
-                                Once a refund is approved, it will be processed within 
-                                <strong>7 working days</strong>.
-                            </li>
-                        </ol>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
     </div>
+
+</div>
+
 </body>
