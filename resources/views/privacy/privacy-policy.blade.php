@@ -184,14 +184,10 @@
                         <div class="policy-section">
                             <h3>Contact Us</h3>
                             <div class="contact-box">
-                                <p><strong>Email:</strong> 
-                                    <a href="mailto:info@clearmycar.in">info@clearmycar.in</a>
-                                </p>
-                                <p><strong>Website:</strong> 
-                                    <a href="https://www.clearmycar.in" target="_blank">
-                                        www.clearmycar.in
-                                    </a>
-                                </p>
+                                 <p><strong>Business Name:</strong> KK META SERVICES</p>
+                                <p><strong>Address:</strong> 252,253/2, Ground Floor, Shop No-1, Devratna Apartment, Pune</p>
+                                <p><strong>Email:</strong> sales.kkmetaservices@gmail.com</p>
+                                <p><strong>Phone:</strong> 9765602932</p>
                             </div>
                         </div>
 
