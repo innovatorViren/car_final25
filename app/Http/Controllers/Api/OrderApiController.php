@@ -557,10 +557,10 @@ class OrderApiController extends ApiController
             "),
             DB::raw("
                 (CASE 
-                    WHEN LOWER(TRIM(O.status)) = 'pending' THEN '#f3ac60'
-                    WHEN LOWER(TRIM(O.status)) = 'partial' THEN '#009900'
-                    WHEN LOWER(TRIM(O.status)) = 'completed' THEN '#1a53ff'
-                    WHEN LOWER(TRIM(O.status)) = 'cancelled' THEN '#e60000'
+                    WHEN LOWER(TRIM(W.status)) = 'pending' THEN '#f3ac60'
+                    WHEN LOWER(TRIM(W.status)) = 'in_progress' THEN '#009900'
+                    WHEN LOWER(TRIM(W.status)) = 'completed' THEN '#1a53ff'
+                    WHEN LOWER(TRIM(W.status)) = 'cancelled' THEN '#e60000'
                     ELSE ''
                 END) as status_font_color
             "),
