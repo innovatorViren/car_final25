@@ -2,51 +2,57 @@
 
 <style>
     body {
-        background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
-                    url('{{ asset('media/bg/bg-3.jpg') }}') no-repeat center center fixed;
-        background-size: cover;
+        margin: 0;
+        padding: 0;
+        background: #ffffff;   /* Remove dark overlay background */
         font-family: 'Segoe UI', sans-serif;
+        color: #444;
     }
 
     .terms-wrapper {
-        margin-top: 40px;
-        margin-bottom: 60px;
-    }
-
-    .terms-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        padding: 40px;
+        width: 100%;
+        max-width: 100%;
+        padding: 60px 10%;
     }
 
     .terms-title {
         font-weight: 600;
-        font-size: 30px;
+        font-size: 34px;
         color: #FF2A00;
-        border-bottom: 2px solid #f1f1f1;
+        margin-bottom: 10px;
+    }
+
+    .effective-date {
+        font-size: 14px;
+        margin-bottom: 30px;
+        color: #777;
+        border-bottom: 1px solid #eee;
         padding-bottom: 15px;
-        margin-bottom: 25px;
     }
 
-    .terms-content {
-        font-size: 15px;
-        line-height: 1.8;
-        color: #444;
+    .terms-section {
+        margin-bottom: 35px;
     }
 
-    .terms-content ol {
+    .terms-section h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #222;
+    }
+
+    .terms-section ul {
         padding-left: 20px;
     }
 
-    .terms-content li {
-        margin-bottom: 15px;
+    .terms-section li {
+        margin-bottom: 8px;
     }
 
     .logo-section {
         text-align: center;
-        margin-top: 30px;
-        margin-bottom: 20px;
+        padding: 40px 0 20px;
+        background: #f8f9fa;
     }
 
     .logo-section img {
@@ -54,111 +60,130 @@
     }
 
     @media (max-width: 768px) {
-        .terms-card {
-            padding: 25px;
+        .terms-wrapper {
+            padding: 30px 20px;
         }
 
         .terms-title {
-            font-size: 24px;
+            font-size: 26px;
         }
     }
 </style>
 
 <body>
-    <div class="container terms-wrapper">
-        
-        <div class="logo-section">
-            <img src="{{ asset('media/logos/car.png') }}" alt="Logo"/>
-        </div>
+<div>
 
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="terms-card">
-                    
-                    <h1 class="terms-title">Terms & Conditions</h1>
-
-                    <div class="terms-content">
-                        <ol>
-                            <li>This document is an electronic record in terms of Information Technology Act, 2000 and rules
-there under as applicable and the amended provisions pertaining to electronic records in various
-statutes as amended by the Information Technology Act, 2000. This electronic record is generated
-by a computer system and does not require any physical or digital signatures.</li>
-
-                            <li>This document is published in accordance with the provisions of Rule 3 (1) of the Information
-Technology (Intermediaries guidelines) Rules, 2011 that require publishing the rules and
-regulations, privacy policy and Terms of Use for access or usage of domain name
-https://clearmycar.in/ ('Website'), including the related mobile site and mobile application
-(hereinafter referred to as 'Platform').</li>
-
-                            <li>The Platform is owned by 9765602932, a company incorporated under the Companies Act, 1956
-with its registered office at 252,3 Devratna Apt Nr PMC, Shirole Lane Shivajinagar Pune
-411030 (hereinafter referred to as ‘Platform Owner’, 'we', 'us', 'our')..</li>
-
-                            <li>Your use of the Platform and services and tools are governed by the following terms and
-conditions (“Terms of Use”) as applicable to the Platform including the applicable policies which
-are incorporated herein by way of reference. If You transact on the Platform, You shall be subject
-to the policies that are applicable to the Platform for such transaction. By mere use of the Platform,
-You shall be contracting with the Platform Owner and these terms and conditions including the
-policies constitute Your binding obligations, with Platform Owner. These Terms of Use relate to
-your use of our website, goods (as applicable) or services (as applicable) (collectively, 'Services').
-Any terms and conditions proposed by You which are in addition to or which conflict with these
-Terms of Use are expressly rejected by the Platform Owner and shall be of no force or effect.
-These Terms of Use can be modified at any time without assigning any reason. It is your
-responsibility to periodically review these Terms of Use to stay informed of updates..</li>
-
-                            <li>For the purpose of these Terms of Use, wherever the context so requires ‘you’, 'your' or ‘user’ shall
-mean any natural or legal person who has agreed to become a user.</li>
-
-                            <li>ACCESSING, BROWSING OR OTHERWISE USING THE PLATFORM INDICATES YOUR
-AGREEMENT TO ALL THE TERMS AND CONDITIONS UNDER THESE TERMS OF USE,
-SO PLEASE READ THE TERMS OF USE CAREFULLY BEFORE PROCEEDING.</li>
-
-                            <li>To access and use the Services, you agree to provide true, accurate and complete information
-to us during and after registration, and you shall be responsible for all acts done through the
-use of your registered account on the Platform..</li>
-
-                            <li>We do not provide warranties regarding accuracy or completeness...</li>
-
-                            <li>Your use of our Services and the Platform is solely and entirely at your own risk and
-discretion for which we shall not be liable to you in any manner. You are required to
-independently assess and ensure that the Services meet your requirements...</li>
-
-                            <li>The contents of the Platform and the Services are proprietary to us and are licensed to us.
-                            <li>
-                                You will not have any authority to claim any intellectual property rights, title, or interest in
-its contents. The contents includes and is not limited to the design, layout, look and graphics..</li>
-<li>You acknowledge that unauthorized use of the Platform and/or the Services may lead to
-action against you as per these Terms of Use and/or applicable laws..</li>
-<li>You agree to pay us the charges associated with availing the Services..</li>
-<li>You agree not to use the Platform and/ or Services for any purpose that is unlawful, illegal or
-forbidden by these Terms, or Indian or local laws that might apply to you.</li>
-<li>You agree and acknowledge that website and the Services may contain links to other third
-party websites. On accessing these links, you will be governed by the terms of use, privacy
-policy and such other policies of such third party websites. These links are provided for your
-convenience for provide further information..</li>
-<li>You understand that upon initiating a transaction for availing the Services you are entering
-into a legally binding and enforceable contract with the Platform Owner for the Services..</li>
-<li>You shall indemnify and hold harmless Platform Owner, its affiliates, group companies (as
-applicable) and their respective officers, directors, agents, and employees, from any claim or
-demand, or actions including reasonable attorney's fees, made by any third party or penalty
-imposed due to or arising out of Your breach of this Terms of Use, privacy Policy and other
-Policies, or Your violation of any law, rules or regulations or the rights (including
-infringement of intellectual property rights) of a third party.</li>
-<li>Notwithstanding anything contained in these Terms of Use, the parties shall not be liable for
-any failure to perform an obligation under these Terms if performance is prevented or
-delayed by a force majeure event..</li>
-<li>These Terms and any dispute or claim relating to it, or its enforceability, shall be governed
-by and construed in accordance with the laws of India..</li>
-<li>All disputes arising out of or in connection with these Terms shall be subject to the exclusive
-jurisdiction of the courts in Pune and Maharashtra.</li>
-<li>All concerns or communications relating to these Terms must be communicated to us using
-the contact information provided on this website</li>
-
-                        </ol>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+    <div class="logo-section">
+        <img src="{{ asset('media/logos/car.png') }}" alt="Logo"/>
     </div>
+
+    <div class="terms-wrapper">
+
+        <h1 class="terms-title">Terms & Conditions</h1>
+        <p class="effective-date">
+            <strong>Effective Date:</strong> 27 February 2026<br>
+            <strong>App Name:</strong> Clear My Car<br>
+            <strong>Platform:</strong> Android Application (carwash.clearMyCar)
+        </p>
+
+        <div class="terms-section">
+            <h3>1. Acceptance of Terms</h3>
+            <p>
+                By downloading, registering, or using the Clear My Car mobile application (“App”),
+                you agree to be bound by these Terms & Conditions. If you do not agree,
+                please discontinue use of the App.
+            </p>
+        </div>
+
+        <div class="terms-section">
+            <h3>2. Services Provided</h3>
+            <p>Clear My Car provides on-demand car wash and detailing services at customer-selected locations. Services may include:</p>
+            <ul>
+                <li>Exterior car wash</li>
+                <li>Interior cleaning</li>
+                <li>Waterless wash</li>
+                <li>Subscription-based cleaning packages</li>
+                <li>Add-on detailing services</li>
+            </ul>
+            <p>All services are subject to availability and service area limitations.</p>
+        </div>
+
+        <div class="terms-section">
+            <h3>3. User Eligibility</h3>
+            <ul>
+                <li>Be at least 18 years old</li>
+                <li>Provide accurate and complete registration details</li>
+                <li>Use the App only for lawful purposes</li>
+            </ul>
+            <p>We reserve the right to suspend or terminate accounts that provide false or misleading information.</p>
+        </div>
+
+        <div class="terms-section">
+            <h3>4. Booking & Payments</h3>
+            <ul>
+                <li>All bookings must be made through the App.</li>
+                <li>Prices will be displayed before confirmation.</li>
+                <li>Payments may be collected online or offline as specified.</li>
+                <li>Clear My Car reserves the right to revise pricing at any time.</li>
+            </ul>
+            <p>Failure to complete payment may result in cancellation or suspension of services.</p>
+        </div>
+
+        <div class="terms-section">
+            <h3>5. Cancellation Policy</h3>
+            <ul>
+                <li>Customers may cancel before service provider dispatch without charge.</li>
+                <li>Cancellation after dispatch may attract a service fee.</li>
+                <li>No-show at service location may be charged fully or partially.</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h3>6. Service Conditions</h3>
+            <ul>
+                <li>Customer must ensure vehicle accessibility at the scheduled time.</li>
+                <li>Clear My Car is not responsible for pre-existing vehicle damage.</li>
+                <li>Complaints must be raised within 24 hours of service completion.</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h3>7. Limitation of Liability</h3>
+            <p>Clear My Car shall not be liable for:</p>
+            <ul>
+                <li>Indirect or incidental damages</li>
+                <li>Delays due to weather or unforeseen circumstances</li>
+                <li>Loss of personal belongings left inside the vehicle</li>
+            </ul>
+            <p>Maximum liability shall not exceed the service amount paid.</p>
+        </div>
+
+        <div class="terms-section">
+            <h3>8. Intellectual Property</h3>
+            <p>
+                All app content, trademarks, logos, and branding belong to Clear My Car
+                and may not be copied or reproduced without prior written consent.
+            </p>
+        </div>
+
+        <div class="terms-section">
+            <h3>9. Termination</h3>
+            <p>We reserve the right to suspend or terminate accounts in case of:</p>
+            <ul>
+                <li>Fraudulent activity</li>
+                <li>Abuse of staff</li>
+                <li>Violation of these Terms</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h3>10. Governing Law</h3>
+            <p>
+                These Terms shall be governed by the laws of India.
+                Disputes shall be subject to the jurisdiction of the courts where the company is registered.
+            </p>
+        </div>
+
+    </div>
+</div>
 </body>

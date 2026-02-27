@@ -2,41 +2,39 @@
 
 <style>
     body {
-        background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
-                    url('{{ asset('media/bg/bg-3.jpg') }}') no-repeat center center fixed;
-        background-size: cover;
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
         font-family: 'Segoe UI', sans-serif;
+        color: #333;
     }
 
     .policy-wrapper {
-        margin-top: 40px;
-        margin-bottom: 60px;
+        padding: 60px 8%;
     }
 
-    .policy-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        padding: 40px;
+    .logo-section {
+        margin-bottom: 30px;
+    }
+
+    .logo-section img {
+        max-width: 200px;
     }
 
     .policy-title {
         font-weight: 600;
-        font-size: 28px;
+        font-size: 30px;
         color: #FF2A00;
-        border-bottom: 2px solid #f1f1f1;
-        padding-bottom: 15px;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     .policy-content {
         font-size: 15px;
-        line-height: 1.8;
-        color: #444;
+        line-height: 1.9;
     }
 
     .policy-section {
-        margin-bottom: 30px;
+        margin-bottom: 35px;
     }
 
     .policy-section h3 {
@@ -44,53 +42,38 @@
         font-weight: 600;
         margin-bottom: 10px;
         color: #222;
-        position: relative;
     }
 
-    .policy-section h3::after {
-        content: "";
-        display: block;
-        width: 40px;
-        height: 3px;
-        background: #FF2A00;
-        margin-top: 6px;
+    .policy-section ul {
+        padding-left: 20px;
     }
 
-    .logo-section {
-        text-align: center;
-        margin-top: 30px;
-        margin-bottom: 20px;
-    }
-
-    .logo-section img {
-        max-width: 220px;
+    .policy-section li {
+        margin-bottom: 6px;
     }
 
     .contact-box {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
         margin-top: 20px;
     }
 
     .contact-box a {
         color: #FF2A00;
-        font-weight: 500;
+        text-decoration: none;
     }
 
     @media (max-width: 768px) {
-        .policy-card {
-            padding: 25px;
+        .policy-wrapper {
+            padding: 30px 20px;
         }
 
         .policy-title {
-            font-size: 22px;
+            font-size: 24px;
         }
     }
 </style>
 
 <body>
-    <div class="container policy-wrapper">
+    <div >
 
         <div class="logo-section">
             <img src="{{ asset('media/logos/car.png') }}" alt="Logo"/>
@@ -105,88 +88,101 @@
                     <div class="policy-content">
 
                         <div class="policy-section">
-                            <h3>Introduction</h3>
+                            <h3>Effective Date</h3>
+                            <p><strong>27 February 2026</strong></p>
                             <p>
-                                This Privacy Policy describes how 9765602932 and its affiliates collect,
-                                use, share and protect your personal information through our website
-                                https://clearmycar.in/ (“Platform”).
-                            </p>
-                            <p>
-                                By using this Platform, you agree to the collection and processing of
-                                your information in accordance with this policy and applicable laws of India.
+                                Clear My Car respects your privacy and is committed to protecting your personal information.
                             </p>
                         </div>
 
                         <div class="policy-section">
-                            <h3>Information We Collect</h3>
+                            <h3>1. Information We Collect</h3>
+
+                            <p><strong>Personal Information</strong></p>
+                            <ul>
+                                <li>Name</li>
+                                <li>Phone number</li>
+                                <li>Email address</li>
+                                <li>Vehicle details</li>
+                                <li>Service address/location</li>
+                            </ul>
+
+                            <p><strong>Technical Information</strong></p>
+                            <ul>
+                                <li>Device type</li>
+                                <li>IP address</li>
+                                <li>App usage data</li>
+                            </ul>
+                        </div>
+
+                        <div class="policy-section">
+                            <h3>2. How We Use Information</h3>
+                            <p>We use collected data to:</p>
+                            <ul>
+                                <li>Process bookings</li>
+                                <li>Deliver car wash services</li>
+                                <li>Send booking confirmations and updates</li>
+                                <li>Improve user experience</li>
+                                <li>Provide customer support</li>
+                            </ul>
+                        </div>
+
+                        <div class="policy-section">
+                            <h3>3. Data Sharing</h3>
+                            <p>We may share information with:</p>
+                            <ul>
+                                <li>Assigned service personnel</li>
+                                <li>Payment gateway providers</li>
+                                <li>Legal authorities (if required by law)</li>
+                            </ul>
+                            <p><strong>We do not sell personal data to third parties.</strong></p>
+                        </div>
+
+                        <div class="policy-section">
+                            <h3>4. Data Security</h3>
                             <p>
-                                We may collect personal details such as your name, date of birth, address,
-                                phone number, email ID, identity proof, payment details, and other
-                                information provided during registration or while using our services.
-                            </p>
-                            <p>
-                                Sensitive information such as bank details or biometric data will only be
-                                collected with your explicit consent and in accordance with applicable laws.
+                                We implement reasonable technical and administrative measures to protect your data. 
+                                However, no online system can guarantee complete security.
                             </p>
                         </div>
 
                         <div class="policy-section">
-                            <h3>Usage of Information</h3>
+                            <h3>5. Data Retention</h3>
                             <p>
-                                Your data is used to provide services, process transactions, enhance
-                                customer experience, resolve disputes, detect fraud, conduct marketing
-                                research, and communicate offers and updates.
-                            </p>
-                            <p>
-                                You may opt-out of marketing communications at any time.
+                                We retain personal data only as long as necessary for service delivery, 
+                                legal compliance, and business purposes.
                             </p>
                         </div>
 
                         <div class="policy-section">
-                            <h3>Sharing of Information</h3>
+                            <h3>6. User Rights</h3>
+                            <p>You may:</p>
+                            <ul>
+                                <li>Request access to your data</li>
+                                <li>Request correction</li>
+                                <li>Request deletion</li>
+                                <li>Withdraw consent</li>
+                            </ul>
+                            <p>Requests can be made via customer support.</p>
+                        </div>
+
+                        <div class="policy-section">
+                            <h3>7. Children’s Privacy</h3>
                             <p>
-                                We may share your information with affiliates, sellers, logistics partners,
-                                payment providers, and government authorities where required by law.
-                                Third-party partners are governed by their respective privacy policies.
+                                Our services are not intended for individuals under 18 years of age.
                             </p>
                         </div>
 
                         <div class="policy-section">
-                            <h3>Security Measures</h3>
+                            <h3>8. Updates to Policy</h3>
                             <p>
-                                We adopt reasonable security practices to protect your information.
-                                However, internet transmission carries inherent risks, and users are
-                                responsible for safeguarding their login credentials.
+                                We may update this Privacy Policy periodically. Continued use of the App 
+                                constitutes acceptance of changes.
                             </p>
                         </div>
 
                         <div class="policy-section">
-                            <h3>Data Retention & Deletion</h3>
-                            <p>
-                                You may delete your account via your profile settings. We may retain
-                                certain information where legally required or necessary to prevent fraud.
-                            </p>
-                        </div>
-
-                        <div class="policy-section">
-                            <h3>Your Rights</h3>
-                            <p>
-                                You may access, update, or correct your personal information through
-                                your account dashboard. You may also withdraw consent by contacting us.
-                            </p>
-                        </div>
-
-                        <div class="policy-section">
-                            <h3>Changes to This Policy</h3>
-                            <p>
-                                We may update this Privacy Policy periodically. Please review it regularly
-                                to stay informed about how we protect your information.
-                            </p>
-                        </div>
-
-                        <div class="policy-section">
-                            <h3>Grievance Officer & Contact</h3>
-
+                            <h3>Contact Us</h3>
                             <div class="contact-box">
                                 <p><strong>Email:</strong> 
                                     <a href="mailto:info@clearmycar.in">info@clearmycar.in</a>
@@ -196,7 +192,6 @@
                                         www.clearmycar.in
                                     </a>
                                 </p>
-                                <p><strong>Support Hours:</strong> Monday – Friday (9:00 AM – 6:00 PM)</p>
                             </div>
                         </div>
 
