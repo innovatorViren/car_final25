@@ -162,6 +162,24 @@ class CustomerApiController extends ApiController
                 DB::raw("(CASE WHEN O.end_time IS NOT NULL THEN DATE_FORMAT(O.end_time, ' %I:%i %p') ELSE '' END) as end_time"),
                 DB::raw("(CASE WHEN E.first_name IS NOT NULL THEN  E.first_name ELSE '' END) as emp_first_name"),
                 DB::raw("(CASE WHEN E.last_name IS NOT NULL THEN  E.last_name ELSE '' END) as emp_last_name"),
+                DB::raw("
+                    (CASE 
+                        WHEN LOWER(TRIM(O.status)) = 'pending' THEN '#fff4de'
+                        WHEN LOWER(TRIM(O.status)) = 'partial' THEN '#e0f1fb'
+                        WHEN LOWER(TRIM(O.status)) = 'completed' THEN '#c9f7f5'
+                        WHEN LOWER(TRIM(O.status)) = 'cancelled' THEN '#ffe2e5'
+                        ELSE ''
+                    END) as status_color
+                "),
+                DB::raw("
+                    (CASE 
+                        WHEN LOWER(TRIM(O.status)) = 'pending' THEN '#f3ac60'
+                        WHEN LOWER(TRIM(O.status)) = 'partial' THEN '#009900'
+                        WHEN LOWER(TRIM(O.status)) = 'completed' THEN '#1a53ff'
+                        WHEN LOWER(TRIM(O.status)) = 'cancelled' THEN '#e60000'
+                        ELSE ''
+                    END) as status_font_color
+                ")
             ];
 
             $orderData = DB::table('orders as O')
