@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController,TimeApiSlotController,OrderApiController,UserApiController};
+use App\Http\Controllers\Api\{AuthController,CustomerApiController,PlanApiController,EmployeeApiController,TimeApiSlotController,OrderApiController,UserApiController,PhonePeWebhookController};
 use App\Http\Controllers\CommonController;
 
 /*
@@ -39,6 +39,7 @@ Route::namespace('Api')->group(function () {
 
     Route::get('/get-app-info-data',[AuthController::class, 'getAppInfoData']);
 
+        Route::post('/phonepe/webhook', [PhonePeWebhookController::class, 'handle']);
 
     /**
      * Protected routes requires login to access
@@ -109,7 +110,6 @@ Route::namespace('Api')->group(function () {
 
 
         // routes/api.php
-        Route::post('/phonepe/webhook', [PhonePeWebhookController::class, 'handle']);
 
     });
 
