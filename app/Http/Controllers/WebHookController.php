@@ -13,7 +13,7 @@ use Session;
 use Carbon\Carbon;
 use DB;
 
-class CarBrandController extends Controller
+class WebHookController extends Controller
 {
 
     private $path, $common, $title, $data;
