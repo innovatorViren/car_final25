@@ -31,18 +31,21 @@ class PhonePeWebhookController extends Controller
             $status = $payload['state'] ?? 'FAILED';
 
             // Find your order (based on merchantOrderId)
-            $order = Order::where('transaction_id', $transactionId)->first();
+            $order = Order::where('transaction_id', $merchantOrderId)->first();
 
             if ($order) {
                 $order->update([
-                    'transaction_id' => $transactionId,
+                    // 'transaction_id' => $transactionId,
                     'order_id' => $orderId,
                     'payment_mode' => $paymentMode,
                     'amount' => $amount,
                     'state' => $status,
                 ]);
             } else {
-                Log::error('Order not found for: ' . $transactionId);
+                $order->update([
+                    'state' => 'FAILED',
+                ]);
+                Log::error('Order not found for: ' . $merchantOrderId);
             }
         }
 
