@@ -138,6 +138,7 @@ class OrderApiController extends ApiController
             $inputData['start_time'] = $startTime;
             $inputData['end_time'] = $endTime;
             $inputData['customer_adress_id'] = $request->customer_adress_id;
+            $inputData['transaction_id'] = $request->transaction_id ?? '';
             $model = Order::create($inputData);
             $order_id  = $model->id;
 
