@@ -4,72 +4,49 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Order;
 
 class PhonePeWebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        try {
-        Log::info('PhonePe Webhook Received:', $request->all());
-            // // Raw body
-            // $rawBody = $request->getContent();
+        // Log full webhook
+        Log::info('PhonePe Webhook:', $request->all());
 
-            // // Headers
-            // $xVerify = $request->header('X-VERIFY');
+        $data = $request->all();
 
-            // Log::info('PhonePe Webhook Received', [
-            //     'headers' => $request->headers->all(),
-            //     'body' => $rawBody
-            // ]);
+        // Check event type
+        if (($data['event'] ?? '') === 'checkout.order.completed') {
 
-            // // Decode JSON
-            // $data = json_decode($rawBody, true);
+            $payload = $data['payload'] ?? [];
 
-            // if (!$data) {
-            //     Log::error('Invalid JSON');
-            //     return response()->json(['status' => 'failed'], 400);
-            // }
+            $merchantOrderId = $payload['merchantOrderId'] ?? null;
+            $orderId = $payload['orderId'] ?? null;
 
-            // // 🔐 VERIFY SIGNATURE
-            // $saltKey = env('PHONEPE_SALT_KEY');
-            // $saltIndex = env('PHONEPE_SALT_INDEX');
+            $paymentDetails = $payload['paymentDetails'][0] ?? [];
 
-            // $calculatedChecksum = hash('sha256', $rawBody . $saltKey) . "###" . $saltIndex;
+            $transactionId = $paymentDetails['transactionId'] ?? null;
+            $paymentMode = $paymentDetails['paymentMode'] ?? null;
+            $amount = $payload['amount'] ?? 0;
+            $status = $payload['state'] ?? 'FAILED';
 
-            // if ($xVerify !== $calculatedChecksum) {
-            //     Log::error('Checksum mismatch', [
-            //         'expected' => $calculatedChecksum,
-            //         'received' => $xVerify
-            //     ]);
+            // Find your order (based on merchantOrderId)
+            $order = Order::where('transaction_id', $transactionId)->first();
 
-            //     return response()->json(['status' => 'unauthorized'], 401);
-            // }
-
-            // // ✅ Process Payment Data
-            // $transactionId = $data['data']['merchantTransactionId'] ?? null;
-            // $status = $data['data']['state'] ?? null;
-
-            // if ($status === 'COMPLETED') {
-            //     // Payment success logic
-            //     Log::info("Payment SUCCESS: " . $transactionId);
-
-            //     // TODO: update DB
-            // } elseif ($status === 'FAILED') {
-            //     Log::info("Payment FAILED: " . $transactionId);
-            // } else {
-            //     Log::info("Payment PENDING: " . $transactionId);
-            // }
-
-            // return response()->json(['status' => 'success'], 200);
-            return response('OK', 200);
-
-        } catch (\Exception $e) {
-            Log::error('Webhook Exception', [
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json(['status' => 'error'], 500);
+            if ($order) {
+                $order->update([
+                    'transaction_id' => $transactionId,
+                    'order_id' => $orderId,
+                    'payment_mode' => $paymentMode,
+                    'amount' => $amount,
+                    'state' => $status,
+                ]);
+            } else {
+                Log::error('Order not found for: ' . $transactionId);
+            }
         }
+
+        return response()->json(['success' => true]);
     }
     // public function handle(Request $request)
     // {
