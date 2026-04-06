@@ -87,7 +87,20 @@
                                                             </tr>
                                                             <tr>
                                                                 <td width="30%" class="pr-0">
-                                                                    <div class="text-right"><b>{{ __('Pay Ampount') }}</b>
+                                                                    <div class="text-right"><b>{{ __('Price') }}</b>
+                                                                        &nbsp;
+                                                                    </div>
+                                                                </td>
+                                                                <td width="25%">
+                                                                    <div>
+                                                                        :&nbsp;
+                                                                       {{ $order->price ?? '' }}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="30%" class="pr-0">
+                                                                    <div class="text-right"><b>{{ __('Pay Amount') }}</b>
                                                                         &nbsp;
                                                                     </div>
                                                                 </td>

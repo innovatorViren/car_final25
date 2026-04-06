@@ -28,6 +28,10 @@ class OrderDataTable extends DataTable
             ->addColumn('action', function ($row) {
                 return $this->checkrights($row);
             })
+            ->editColumn('price', function ($row) {
+                return $row->price;
+                // return format_amount($row->pay_amount,2);
+            })
             ->editColumn('pay_amount', function ($row) {
                 return $row->pay_amount;
                 // return format_amount($row->pay_amount,2);
@@ -57,7 +61,7 @@ class OrderDataTable extends DataTable
             ->editColumn('customer_name', function ($row) {
                 return $row->customer_name ?? '-';
             })
-            ->rawColumns(['action','pay_amount', 'order_date', 'code','status','customer_name']);
+            ->rawColumns(['action','price','pay_amount', 'order_date', 'code','status','customer_name']);
     }
 
     public function checkrights($row)

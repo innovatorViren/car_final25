@@ -23,7 +23,7 @@
                 <table class="table table-separate table-head-custom table-checkable" id="dataTableBuilder">
                     <thead>
                         <tr>
-                            <th colspan="6"> 
+                            <th colspan="7"> 
                                 <div class="jsFilterData"></div>
                             </th>
                         </tr>
@@ -33,6 +33,7 @@
                             <th>{{ __('orders.customer_name') }}</th>
                             <th>{{ __('orders.start_date') }}</th>
                             <th>{{ __('orders.end_date') }}</th>
+                            <th>{{ __('orders.price') }}</th>
                             <th>{{ __('orders.pay_amount') }}</th>
                             <th>{{ __('orders.status') }}</th>
                         </tr>
@@ -61,6 +62,7 @@
     var customer = "{{ __('orders.customer_name') }}";
     var start_date = "{{ __('orders.start_date') }}";
     var end_date = "{{ __('orders.end_date') }}";
+    var price = "{{ __('orders.price') }}";
     var pay_amount = "{{ __('orders.pay_amount') }}";
     var status = "{{ __('orders.status') }}";
 
@@ -113,6 +115,13 @@
                 "title": customer,
                 "orderable": true,
                 "searchable": true
+            },{
+                "name": "price",
+                "data": "price",
+                "title": price,
+                "orderable": false,
+                "searchable": false,
+                'class':'text-right'
             },{
                 "name": "pay_amount",
                 "data": "pay_amount",

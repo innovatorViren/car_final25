@@ -20,7 +20,7 @@ $default_date = request()->get('date', $date);
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6 col-md-4 col-xl-3">
-                <a href="" class="font-weight-bold text-dark-50 font-size-lg">  
+                <a href="{{ route('customers.index') }}" class="font-weight-bold text-dark-50 font-size-lg">  
                     <div class="card card-custom card-stretch gutter-b" style="background-color:#F1D6E2">
                         <div class="card-body">
                             <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0">
@@ -32,7 +32,7 @@ $default_date = request()->get('date', $date);
                 </a>   
             </div>
             <div class="col-sm-6 col-md-4 col-xl-3">
-                <a  href="" class="font-weight-bold text-dark-50 font-size-lg">   
+                <a  href="{{ route('employee.index') }}" class="font-weight-bold text-dark-50 font-size-lg">   
                     <div class="card card-custom card-stretch gutter-b" style="background-color:#dbe6f0">
                         <div class="card-body pr-1">
                             <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0">
@@ -44,7 +44,7 @@ $default_date = request()->get('date', $date);
                 </a>   
             </div>
             <div class="col-sm-6 col-md-4 col-xl-3">
-                <a href="" class="font-weight-bold text-dark-50 font-size-lg">  
+                <a href="{{ route('car-model.index') }}" class="font-weight-bold text-dark-50 font-size-lg">  
                     <div class="card card-custom card-stretch gutter-b" style="background-color:#D3F1E5">
                         <div class="card-body">
                             <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0">
@@ -56,7 +56,7 @@ $default_date = request()->get('date', $date);
                 </a>   
             </div>
             <div class="col-sm-6 col-md-4 col-xl-3">
-                <a href="" class="font-weight-bold text-dark-50 font-size-lg">  
+                <a href="{{ route('orders.index') }}" class="font-weight-bold text-dark-50 font-size-lg">  
                     <div class="card card-custom card-stretch gutter-b" style="background-color:#f3FEEB">
                         <div class="card-body pr-1">
                             <span class="card-title font-weight-bolder text-dark-75 font-size-h4 d-block m-0">

@@ -193,7 +193,7 @@
                                         @endphp
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $cusCar->vehicle_name ?? ''}}</td>
+                                                <td>{{ $cusCar->vehicle_no ?? ''}}</td>
                                                 <td>{{ $cusCar->carModel->name ?? ''}}</td>
                                                 <td>{{ $carBrand->name ?? ''}}</td>
                                                 <td>{{ $cusCar->is_default ==1 ? 'Yes' : 'No'}}</td>

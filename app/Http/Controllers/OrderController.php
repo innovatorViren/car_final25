@@ -141,6 +141,8 @@ class OrderController extends Controller
         $newOrderNumber = $lastOrderNumber + 1;
         $orderSeries = 'O-' . sprintf('%03d', $newOrderNumber);
 
+        $vehicle = DB::table('customer_cars')->where('customer_id',$request->customer_id)->where('car_model_id',$request->car_model_id)->first();
+
         $customerId = $request->customer_id ?? null;
         $inputData['code'] = $orderSeries;
         $inputData['date'] = Carbon::now()->format('Y-m-d');
@@ -148,7 +150,8 @@ class OrderController extends Controller
         $inputData['plan_id'] = $planData->id;
         $inputData['car_model_id'] = $request->car_model_id;
         $inputData['car_size_id'] = $carModel->car_size_id;
-        $inputData['vehicle_name'] = null;
+        $inputData['vehicle_name'] = $carModel->name ?? null;
+        $inputData['vehicle_no'] = $vehicle->vehicle_no ?? null;
         $inputData['frequency_type'] = $frequencyType;
         $inputData['total_washes'] = $totalWash ?? null;
         $inputData['price'] = $planData->price ?? null;
@@ -203,6 +206,7 @@ class OrderController extends Controller
                 DB::raw("(CASE WHEN O.date IS NOT NULL THEN DATE_FORMAT(O.date, '%d-%m-%Y') ELSE '' END) as date"),
                 'O.total_washes as total_washes',
                 'O.status as status',
+                'O.price as price',
                 'O.pay_amount as pay_amount',
                 DB::raw("(CASE WHEN C.first_name IS NOT NULL THEN  C.first_name ELSE '' END) as customer_first_name"),
                 DB::raw("(CASE WHEN C.last_name IS NOT NULL THEN  C.last_name ELSE '' END) as customer_last_name"),
