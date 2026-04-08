@@ -107,7 +107,11 @@
                                                                 <td width="25%">
                                                                     <div>
                                                                         :&nbsp;
-                                                                       {{ $order->pay_amount ?? '' }}
+                                                                        @if($order->pay_amount)
+                                                                       {{ $order->pay_amount/100 ?? '' }}
+                                                                        @else
+                                                                            
+                                                                        @endif
                                                                     </div>
                                                                 </td>
                                                             </tr>

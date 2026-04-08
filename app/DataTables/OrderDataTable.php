@@ -33,7 +33,12 @@ class OrderDataTable extends DataTable
                 // return format_amount($row->pay_amount,2);
             })
             ->editColumn('pay_amount', function ($row) {
-                return $row->pay_amount;
+                if($row->pay_amount){
+                    $payAmount = $row->pay_amount/100;
+                }else{
+                    $payAmount = 0;
+                }
+                return $payAmount;
                 // return format_amount($row->pay_amount,2);
             })
             ->editColumn('start_date', function ($row) {
