@@ -281,6 +281,7 @@ class OrderApiController extends ApiController
             }else{
                 DB::table('washes')->where('id',$id)->update(['employee_id'=>$empId]);
                 $washOrdId = DB::table('washes')->where('id', $id)->first()->order_id;
+                $formattedTime = DB::table('washes')->where('id', $id)->first()->start_time;
                 $order = DB::table('orders')->where('id', $washOrdId)->first();
 
                 $currentUser = DB::table('users')->where('emp_id',$empId)->first();
