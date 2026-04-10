@@ -477,6 +477,7 @@ class OrderApiController extends ApiController
                     })
                     ->whereNull('O.deleted_at')
                     ->where('W.employee_id',$user->emp_id)
+                    ->groupBy('O.id')
                     ->orderBy('O.id', 'DESC')
                     ->get();
         }
