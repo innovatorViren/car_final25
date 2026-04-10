@@ -471,11 +471,12 @@ class OrderApiController extends ApiController
                     ->select($fields)
                     ->join('customers as C','C.id','O.customer_id')
                     ->join('car_models as CM','CM.id','O.car_model_id')
+                    ->join('washes as W','W.order_id','O.id')
                     ->leftjoin('employees as E', function ($join) {
                         $join->on('E.id', '=', 'O.employee_id');
                     })
                     ->whereNull('O.deleted_at')
-                    ->where('O.employee_id',$user->emp_id)
+                    ->where('W.employee_id',$user->emp_id)
                     ->orderBy('O.id', 'DESC')
                     ->get();
         }
@@ -505,6 +506,7 @@ class OrderApiController extends ApiController
     public function getOrderDetail($orderId)
     {
         $path = URL::asset('');
+        $user = $this->currentuser();
         $order = DB::table('orders as O')
                 ->select(
                     'O.id as order_id',
@@ -580,6 +582,7 @@ class OrderApiController extends ApiController
                     $join->on('E.id', '=', 'W.employee_id');
                 })
                 ->where('W.order_id',$orderId)
+                ->where('W.employee_id',$user->emp_id)
                 ->whereNull('W.deleted_at')
                 ->orderBy('W.id', 'ASC')
                 ->get();

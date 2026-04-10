@@ -144,7 +144,8 @@
             "rowReorder": {
                 //'selector' : 'tr>td:not(:last-child)', // I allow all columns for dragdrop except the last
                 'dataSrc' : 'sequence',
-                "selector" : "td:nth-child(5)"
+                {{-- "selector" : "td:nth-child(6)" --}}
+                "selector": "td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4), td:nth-child(5), td:nth-child(6)"
                 //'update' : false // this is key to prevent DT auto update
             },
             "pageLength": page_show_entriess,
