@@ -50,15 +50,15 @@
 
                 <div class="row">
                 <!-- Car Brand Dropdown -->
-                    <div class="form-group col-lg-4"><span class="text-danger">*</span>
-                        {!! Form::label('car_brand', 'Select Car Brand') !!}
-                        {!! Form::select('car_brand_id', ['' => 'Select'] + $carBrands, null, ['id' => 'car_brand', 'class' => 'form-control jsCarBrand','data-placeholder' => 'Select Car Brand',]) !!}
+                    <div class="form-group col-lg-4">
+                        {!! Form::label('car_brand', 'Car Brand') !!}<span class="text-danger">*</span>
+                        {!! Form::select('car_brand_id', ['' => 'Select'] + $carBrands, null, ['id' => 'car_brand', 'class' => 'form-control jsCarBrand required','data-placeholder' => 'Select Car Brand',]) !!}
                     </div>
 
                     <!-- Car Model Dropdown (Initially empty) -->
-                    <div class="form-group col-lg-4"><span class="text-danger">*</span>
-                        {!! Form::label('car_model', 'Select Car Model') !!}
-                        {!! Form::select('car_model_id', [], null, ['id' => 'car_model', 'class' => 'form-control jsCarModel','data-placeholder' => 'Select Car Model']) !!}
+                    <div class="form-group col-lg-4">
+                        {!! Form::label('car_model', 'Car Model') !!}<span class="text-danger">*</span>
+                        {!! Form::select('car_model_id', [], null, ['id' => 'car_model', 'class' => 'form-control jsCarModel','data-placeholder ' => 'Select Car Model','required']) !!}
                     </div>
                     <div class="form-group col-lg-4">
                         {!! Form::label('frequency', 'Wash Frequency') !!}<span class="text-danger">*</span>
@@ -93,23 +93,25 @@
             <div class="form-group col-lg-6">
                 {!! Form::label('start_date', 'Start Date') !!}<span class="text-danger">*</span>
                 {!! Form::date('start_date', null, [
-                    'class' => 'form-control',
+                    'class' => 'form-control required',
                     'id' => 'start_date',
                     'min' => \Carbon\Carbon::now()->format('Y-m-d')
                 ]) !!}
+            </div>
+            <div class="form-group col-lg-6">
             </div>
 
             <div class="form-group col-lg-6">
                 {!! Form::label('start_time', 'Start Time') !!}<span class="text-danger">*</span>
                 {!! Form::time('start_time', null, [
-                    'class' => 'form-control',
+                    'class' => 'form-control required',
                     'id' => 'start_time'
                 ]) !!}
             </div>
             <div class="form-group col-lg-6">
                 {!! Form::label('end_time', 'End Time') !!}<span class="text-danger">*</span>
                 {!! Form::time('end_time', null, [
-                    'class' => 'form-control',
+                    'class' => 'form-control required',
                     'id' => 'end_time',
                     'readonly'
                 ]) !!}
