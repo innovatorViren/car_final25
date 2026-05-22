@@ -108,9 +108,15 @@ class OrderController extends Controller
             $endTimeObj = Carbon::createFromFormat('H:i', $endTime);
         }
 
+        if($totalWashes == 30){
+            $dayCount = 1;
+        }else{
+            $dayCount = 2;
+        }
+
         for ($i = 0; $i < $totalWashes; $i++) {
 
-            $scheduledDate = $start->copy()->addDays($i * 2)->format('Y-m-d');
+            $scheduledDate = $start->copy()->addDays($i * $dayCount)->format('Y-m-d');
             $slots[] = [
                 'order_id' => $order_id,
                 'scheduled_date' => $scheduledDate,

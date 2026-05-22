@@ -189,11 +189,18 @@
                 let rows = '';
 
                 response.forEach((slot, index) => {
+                    let date = new Date(slot.scheduled_date);
+
+                    let formattedDate =
+                        ('0' + date.getDate()).slice(-2) + '-' +
+                        ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+                        date.getFullYear();
+                        
                     rows += `
                         <tr>
                             <td>
-                                ${slot.scheduled_date}
-                                <input type="hidden" name="slots[${index}][date]" value="${slot.scheduled_date}">
+                                ${formattedDate}
+                                <input type="hidden" name="slots[${index}][date]" value="${formattedDate}">
                             </td>
                             <td>
                                 ${slot.start_time}

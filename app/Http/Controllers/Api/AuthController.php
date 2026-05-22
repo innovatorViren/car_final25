@@ -184,18 +184,6 @@ class AuthController extends ApiController
                 throw new Exception($validatedData->messages()->first(), 1);
             }
 
-            // $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-
-            // $dataArray = [
-            //     'first_name' => $request->first_name,
-            //     'middle_name' => $request->middle_name,
-            //     'last_name' => $request->last_name,
-            //     'email' => str_replace(' ','',$request->email),
-            //     'mobile' => $request->mobile,
-            //     'otp' => $otp,
-            //     'platform' => 'App',
-            // ];
-            // $customer = Customer::create($dataArray);
             DB::table('registers')->insert([
                     'first_name' => $request->first_name,
                     'middle_name' => $request->middle_name,
@@ -207,37 +195,6 @@ class AuthController extends ApiController
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ]);
-            // $customer_id = $customer->id;
-
-            // $role_id = Role::where('slug', 'customer')->first()->id ?? '';
-
-            // $userArray = [
-            //     'emp_type' => 'customer',
-            //     'customer_id' => $customer_id ?? null,        
-            //     'first_name' => $request->get('first_name', null),
-            //     'middle_name' => $request->middle_name,
-            //     'last_name' => $request->get('last_name', null),
-            //     'permissions' => json_encode(['customer.view' => true]),
-            //     'email' => str_replace(' ','',$request->email),
-            //     'password' => Hash::make($request->password),
-            //     'mobile' => $request->mobile, 
-            //     'is_active' => 'Yes',
-            //     'roles_id' => $role_id,
-            // ];
-            // $credentials = [
-            //     'first_name' => $request->get('first_name', null),
-            //     'last_name' => $request->get('last_name', null),
-            //     'email' => str_replace(' ','',$request->email),
-            //     'password' => $request->get('password'),
-            // ];
-            // $activate = true;
-            // $result = $this->authManager->register($credentials,$activate);
-            // $user_id = $result->user->id;
-
-            // $user = User::findOrFail($user_id);
-            // $user->update($userArray);
-            
-            // $result->user->roles()->sync(array($role_id));
 
             DB::commit();
         } catch (Exception $e) {
