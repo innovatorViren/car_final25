@@ -122,7 +122,7 @@ class EmployeeController extends Controller
     {
         if ($request->hasFile('aadharcard_img')) {
 
-            $storepath = '/uploads/Employee/' . $img_path  ;
+            $storepath = '/uploads/Employee/' . $img_path . '/';
 
             $file['aadharcard_img'] = $this->getUniqueFilename($request->file('aadharcard_img'), $this->getImagePath($storepath));
 

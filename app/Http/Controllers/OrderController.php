@@ -148,6 +148,7 @@ class OrderController extends Controller
         $orderSeries = 'O-' . sprintf('%03d', $newOrderNumber);
 
         $vehicle = DB::table('customer_cars')->where('customer_id',$request->customer_id)->where('car_model_id',$request->car_model_id)->first();
+        $endDate = Carbon::createFromFormat('d-m-Y',collect($request->slots)->last()['date'])->format('Y-m-d');
 
         $customerId = $request->customer_id ?? null;
         $inputData['code'] = $orderSeries;
@@ -163,10 +164,10 @@ class OrderController extends Controller
         $inputData['price'] = $planData->price ?? null;
         $inputData['pay_amount'] = null;
         $inputData['start_date'] = $startDate;
+        $inputData['end_date'] = $endDate;
         $inputData['start_time'] = $startTime;
         $inputData['end_time'] = $endTime;
         $inputData['customer_adress_id'] = $request->customer_adress_id ?? null;
-
         $model = Order::create($inputData);
         $order_id  = $model->id;
 

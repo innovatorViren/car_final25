@@ -332,6 +332,7 @@ class EmployeeApiController extends ApiController
                 ->whereNull('O.deleted_at')
                 ->where('W.id',$wasId)
                 ->first();
+        // dd($orderData);
         $this->data = $orderData;
         // $this->response_json['today_orders'] = $orderData; 
 

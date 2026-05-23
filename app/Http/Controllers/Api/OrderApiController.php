@@ -583,7 +583,10 @@ class OrderApiController extends ApiController
                     $join->on('E.id', '=', 'W.employee_id');
                 })
                 ->where('W.order_id',$orderId)
-                ->where('W.employee_id',$user->emp_id)
+                ->when($user->roles_id != 1, function ($query) use ($user) {
+                    return $query->where('W.employee_id', $user->emp_id);
+                })
+                // ->where('W.employee_id',$user->emp_id)
                 ->whereNull('W.deleted_at')
                 ->orderBy('W.id', 'ASC')
                 ->get();
@@ -607,8 +610,7 @@ class OrderApiController extends ApiController
                             ->leftjoin('states as S','S.id','CA.state_id')
                             ->leftjoin('cities as C','C.id','CA.city_id')
                             ->where('CA.id',$order->customer_adress_id)
-                            ->first();
-        
+                            ->first(); 
             $this->data =  $washItem;
             $this->response_json['order_car_model'] = $order->model_name;
             $this->response_json['vehicle_name'] = $order->vehicle_name;
