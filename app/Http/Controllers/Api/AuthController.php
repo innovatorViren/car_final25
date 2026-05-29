@@ -445,7 +445,7 @@ class AuthController extends ApiController
 
         $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 465, 'ssl'))
             ->setUsername('virendrabutani@gmail.com')
-            ->setPassword('qwcb fnlf cpmw adkx');
+            ->setPassword('ockf urek ityi kchx');
 
         $mailer = new \Swift_Mailer($transport);
 
@@ -522,7 +522,7 @@ class AuthController extends ApiController
 
         $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 465, 'ssl'))
             ->setUsername('virendrabutani@gmail.com')
-            ->setPassword('qwcb fnlf cpmw adkx');
+            ->setPassword('ockf urek ityi kchx');
 
         $mailer = new \Swift_Mailer($transport);
 
