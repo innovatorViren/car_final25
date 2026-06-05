@@ -69,6 +69,10 @@
                             'data-placeholder' => 'Select Frequency'
                         ]) !!}
                     </div>
+                    <div class="form-group col-lg-4">
+                        {!! Form::label('vehicle_no', 'Vehicle No') !!}
+                        {!! Form::text('vehicle_no', null, ['class' => 'form-control']) !!}
+                    </div>
                 </div>
             </div>
             <div class="d-flex flex-column align-items-md-end px-0">

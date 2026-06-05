@@ -71,6 +71,45 @@
                                                                     </div>
                                                                 </td>
                                                             </tr>
+                                                            <tr>
+                                                                <td width="30%" class="pr-0">
+                                                                    <div class="text-right"><b>{{ __('Frequency') }}</b>
+                                                                        &nbsp;
+                                                                    </div>
+                                                                </td>
+                                                                <td width="25%">
+                                                                    <div>
+                                                                        :&nbsp;
+                                                                       {{ ucwords(str_replace('_', ' ', $order->frequency_type)) }}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="30%" class="pr-0">
+                                                                    <div class="text-right"><b>{{ __('Vehicle Name') }}</b>
+                                                                        &nbsp;
+                                                                    </div>
+                                                                </td>
+                                                                <td width="25%">
+                                                                    <div>
+                                                                        :&nbsp;
+                                                                       {{ $order->vehicle_name ?? '' }}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="30%" class="pr-0">
+                                                                    <div class="text-right"><b>{{ __('Vehicle No') }}</b>
+                                                                        &nbsp;
+                                                                    </div>
+                                                                </td>
+                                                                <td width="25%">
+                                                                    <div>
+                                                                        :&nbsp;
+                                                                       {{ $order->vehicle_no ?? '' }}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
 
                                                             <tr>
                                                                 <td width="30%" class="pr-0">

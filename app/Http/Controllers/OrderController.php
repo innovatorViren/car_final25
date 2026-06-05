@@ -158,7 +158,7 @@ class OrderController extends Controller
         $inputData['car_model_id'] = $request->car_model_id;
         $inputData['car_size_id'] = $carModel->car_size_id;
         $inputData['vehicle_name'] = $carModel->name ?? null;
-        $inputData['vehicle_no'] = $vehicle->vehicle_no ?? null;
+        $inputData['vehicle_no'] = $request->vehicle_no ?? $vehicle->vehicle_no;
         $inputData['frequency_type'] = $frequencyType;
         $inputData['total_washes'] = $totalWash ?? null;
         $inputData['price'] = $planData->price ?? null;
@@ -212,6 +212,9 @@ class OrderController extends Controller
                 'O.code as code',
                 DB::raw("(CASE WHEN O.date IS NOT NULL THEN DATE_FORMAT(O.date, '%d-%m-%Y') ELSE '' END) as date"),
                 'O.total_washes as total_washes',
+                'O.frequency_type as frequency_type',
+                'O.vehicle_name as vehicle_name',
+                'O.vehicle_no as vehicle_no',
                 'O.status as status',
                 'O.price as price',
                 'O.pay_amount as pay_amount',
