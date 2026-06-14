@@ -141,7 +141,7 @@ class CustomerDataTable extends DataTable
                 ->printable(false)
                 ->width(60)
                 ->addClass('text-center'),
-            Column::make('person_name'),
+            Column::make('first_name'),
             Column::make('mobile'),
             Column::make('is_active'),
         ];
@@ -152,8 +152,8 @@ class CustomerDataTable extends DataTable
      *
      * @return string
      */
-    // protected function filename(): string
-    // {
-    //     return 'AccountMaster_' . date('YmdHis');
-    // }
+    protected function filename(): string
+    {
+        return 'Customer_' . date('YmdHis');
+    }
 }

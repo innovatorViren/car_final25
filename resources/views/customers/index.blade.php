@@ -39,9 +39,6 @@
                             <th>
                                 <div class="datatable-form-filter no-padding">{!! Form::text('filter_mobile', Request::get('filter_mobile', null), ['class' => 'form-control']) !!}</div>
                             </th>
-                            <th>
-                                <div class="datatable-form-filter no-padding">{!! Form::text('filter_email', Request::get('filter_email', null), ['class' => 'form-control']) !!}</div>
-                            </th>
                             <th></th>
                         </tr>
                         <tr>
@@ -50,7 +47,6 @@
                             <th class="noVis">{{ __('customers.first_name') }}</th>
                             <th>{{ __('customers.email') }}</th>
                             <th>{{ __('common.mobile') }}</th>
-                            <th>{{ __('customers.email') }}</th>
                             <th>{{ __('common.status') }}</th>
                         </tr>
                     </thead>
@@ -75,7 +71,6 @@
     var first_name = "{{ __('customers.first_name') }}";
     var email = "{{ __('customers.email') }}";
     var mobile = "{{ __('common.mobile') }}";
-    var email = "{{ __('customers.email') }}";
     var action = "{{ __('common.action') }}";
     var is_active = "{{ __('common.status') }}";
 
@@ -120,14 +115,7 @@
                 "orderable": false,
                 "searchable": false,
                 "visible": true, //visibility
-            }, {
-                "name": "email",
-                "data": "email",
-                "title": email,
-                "orderable": false,
-                "searchable": false,
-                "visible": false, //visibility
-            }, {
+            },{
                 "name": "mobile",
                 "data": "mobile",
                 "title": mobile,
